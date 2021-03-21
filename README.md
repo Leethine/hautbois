@@ -3,7 +3,7 @@
 
 ### The Hautbois Project
 
-The "**H**ybrid **a**nd **U**niversal **T**ext-**B**ased **O**rchestral **I**nstruments **S**imulator" peoject, aka Hautbois, as the name indicates, aimes to create a text-based simulator for instruments, especially those in Baroque period.
+The "**H**ybrid **a**nd **U**niversal **T**ext-**B**ased **O**rchestral **I**nstruments **S**imulator" project, aka Hautbois, as the name indicates, aimes to create a text-based simulator for instruments, especially those in Baroque period.
 
 ### Components
 
