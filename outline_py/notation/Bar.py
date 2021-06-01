@@ -28,14 +28,18 @@ class Bar:
     
     __beat = 1/1
     
-    # scale definition
+    # scale definition (aka key signature)
     __scale = "C"
     # the Index is found at "Théorie de la Musique (Danhauser)"
     __scaleIndex = 0
     
     # associated scale
-    __relativeScale
+    __relativeScale = "Am"
+    __relativeScaleIndex = 0
     
+    
+    def __init__(self, clef, ):
+        pass
     
     # content in the bar
     __NoteContent = list(Note("C"), Note("D"))
@@ -43,7 +47,20 @@ class Bar:
     def Instrument2Index(self):
         pass
         
-    def CheckRange(self):
+    def checkRange(self):
         pass
+    
+    def addNote(self):
+        pass
+        
+    def addNoteGroup(self):
+        pass
+    
+    def addPause(self):
+        pass
+        
+    def getRelativeScale(self):
+        pass
+    
     
     

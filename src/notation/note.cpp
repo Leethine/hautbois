@@ -17,11 +17,12 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <boost/algorithm/string.hpp>
 
 using namespace std;
 
-
+/* Definition of the "Note" Class */
 class Note {
     public:
         // Notation System, Scientific, German, Latin.
@@ -54,6 +55,11 @@ class Note {
         string Helm2Latin(string name);
         string Latin2Helm(string name);
         */
+        
+        // Informative functions
+        bool isNote() { return true; }
+        bool isBreak() { return false; }
+        bool isNoteGroup() { return false; }
         
         Note(string name, string duration);
 };
@@ -355,10 +361,115 @@ Note::Note(string name, string duration) {
 }
 
 
-/*
+/* "Break" Class, much simplier */
+class Break {
+    public:
+        // Show the break symbol or note
+        bool ShowSymbol;
+        int Duration[2];
+        bool CheckDuration(string duration);
+        
+        // Informative functions
+        bool isNote() { return false; }
+        bool isBreak() { return true; }
+        bool isNoteGroup() { return false; }
+        
+        Break(string duration, bool show) {
+            if ( !CheckDuration(duration) ) {
+                // set as 1/1 by default
+                ShowSymbol = show;
+                Duration[0] = 1;
+                Duration[1] = 1;
+            }
+        }
+        
+};
+
+bool Break::CheckDuration(string duration) {
+// Check Duration validity; if valid, write to class.
+    
+    size_t found;
+    //int num, denom;
+    bool valid = false;
+    // Eliminate white spaces
+    while ( (found = duration.find(" ")) != string::npos ) {
+        duration.erase(duration.begin() + found);
+    }
+    
+    if ( isdigit(duration[0]) && isdigit(duration[2]) 
+            && (duration[1] == '/') ) {
+        valid = true;
+        
+        Duration[0] = duration[0] - '0';
+        Duration[1] = duration[2] - '0';
+    }
+    else if ( duration.length() == 1 && isdigit(duration[0]) ) {
+        Duration[0] = 1;
+        Duration[1] = duration[0];
+    }
+    
+    return valid;
+}
+
+
+/* NoteGroup Class, a group of note with the same length */
+
+class NoteGroup {
+    // Every Note will follow the properties of the first Note
+    public:
+        vector<Note> NoteList;
+        
+        void AddNote(Note new_note) {
+            NoteList.push_back(new_note);
+        }
+        
+        void DelLastNote() {
+            if ( !NoteList.empty() )
+                NoteList.pop_back();
+        }
+        
+        void ClearNotes() {
+            while ( !NoteList.empty() )
+                NoteList.pop_back();
+        }
+        
+        Note GetFirstNote() {
+            if ( !NoteList.empty() ) {
+                return NoteList.front();
+            }
+            else {
+                cerr << "Note list is empty!" << endl;
+                return Note("A4","");
+            }
+        }
+        
+        vector<Note> GetNoteList() { 
+            if ( !NoteList.empty() ) {
+                return NoteList;
+            }
+            else {
+                cerr << "Note list still Empty!" << endl;
+                return vector<Note> () ;
+            }
+        }
+        
+        // Informative functions
+        bool isNote() { return false; }
+        bool isBreak() { return false; }
+        bool isNoteGroup() { return true; }
+        
+        int NbrNotes() {
+            return NoteList.size();
+        }
+        
+        NoteGroup() {}
+};
+
+
 // TEST THE OBJECT
 int main(void) 
 {
+    
     Note n1 ("A5", "1/4");
     cout << n1.Name <<" Index: " << n1.NoteIndex << ", Duration: " 
          << n1.Duration[0] << "/" << n1.Duration[1] << endl;
@@ -390,5 +501,18 @@ int main(void)
     cout << "c'''"  << " : " << n1.Helm2Index("c'''")  << endl;
     cout << "A,"  << " : " << n1.Helm2Index("A,")  << endl;
     cout << "F#"  << " : " << n1.Helm2Index("F#")  << endl;
+    
+    Note n2 ("A4", "1/4");
+    Note n3 ("A4", "1/4");
+    
+    NoteGroup n;
+    n.AddNote(n1);
+    n.AddNote(n2);
+    n.AddNote(n3);
+    
+    cout << n.GetFirstNote().Name << endl ;
+    cout << n.NbrNotes() << endl ;
+    
     return 0;
-}*/
+}
+
