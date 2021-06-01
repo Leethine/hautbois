@@ -20,49 +20,12 @@
 #include <vector>
 #include <boost/algorithm/string.hpp>
 
+#include "note.hpp"
+
 using namespace std;
 
-/* Definition of the "Note" Class */
-class Note {
-    public:
-        // Notation System, Scientific, German, Latin.
-        int notationSys; // 'S', 'D', 'L'
-        
-        // Name of the note and duration.
-        int NoteIndex;
-        string Name;
-        int Duration[2];
-        
-        // Properties of the note, e.g. Force, Ornaments, etc.
-        string Force;
-        string OrnamentType;
-        string OrnamentParam;
-        // TODO Leave spaces for further properties
-        
-        
-        
-        // Functions for handling the notation.
-        bool CheckDuration(string duration);
-        int DetectNotation(string name);
-        int SciName2Index(string name);
-        int Latin2Index(string name);
-        int Helm2Index(string name);
-        /*
-        string Sci2Latin(string name);
-        string Latin2Sci(string name);
-        string Sci2Helm(string name);
-        string Helm2Sci(string name);
-        string Helm2Latin(string name);
-        string Latin2Helm(string name);
-        */
-        
-        // Informative functions
-        bool isNote() { return true; }
-        bool isBreak() { return false; }
-        bool isNoteGroup() { return false; }
-        
-        Note(string name, string duration);
-};
+
+/* Functions in "Note" class */
 
 int Note::DetectNotation(string name) {
 // Detection of the notation system.
@@ -331,6 +294,10 @@ string Note::Latin2Helm(string name) {
 }
 */
 
+bool Note::isNote() { return true; }
+bool Note::isBreak() { return false; }
+bool Note::isNoteGroup() { return false; }
+
 Note::Note(string name, string duration) {
 // Init    
     int notation_sys;
@@ -356,34 +323,38 @@ Note::Note(string name, string duration) {
     
     if ( !CheckDuration(duration) ) {
         Duration[0] = 1;
-        Duration[1] = 1;
+        Duration[1] = 4;
     }
 }
 
+Note::Note(string name) {
+// Init    
+    int notation_sys;
+    
+    // Get notation system
+    notation_sys = DetectNotation(name);
+    Name = name;
+    // then notation
+    switch (notation_sys) {
+    case 'S':
+        NoteIndex = SciName2Index(name);
+        break;
+    case 'L':
+        NoteIndex = Latin2Index(name);
+        break;
+    case 'D':
+        NoteIndex = Helm2Index(name);
+        break;
+    default:
+        NoteIndex = 0;
+        break;
+    }
+    
+    Duration[0] = 1;
+    Duration[1] = 4;
+}
 
-/* "Break" Class, much simplier */
-class Break {
-    public:
-        // Show the break symbol or note
-        bool ShowSymbol;
-        int Duration[2];
-        bool CheckDuration(string duration);
-        
-        // Informative functions
-        bool isNote() { return false; }
-        bool isBreak() { return true; }
-        bool isNoteGroup() { return false; }
-        
-        Break(string duration, bool show) {
-            if ( !CheckDuration(duration) ) {
-                // set as 1/1 by default
-                ShowSymbol = show;
-                Duration[0] = 1;
-                Duration[1] = 1;
-            }
-        }
-        
-};
+/* Break class */
 
 bool Break::CheckDuration(string duration) {
 // Check Duration validity; if valid, write to class.
@@ -411,61 +382,98 @@ bool Break::CheckDuration(string duration) {
     return valid;
 }
 
+bool Break::isNote() { return false; }
+bool Break::isBreak() { return true; }
+bool Break::isNoteGroup() { return false; }
 
-/* NoteGroup Class, a group of note with the same length */
+/*
+Break::Break(string duration, bool show) {
+    if ( !CheckDuration(duration) ) {
+    // set as 1/1 by default
+        ShowSymbol = show;
+        Duration[0] = 1;
+        Duration[1] = 1;
+    }
+}
+*/
 
-class NoteGroup {
-    // Every Note will follow the properties of the first Note
-    public:
-        vector<Note> NoteList;
-        
-        void AddNote(Note new_note) {
-            NoteList.push_back(new_note);
-        }
-        
-        void DelLastNote() {
-            if ( !NoteList.empty() )
-                NoteList.pop_back();
-        }
-        
-        void ClearNotes() {
-            while ( !NoteList.empty() )
-                NoteList.pop_back();
-        }
-        
-        Note GetFirstNote() {
-            if ( !NoteList.empty() ) {
-                return NoteList.front();
-            }
-            else {
-                cerr << "Note list is empty!" << endl;
-                return Note("A4","");
-            }
-        }
-        
-        vector<Note> GetNoteList() { 
-            if ( !NoteList.empty() ) {
-                return NoteList;
-            }
-            else {
-                cerr << "Note list still Empty!" << endl;
-                return vector<Note> () ;
-            }
-        }
-        
-        // Informative functions
-        bool isNote() { return false; }
-        bool isBreak() { return false; }
-        bool isNoteGroup() { return true; }
-        
-        int NbrNotes() {
-            return NoteList.size();
-        }
-        
-        NoteGroup() {}
-};
+Rest::Rest(string duration) {
+    ShowSymbol = true;
+    if ( !CheckDuration(duration) ) {
+    // set as 1/4 by default
+        Duration[0] = 1;
+        Duration[1] = 4;
+    }
+}
 
+Rest::Rest() {
+    ShowSymbol = true;
+    Duration[0] = 1;
+    Duration[1] = 4;
+}
 
+Blank::Blank(string duration) {
+    ShowSymbol = false;
+    if ( !CheckDuration(duration) ) {
+    // set as 1/1 by default
+        Duration[0] = 1;
+        Duration[1] = 1;
+    }
+}
+
+Blank::Blank() {
+    ShowSymbol = false;
+    Duration[0] = 1;
+    Duration[1] = 1;
+}
+
+/* NoteGroup class */
+
+void NoteGroup::AddNote(Note new_note) {
+    NoteList.push_back(new_note);
+}
+
+void NoteGroup::DelLastNote() {
+    if ( !NoteList.empty() )
+        NoteList.pop_back();
+}
+        
+void NoteGroup::ClearNotes() {
+    while ( !NoteList.empty() )
+        NoteList.pop_back();
+}
+        
+Note NoteGroup::GetFirstNote() {
+    if ( !NoteList.empty() ) {
+        return NoteList.front();
+    }
+    else {
+        cerr << "Note list is empty!" << endl;
+        return Note("A4","");
+    }
+}
+        
+vector<Note> NoteGroup::GetNoteList() { 
+    if ( !NoteList.empty() ) {
+        return NoteList;
+    }
+    else {
+        cerr << "Note list still Empty!" << endl;
+        return vector<Note> () ;
+    }
+}
+        
+bool NoteGroup::isNote() { return false; }
+bool NoteGroup::isBreak() { return false; }
+bool NoteGroup::isNoteGroup() { return true; }
+        
+int NoteGroup::NbrNotes() {
+    return NoteList.size();
+}
+        
+NoteGroup::NoteGroup() {}
+
+/*
 // TEST THE OBJECT
 int main(void) 
 {
@@ -513,6 +521,28 @@ int main(void)
     cout << n.GetFirstNote().Name << endl ;
     cout << n.NbrNotes() << endl ;
     
+    Break b1 = Blank("8/1");
+    Break b2 = Blank();
+    Break r1 = Rest();
+    Break r2 = Rest("1/2");
+    
+    cout << "\"" << b1.Duration[0] << "/" << b1.Duration[1] << "\"" << endl;
+    cout << "\"" << r1.Duration[0] << "/" << r1.Duration[1] << "\"" << endl;
+    cout << "\"" << b2.Duration[0] << "/" << b2.Duration[1] << "\"" << endl;
+    cout << "\"" << r2.Duration[0] << "/" << r2.Duration[1] << "\"" << endl;
+    
+    if ( b1.isBreak() )
+        if ( b1.ShowSymbol )
+            cout << "b1 Show" << endl;
+        else
+            cout << "b1 Not Show" << endl;
+    
+    if ( r1.isBreak() )
+        if ( r1.ShowSymbol )
+            cout << "r1 Show" << endl;
+        else
+            cout << "r1 Not Show" << endl;
+
     return 0;
 }
-
+*/
