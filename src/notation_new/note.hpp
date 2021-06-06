@@ -17,31 +17,54 @@
  
 #include <string>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
-/* Definition of the "Note" Class */
+//enum note_type { MusicNote, NoteGroup, Rest, Blank };
+
+/* Definition of the "Note" Class *
+ * Parent class, not to be used   */
 class Note {
-    public:
-    
-    // Notation System, Scientific, German, Latin.
-    int notationSys; // 'S', 'D', 'L'
-    
+  protected:
     // Name of the note and duration.
     int NoteIndex;
     string Name;
     int Duration[2];
     
-    // Properties of the note, e.g. Force, Ornaments, etc.
-    string Force;
-    string OrnamentType;
-    string OrnamentParam;
-    // TODO Leave spaces for further properties
-            
+    //note_type NoteType;
+    
+    // Functions for handling the duration.
+    bool CheckDuration(string duration);
+    
+  public:
+    string PrintNote();
+    
+    virtual string PrintNoteGroup();
+    // Informative functions
+    virtual bool isNote();
+    virtual bool isBlank();
+    virtual bool isRest();
+    virtual bool isNoteGroup();
+    
+    string GetName();
+    string GetType();
+    int GetNoteIndex();
+    tuple<int,int> GetDuration();
+    
+    Note();
+    virtual ~Note();
+};
+
+
+class MusicNote: public Note {
+  private:
+    // Notation System, Scientific, German, Latin.
+    int notationSys; // 'S', 'D', 'L'
     
     // Functions for handling the notation.
-    bool CheckDuration(string duration);
     int DetectNotation(string name);
+    bool CheckNotationName();
     int SciName2Index(string name);
     int Latin2Index(string name);
     int Helm2Index(string name);
@@ -54,77 +77,82 @@ class Note {
     string Latin2Helm(string name);
     */
     
+  public:
+    // Properties of the note, e.g. Force, Ornaments, etc.
+    string Force;
+    string OrnamentType;
+    string OrnamentParam;
+    // TODO Leave spaces for further properties
+    
+    
+    
     // Informative functions
     bool isNote();
-    bool isBreak();
+    bool isBlank();
+    bool isRest();
     bool isNoteGroup();
     
-    void PrintNote();
+    int GetNotationSys();
     
-    Note(string name, string duration);
-    Note(string name);
+    MusicNote(string name);
+    MusicNote(string name, string duration);
 };
 
-/* "Break" Class, Rest or Blank */
-class Break {
-    public:
-    
-    // Show the break symbol or not
-    bool ShowSymbol;
-    int Duration[2];
-    bool CheckDuration(string duration);
-
-    // Informative functions
-    bool isNote();
-    bool isBreak();
-    bool isNoteGroup();
-    
-    void PrintNote();
-    
-    // Avoid using Break Class directly, preferred "Blank" or "Rest" 
-    //Break(string duration, bool show);
-    Break(string duration) {};
-    Break() {};
-};
 
 /* Rest symbol class */
-class Rest : public Break {
-    public:
+class Rest: public Note {
+  
+  public:
+    // Informative functions
+    bool isNote();
+    bool isBlank();
+    bool isRest();
+    bool isNoteGroup();
     
-    Rest(string duration);
     Rest();
+    Rest(string duration);
 };
 
 /* Blank class, left blank a block of spaces */
-class Blank : public Break {
-    public:
+class Blank: public Note {
+  
+  public:
+    // Informative functions
+    bool isNote();
+    bool isBlank();
+    bool isRest();
+    bool isNoteGroup();
     
-    Blank(string duration);
     Blank();
+    Blank(string duration);
 };
 
 
 /* NoteGroup Class, a group of note with the same length */
-class NoteGroup {
+class NoteGroup: public Note {
+  private:
     // Every Note will follow the properties of the first Note
-    public:
-    
     vector<Note> NoteList;
-            
+  public:
     void AddNote(Note new_note);
     void DelLastNote();
+    Note PopLastNote();
     void ClearNotes();
     Note GetFirstNote();
     vector<Note> GetNoteList();
         
     // Informative functions
     bool isNote();
-    bool isBreak();
+    bool isBlank();
+    bool isRest();
     bool isNoteGroup();
     int NbrNotes();
     
-    void PrintNote();
+    string PrintNoteGroup();
     
-    NoteGroup();
+    NoteGroup(MusicNote note1, MusicNote note2);
+    NoteGroup(MusicNote note1, MusicNote note2, MusicNote note3);
+    NoteGroup(MusicNote note1, MusicNote note2, 
+              MusicNote note3, MusicNote note4);
 };
 

@@ -26,25 +26,12 @@ using namespace std;
 
 /* Functions in "Note" class */
 
-int Note::DetectNotation(string name) {
-// Detection of the notation system.
-// Returns 'S' for Scientific; 'L' for latin, 'D' for German. 
-    if ( name.length() == 1 )
-        return 'D';
-    else if ( isalpha(name[1]) )
-        return 'L';
-    else if ( isdigit(name[1]) )
-        return 'S';
-    else
-        return 'D';
-}
-
 bool Note::CheckDuration(string duration) {
 // Check Duration validity; if valid, write to class.
     
     size_t found;
     //int num, denom;
-    bool valid = false;
+    bool valid;
     // Eliminate white spaces
     while ( (found = duration.find(" ")) != string::npos ) {
         duration.erase(duration.begin() + found);
@@ -60,12 +47,60 @@ bool Note::CheckDuration(string duration) {
     else if ( duration.length() == 1 && isdigit(duration[0]) ) {
         Duration[0] = 1;
         Duration[1] = duration[0];
+        valid = true;
+    }
+    else {
+        valid = false;
     }
     
     return valid;
 }
 
-int Note::SciName2Index(string name) {
+string Note::PrintNote() {
+    string output;
+    output = "(" + Name + ", " + string(1, Duration[0] + '0')
+                 + "/" + string(1, Duration[1] + '0') + ")";
+    return output;
+}
+
+bool Note::isNote() { return false; }
+bool Note::isBlank() { return false; }
+bool Note::isRest() { return false; }
+bool Note::isNoteGroup() { return false; }
+    
+string Note::GetName() { return Name; }
+string Note::GetType() { return ""; }
+int Note::GetNoteIndex() { return NoteIndex; }
+
+tuple<int,int> Note::GetDuration() { 
+    return make_tuple(Duration[0], Duration[1]);
+}
+
+string Note::PrintNoteGroup() { return ""; }
+
+Note::Note() { };
+Note::~Note(void) { };
+
+int MusicNote::DetectNotation(string name) {
+// Detection of the notation system.
+// Returns 'S' for Scientific; 'L' for latin, 'D' for German. 
+    if ( name.length() == 1 )
+        return 'D';
+    else if ( isalpha(name[1]) )
+        return 'L';
+    else if ( isdigit(name[1]) )
+        return 'S';
+    else
+        return 'D';
+}
+
+// TODO
+bool MusicNote::CheckNotationName() { 
+
+    return false;
+}
+
+int MusicNote::SciName2Index(string name) {
 // Convert Scientific Name to Index on a standard keyboard. 
     int note_index, dis, postfix, n_name, n_octave;
     
@@ -122,7 +157,7 @@ int Note::SciName2Index(string name) {
     return note_index;
 }
 
-int Note::Latin2Index(string name) {
+int MusicNote::Latin2Index(string name) {
 // Convert Latin Name to Index on a standard keyboard.
     int note_index, dis, postfix, name_hash, n_octave;
     
@@ -196,7 +231,7 @@ int Note::Latin2Index(string name) {
     return note_index;
 }
 
-int Note::Helm2Index(string name) {
+int MusicNote::Helm2Index(string name) {
 // Convert Helmholtz pitch notation to its Index.
     int note_index, dis, postfix, n_octave;
     
@@ -261,48 +296,44 @@ int Note::Helm2Index(string name) {
 }
 
 /*
-string Note::Sci2Latin(string name) {
+string MusicNote::Sci2Latin(string name) {
 // Convert Scientific name to Latin Name.
     int note_idx = Note::SciName2Index(name);
     return "";
 }
 
-string Note::Latin2Sci(string name) {
+string MusicNote::Latin2Sci(string name) {
 // Convert Latin name to Scientific name.
     return "";
 }
 
-string Note::Sci2Helm(string name) {
+string MusicNote::Sci2Helm(string name) {
 // Convert Scientific name to Helmholtz.
     return "";
 }
 
-string Note::Helm2Sci(string name) {
+string MusicNote::Helm2Sci(string name) {
 // Convert Helmholtz notation to Scientific notation.
     return "";
 }
 
-string Note::Helm2Latin(string name) {
+string MusicNote::Helm2Latin(string name) {
 // Convert Helmholtz notation to Latin name.
     return "";
 }
 
-string Note::Latin2Helm(string name) {
+string MusicNote::Latin2Helm(string name) {
 // Convert Latin name to Helmholtz.
     return "";
 }
 */
 
-bool Note::isNote() { return true; }
-bool Note::isBreak() { return false; }
-bool Note::isNoteGroup() { return false; }
+bool MusicNote::isNote() { return true; }
+bool MusicNote::isBlank() { return false; }
+bool MusicNote::isRest() { return false; }
+bool MusicNote::isNoteGroup() { return false; }
 
-void Note::PrintNote() {
-    cout << "(" << Name << ", " << Duration[0] 
-         << "/" << Duration[1] << ")";
-}
-
-Note::Note(string name, string duration) {
+MusicNote::MusicNote(string name, string duration) {
 // Init    
     int notation_sys;
     
@@ -326,13 +357,15 @@ Note::Note(string name, string duration) {
     }
     
     if ( !CheckDuration(duration) ) {
+        cout << "Wrong format of Duration: " << duration << endl;
+        cout << "Using default 1/4" << endl;
         Duration[0] = 1;
         Duration[1] = 4;
     }
 }
 
-Note::Note(string name) {
-// Init    
+MusicNote::MusicNote(string name) {
+// Init
     int notation_sys;
     
     // Get notation system
@@ -356,91 +389,58 @@ Note::Note(string name) {
     
     Duration[0] = 1;
     Duration[1] = 4;
+    
 }
 
-/* Break class */
 
-bool Break::CheckDuration(string duration) {
-// Check Duration validity; if valid, write to class.
-    
-    size_t found;
-    //int num, denom;
-    bool valid = false;
-    // Eliminate white spaces
-    while ( (found = duration.find(" ")) != string::npos ) {
-        duration.erase(duration.begin() + found);
-    }
-    
-    if ( isdigit(duration[0]) && isdigit(duration[2]) 
-            && (duration[1] == '/') ) {
-        valid = true;
-        
-        Duration[0] = duration[0] - '0';
-        Duration[1] = duration[2] - '0';
-    }
-    else if ( duration.length() == 1 && isdigit(duration[0]) ) {
-        Duration[0] = 1;
-        Duration[1] = duration[0];
-    }
-    
-    return valid;
-}
 
-bool Break::isNote() { return false; }
-bool Break::isBreak() { return true; }
-bool Break::isNoteGroup() { return false; }
+/* Rest and Blank class */
 
-void Break::PrintNote() {
-
-    string name;
-    if ( ShowSymbol )
-        name = "rest";
-    else
-        name = "blank";
-    
-    cout << "(" << name << ", " << Duration[0] 
-         << "/" << Duration[1] << ")";
-}
-
-/*
-Break::Break(string duration, bool show) {
-    if ( !CheckDuration(duration) ) {
-    // set as 1/1 by default
-        ShowSymbol = show;
-        Duration[0] = 1;
-        Duration[1] = 1;
-    }
-}
-*/
+bool Rest::isNote() { return false; }
+bool Rest::isBlank() { return false; }
+bool Rest::isRest() { return true; }
+bool Rest::isNoteGroup() { return false; }
 
 Rest::Rest(string duration) {
-    ShowSymbol = true;
+    Name = "rest";
     if ( !CheckDuration(duration) ) {
-    // set as 1/4 by default
+        cout << "Wrong format of Duration: " << duration << endl;
+        cout << "Using default 1/4" << endl;
+        
         Duration[0] = 1;
         Duration[1] = 4;
     }
+    NoteIndex = 0;
 }
 
 Rest::Rest() {
-    ShowSymbol = true;
+    Name = "rest";
     Duration[0] = 1;
     Duration[1] = 4;
+    NoteIndex = 0;
 }
 
+bool Blank::isNote() { return false; }
+bool Blank::isBlank() { return true; }
+bool Blank::isRest() { return false; }
+bool Blank::isNoteGroup() { return false; }
+
 Blank::Blank(string duration) {
-    ShowSymbol = false;
+    Name = "blank";
     if ( !CheckDuration(duration) ) {
-    // set as 1/1 by default
-        Duration[0] = 1;
-        Duration[1] = 1;
+        cout << "Wrong format of Duration: " << duration << endl;
+        cout << "Using default 4/4" << endl;
+        Duration[0] = 4;
+        Duration[1] = 4;
     }
+    NoteIndex = -1;
 }
 
 Blank::Blank() {
-    ShowSymbol = false;
-    Duration[0] = 1;
-    Duration[1] = 1;
+    Name = "blank";
+    Duration[0] = 4;
+    Duration[1] = 4;
+    NoteIndex = -1;
 }
 
 /* NoteGroup class */
@@ -453,6 +453,18 @@ void NoteGroup::DelLastNote() {
     if ( !NoteList.empty() )
         NoteList.pop_back();
 }
+
+Note NoteGroup::PopLastNote() {
+    Note last_note;
+    if ( !NoteList.empty() ) {
+        last_note = NoteList.back();
+        NoteList.pop_back();
+    }
+    else {
+        cerr << "Note list is empty!" << endl;
+    }
+    return last_note;
+}
         
 void NoteGroup::ClearNotes() {
     while ( !NoteList.empty() )
@@ -460,13 +472,14 @@ void NoteGroup::ClearNotes() {
 }
         
 Note NoteGroup::GetFirstNote() {
+    Note first_note;
     if ( !NoteList.empty() ) {
-        return NoteList.front();
+        first_note = NoteList.front();
     }
     else {
         cerr << "Note list is empty!" << endl;
-        return Note("A4","");
     }
+    return first_note;
 }
         
 vector<Note> NoteGroup::GetNoteList() { 
@@ -478,30 +491,60 @@ vector<Note> NoteGroup::GetNoteList() {
         return vector<Note> () ;
     }
 }
-        
-bool NoteGroup::isNote() { return false; }
-bool NoteGroup::isBreak() { return false; }
-bool NoteGroup::isNoteGroup() { return true; }
 
-void NoteGroup::PrintNote() {
+bool NoteGroup::isNote() { return false; }
+bool NoteGroup::isBlank() { return false; }
+bool NoteGroup::isRest() { return false; }
+bool NoteGroup::isNoteGroup() { return true; }
+int NoteGroup::NbrNotes() { return NoteList.size(); }
+
+string NoteGroup::PrintNoteGroup() {
+    string output = "";
     if ( !NoteList.empty() ) {
-        cout << "[ ";
+        output += "[ ";
         for ( vector<Note>::iterator it = NoteList.begin();
               it != NoteList.end(); it++ ) {
-            it->PrintNote();
-            cout << " ";
+            output += it->PrintNote();
+            output += " ";
         }
-        cout << "]";
+        output += "]";
     }
     else {
-        cout << "[EmptyGroup]";
+        output += "[EmptyGroup]";
     }
+    return output;
 }
-   
-int NoteGroup::NbrNotes() {
-    return NoteList.size();
+       
+NoteGroup::NoteGroup(MusicNote note1, MusicNote note2) {
+    Name = "Group2Notes";
+    
+    Duration[0] = get<0>(note1.GetDuration());
+    Duration[1] = get<1>(note1.GetDuration());
+    NoteIndex = -2;
+    AddNote(note1);
+    AddNote(note2);
 }
-        
-NoteGroup::NoteGroup() {}
+
+NoteGroup::NoteGroup(MusicNote note1, MusicNote note2, MusicNote note3) {
+    Name = "Group3Notes";
+    Duration[0] = get<0>(note1.GetDuration());
+    Duration[1] = get<1>(note1.GetDuration());
+    NoteIndex = -2;
+    AddNote(note1);
+    AddNote(note2);
+    AddNote(note3);
+}
+
+NoteGroup::NoteGroup(MusicNote note1, MusicNote note2, 
+                     MusicNote note3, MusicNote note4) {
+    Name = "Group4Notes";
+    Duration[0] = get<0>(note1.GetDuration());
+    Duration[1] = get<1>(note1.GetDuration());
+    NoteIndex = -2;
+    AddNote(note1);
+    AddNote(note2);
+    AddNote(note3);
+    AddNote(note4);
+}
 
 

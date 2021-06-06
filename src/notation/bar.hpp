@@ -27,13 +27,13 @@ using namespace std;
 
 #if (defined(__cplusplus) && (__cplusplus >= 201703) )
 
-#include <variant>
-#define CPP_VARIANT variant
+  #include <variant>
+  #define CPP_VARIANT variant
 
 #else
 
-#include <boost/variant.hpp>
-#define CPP_VARIANT boost::variant
+  #include <boost/variant.hpp>
+  #define CPP_VARIANT boost::variant
 
 #endif
 
@@ -65,7 +65,7 @@ class Bar {
     int Offset[2];
     
     // Content
-    vector<CPP_VARIANT<Note, NoteGroup, Break>> ContentFlow;
+    vector<Note> ContentFlow;
     
     // TODO Leave Space for more properties
     // Key properties
@@ -74,21 +74,19 @@ class Bar {
     
     
     
-    
+    bool CheckMetre(string metre);
     bool AddNote(Note new_note);
-    bool AddNote(Break new_note);
-    bool AddNote(NoteGroup new_note);
     bool PopNote();
     
-    // print info, not PDF
+    // print bar info, not PDF
     void PrintBar();
     
     int Clef2Number(string clef);
     int Scale2Index(string scale);
     int GetRelativeScaleIndex(int s_idx);
     
-    vector<CPP_VARIANT<Note, NoteGroup, Break>> Modulation(int n_semi_tone);
-    vector<CPP_VARIANT<Note, NoteGroup, Break>> Modulation(string target_tone);
+    vector<Note> Modulation(int n_semi_tone);
+    vector<Note> Modulation(string target_tone);
     
     
     
@@ -105,8 +103,8 @@ class Bar {
     Bar();
     Bar(string clef);
     Bar(string clef, string scale);
-    Bar(string clef, string meter, string scale);
-    Bar(string clef, int centre, string meter, string scale);
+    Bar(string clef, string metre, string scale);
+    Bar(string clef, int centre, string metre, string scale);
 
 };
 
