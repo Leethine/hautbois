@@ -48,43 +48,15 @@ bool Bar::CheckMetre(string metre) {
     return valid;
 }
 
-bool Bar::AddNote(MusicNote new_note) {
-    Note * p = new_note.clone();
+bool Bar::AddNote(Note new_note) {
     ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
-    // add check function later
-    return true;
-}
-
-bool Bar::AddNote(Rest new_note) {
-    Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
-    // add check function later
-    return true;
-}
-
-bool Bar::AddNote(Blank new_note) {
-    Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
-    // add check function later
-    return true;
-}
-
-bool Bar::AddNote(NoteGroup new_note) {
-    Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
     // add check function later
     return true;
 }
 
 bool Bar::PopNote() {
-    if ( ContentFlow.empty() ) {
+    if ( ContentFlow.empty() ) 
         ContentFlow.pop_back();
-        ContentFlowPointer.pop_back();
-    }
     
     return true;
 }
@@ -108,35 +80,33 @@ void Bar::PrintBar() {
     
     cout << "Metre: " << Metre[0] << "/" << Metre[1] << endl;
     
-    if ( !ContentFlowPointer.empty() ) {
-        for ( int i = 0; i < ContentFlowPointer.size(); i++ ) {
-            if (ContentFlowPointer[0] != NULL) {
-                switch(ContentFlowPointer[i]->GetNoteType()) {
-                case note_group_:
-                    cout << ContentFlowPointer[i]->PrintNoteGroup() << " ";
-                    break;
-                case music_note_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
-                    break;
-                case blank_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
-                    break;
-                case rest_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
-                    break;
-                default:
-                    cout << "Unknown" << " ";
-                    break;
-                }
+    if ( !ContentFlow.empty() ) {
+        for ( vector<Note>::iterator
+              it = ContentFlow.begin();
+              it != ContentFlow.end(); it++ ) {
+            switch(it->GetNoteType()) {
+            case note_group_:
+                cout << it->PrintNoteGroup() << " ";
+                break;
+            case music_note_:
+                cout << it->PrintNote() << " ";
+                break;
+            case blank_:
+                cout << it->PrintNote() << " ";
+                break;
+            case rest_:
+                cout << it->PrintNote() << " ";
+                break;
+            default:
+                cout << "Unknown" << " ";
+                break;
             }
-            else { cout << "NULL "; }
         }
         cout << endl;
     }
     else {
         cout << "Empty Bar." << endl;
     }
-    
 }
 
 
@@ -337,13 +307,5 @@ Bar::Bar(string clef, int centre, string metre, string scale) {
     if ( !CheckMetre(metre) ) {
         Metre[0] = 4;
         Metre[1] = 4;
-    }
-}
-
-Bar::~Bar() {
-    if ( !ContentFlowPointer.empty() ) {
-        for ( int i; i < ContentFlowPointer.size(); i++ ) {
-             delete ContentFlowPointer[i];
-        }
     }
 }

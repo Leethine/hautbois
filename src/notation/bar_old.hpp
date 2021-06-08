@@ -66,7 +66,6 @@ class Bar {
     
     // Content
     vector<Note> ContentFlow;
-    vector<Note*> ContentFlowPointer;
     
     // TODO Leave Space for more properties
     // Key properties
@@ -76,10 +75,7 @@ class Bar {
     
     
     bool CheckMetre(string metre);
-    bool AddNote(MusicNote new_note);
-    bool AddNote(Rest new_note);
-    bool AddNote(Blank new_note);
-    bool AddNote(NoteGroup new_note);
+    bool AddNote(Note new_note);
     bool PopNote();
     
     // print bar info, not PDF
@@ -109,6 +105,6 @@ class Bar {
     Bar(string clef, string scale);
     Bar(string clef, string metre, string scale);
     Bar(string clef, int centre, string metre, string scale);
-    ~Bar();
+
 };
 

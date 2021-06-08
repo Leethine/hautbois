@@ -38,7 +38,7 @@ class Note {
     bool CheckDuration(string duration);
     
   public:
-    virtual string PrintNote();
+    string PrintNote();
     
     virtual string PrintNoteGroup();
     // Informative functions
@@ -51,8 +51,6 @@ class Note {
     string GetName();
     int GetNoteIndex();
     tuple<int,int> GetDuration();
-    
-    virtual Note* clone() const;
     
     Note();
     virtual ~Note();
@@ -89,15 +87,12 @@ class MusicNote: public Note {
     
     
     // Informative functions
-    string PrintNote();
     bool isNote();
     bool isBlank();
     bool isRest();
     bool isNoteGroup();
     
     int GetNotationSys();
-    
-    Note* clone() const;
     
     MusicNote(string name);
     MusicNote(string name, string duration);
@@ -109,13 +104,10 @@ class Rest: public Note {
   
   public:
     // Informative functions
-    string PrintNote();
     bool isNote();
     bool isBlank();
     bool isRest();
     bool isNoteGroup();
-    
-    Note* clone() const;
     
     Rest();
     Rest(string duration);
@@ -126,13 +118,10 @@ class Blank: public Note {
   
   public:
     // Informative functions
-    string PrintNote();
     bool isNote();
     bool isBlank();
     bool isRest();
     bool isNoteGroup();
-    
-    Note* clone() const;
     
     Blank();
     Blank(string duration);
@@ -160,8 +149,6 @@ class NoteGroup: public Note {
     int NbrNotes();
     
     string PrintNoteGroup() override;
-    
-    Note* clone() const;
     
     NoteGroup(MusicNote note1, MusicNote note2);
     NoteGroup(MusicNote note1, MusicNote note2, MusicNote note3);

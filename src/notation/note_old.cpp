@@ -78,8 +78,6 @@ tuple<int,int> Note::GetDuration() {
 
 string Note::PrintNoteGroup() { return "PrintGroupBasicNoteClass"; }
 
-Note* Note::clone() const { return NULL; }
-
 Note::Note() { };
 Note::~Note(void) { };
 
@@ -330,19 +328,10 @@ string MusicNote::Latin2Helm(string name) {
 }
 */
 
-string MusicNote::PrintNote() {
-    string output;
-    output = "(" + Name + ", " + string(1, Duration[0] + '0')
-                 + "/" + string(1, Duration[1] + '0') + ")";
-    return output;
-}
-
 bool MusicNote::isNote() { return true; }
 bool MusicNote::isBlank() { return false; }
 bool MusicNote::isRest() { return false; }
 bool MusicNote::isNoteGroup() { return false; }
-
-Note* MusicNote::clone() const { return new MusicNote(*this); }
 
 MusicNote::MusicNote(string name, string duration) {
 // Init    
@@ -408,18 +397,11 @@ MusicNote::MusicNote(string name) {
 
 
 /* Rest and Blank class */
-string Rest::PrintNote() {
-    string output;
-    output = "(" + Name + ", " + string(1, Duration[0] + '0')
-                 + "/" + string(1, Duration[1] + '0') + ")";
-    return output;
-}
+
 bool Rest::isNote() { return false; }
 bool Rest::isBlank() { return false; }
 bool Rest::isRest() { return true; }
 bool Rest::isNoteGroup() { return false; }
-
-Note* Rest::clone() const { return new Rest(*this); }
 
 Rest::Rest(string duration) {
     Name = "rest";
@@ -444,19 +426,10 @@ Rest::Rest() {
     NoteIndex = 0;
 }
 
-string Blank::PrintNote() {
-    string output;
-    output = "(" + Name + ", " + string(1, Duration[0] + '0')
-                 + "/" + string(1, Duration[1] + '0') + ")";
-    return output;
-}
-
 bool Blank::isNote() { return false; }
 bool Blank::isBlank() { return true; }
 bool Blank::isRest() { return false; }
 bool Blank::isNoteGroup() { return false; }
-
-Note* Blank::clone() const { return new Blank(*this); }
 
 Blank::Blank(string duration) {
     Name = "blank";
@@ -538,13 +511,12 @@ int NoteGroup::NbrNotes() { return NoteList.size(); }
 string NoteGroup::PrintNoteGroup() {
     string output = "";
     if ( !NoteList.empty() ) {
-        output += "[";
+        output += "[ ";
         for ( vector<Note>::iterator it = NoteList.begin();
               it != NoteList.end(); it++ ) {
             output += it->PrintNote();
             output += " ";
         }
-        output = output.substr(0,output.length()-1);
         output += "]";
     }
     else {
@@ -552,8 +524,6 @@ string NoteGroup::PrintNoteGroup() {
     }
     return output;
 }
-
-Note* NoteGroup::clone() const { return new NoteGroup(*this); }
        
 NoteGroup::NoteGroup(MusicNote note1, MusicNote note2) {
     Name = "Group2Notes";
