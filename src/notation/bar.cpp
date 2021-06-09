@@ -50,32 +50,28 @@ bool Bar::CheckMetre(string metre) {
 
 bool Bar::AddNote(MusicNote new_note) {
     Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
+    ContentFlow.push_back(p);
     // add check function later
     return true;
 }
 
 bool Bar::AddNote(Rest new_note) {
     Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
+    ContentFlow.push_back(p);
     // add check function later
     return true;
 }
 
 bool Bar::AddNote(Blank new_note) {
     Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
+    ContentFlow.push_back(p);
     // add check function later
     return true;
 }
 
 bool Bar::AddNote(NoteGroup new_note) {
     Note * p = new_note.clone();
-    ContentFlow.push_back(new_note);
-    ContentFlowPointer.push_back(p);
+    ContentFlow.push_back(p);
     // add check function later
     return true;
 }
@@ -83,7 +79,6 @@ bool Bar::AddNote(NoteGroup new_note) {
 bool Bar::PopNote() {
     if ( ContentFlow.empty() ) {
         ContentFlow.pop_back();
-        ContentFlowPointer.pop_back();
     }
     
     return true;
@@ -93,36 +88,26 @@ void Bar::PrintBar() {
     cout << "Clef: " << Clef[0] << "-clef";
     cout << ", Centered at line No." << ClefCentre << endl;
     cout << "Scale: ";
-    if ( Scale.length() == 3 )
-        cout << Scale[0] << Scale[1];
-    else if ( Scale.length() == 2 && Scale[1] != 'm' )
-        cout << Scale[0] << Scale[1];
-    else
-        cout << Scale[0];
-        
-    if ( Scale.back() == 'm' )
-        cout << " Minor";
-    else
-        cout << " Minor";
-    cout << endl;
+    
+    cout << Scale << " " << Mode << endl;
     
     cout << "Metre: " << Metre[0] << "/" << Metre[1] << endl;
     
-    if ( !ContentFlowPointer.empty() ) {
-        for ( int i = 0; i < ContentFlowPointer.size(); i++ ) {
-            if (ContentFlowPointer[0] != NULL) {
-                switch(ContentFlowPointer[i]->GetNoteType()) {
+    if ( !ContentFlow.empty() ) {
+        for ( int i = 0; i < ContentFlow.size(); i++ ) {
+            if (ContentFlow[0] != NULL) {
+                switch(ContentFlow[i]->GetNoteType()) {
                 case note_group_:
-                    cout << ContentFlowPointer[i]->PrintNoteGroup() << " ";
+                    cout << ContentFlow[i]->PrintNoteGroup() << " ";
                     break;
                 case music_note_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
+                    cout << ContentFlow[i]->PrintNote() << " ";
                     break;
                 case blank_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
+                    cout << ContentFlow[i]->PrintNote() << " ";
                     break;
                 case rest_:
-                    cout << ContentFlowPointer[i]->PrintNote() << " ";
+                    cout << ContentFlow[i]->PrintNote() << " ";
                     break;
                 default:
                     cout << "Unknown" << " ";
@@ -139,106 +124,6 @@ void Bar::PrintBar() {
     
 }
 
-
-/*
-void Bar::PrintBar() {
-    cout << "Clef: " << Clef[0] << "-clef";
-    cout << ", Centered at line No." << ClefCentre << endl;
-    cout << "Scale: ";
-    if ( Scale.length() == 3 )
-        cout << Scale[0] << Scale[1];
-    else if ( Scale.length() == 2 && Scale[1] != 'm' )
-        cout << Scale[0] << Scale[1];
-    else
-        cout << Scale[0];
-        
-    if ( Scale.back() == 'm' )
-        cout << " Minor";
-    else
-        cout << " Minor";
-    cout << endl;
-    
-    cout << "Metre: " << Metre[0] << "/" << Metre[1] << endl;
-    
-    //string temp;
-    //vector<Note> tempnotelist;
-    NoteGroup * tempg; // (MusicNote("A4"),MusicNote("A4"));
-    if ( !ContentFlow.empty() ) {
-        for ( vector<Note>::iterator
-              it = ContentFlow.begin();
-              it != ContentFlow.end(); it++ ) {
-            //temp = "";
-            switch(it->GetNoteType()) {
-            case note_group_:
-                //temp = it->PrintNoteGroup();
-                // No idea why it doesn't work, whatever...
-                tempg = dynamic_cast<NoteGroup *> (*it);
-                cout << tempg->PrintNoteGroup() << " ";
-                break;
-            case music_note_:
-                cout << it->PrintNote() << " ";
-                break;
-            case blank_:
-                cout << it->PrintNote() << " ";
-                break;
-            case rest_:
-                cout << it->PrintNote() << " ";
-                break;
-            default:
-                cout << "Unknown" << " ";
-                break;
-            }
-        }
-        cout << endl;
-    }
-    else {
-        cout << "Empty Bar." << endl;
-    }
-}
-*/
-/*
-void Bar::PrintBar() {
-    cout << "Clef: " << Clef[0] << "-clef";
-    cout << ", Centered at line No." << ClefCentre << endl;
-    cout << "Scale: ";
-    if ( Scale.length() == 3 )
-        cout << Scale[0] << Scale[1];
-    else if ( Scale.length() == 2 && Scale[1] != 'm' )
-        cout << Scale[0] << Scale[1];
-    else
-        cout << Scale[0];
-        
-    if ( Scale.back() == 'm' )
-        cout << " Minor";
-    else
-        cout << " Minor";
-    cout << endl;
-    
-    cout << "Metre: " << Metre[0] << "/" << Metre[1] << endl;
-    
-    if ( !ContentFlow.empty() ) {
-        for ( int i=0; i < ContentFlow.size(); i++ ) {
-            switch(ContentFlow.at(i).GetNoteType()) {
-            case note_group_:
-                //temp = it->PrintNoteGroup();
-                // No idea why it doesn't work, whatever...
-                NoteGroup & temp_ng = dynamic_cast<NoteGroup &> (ContentFlow.at(i));
-                cout << temp_ng.PrintNoteGroup() << " ";
-                break;
-                
-            default:
-                cout << "Unknown" << " ";
-                break;
-            }
-        }
-        cout << endl;
-    }
-    else {
-        cout << "Empty Bar." << endl;
-    }
-}
-*/
-
 int Bar::Clef2Number(string clef) {
     string newclef = boost::to_upper_copy<string>(clef);
     // support latin name later
@@ -252,7 +137,56 @@ int Bar::Clef2Number(string clef) {
         return -1;
 }
 
-int Bar::Scale2Index(string scale) { return 0; }
+bool Bar::CheckScale(string scale) {
+    // Verify Scale format in Scientific notation: e.g. C, Gm
+    bool valid = true;
+    //TODO Refinement, complete format check
+    if ( scale.length() == 3 )
+        Scale = scale.substr(0,2);
+    else if ( scale.length() == 2 && scale[1] != 'm' && scale[1] != 'M' )
+        Scale = scale;
+    else if ( scale.length() == 2 )
+        Scale = scale.substr(0,1);
+    else if ( scale.length() == 1 )
+        Scale = scale;
+    else
+        valid = false;
+    
+    if ( scale.back() == 'm' )
+        Mode = "Minor";
+    else
+        Mode = "Major";
+    
+    return valid;
+}
+
+int Bar::Scale2Index(string scale) { 
+// Please refer to the svg file, the order is:
+// C ==> F# : 0 ==> +12
+// C ==> Gb : 0 ==> -12
+    string keys1 = "C G D A E B F#C#";
+    string keys2 = "C F BbEbAbDbGb";
+    string keys3 = "C E#A#D#G#";
+    int sidx;
+    // concatenate a whitespace for uniformed searching size
+    if ( scale.length() == 1 )
+        scale += " ";
+    
+    size_t found1 = keys1.find(scale);
+    size_t found2 = keys2.find(scale);
+    size_t found3 = keys3.find(scale);
+    if ( found1 != string::npos )
+        sidx = found1 / 2;
+    else if ( found2 != string::npos )
+        sidx = - found2 / 2;
+    else if ( found3 != string::npos )
+        sidx = - found3 / 2;
+    else
+        sidx = -1000;
+    
+    return sidx;
+}
+
 int Bar::GetRelativeScaleIndex(int s_idx) { return 0; };
 
 vector<Note> Bar::Modulation(int n_semi_tone) {};
@@ -282,6 +216,7 @@ Bar::Bar(string clef) {
         ClefNumber = 5;
     }
     Scale = "C";
+    Mode = "Major";
     ScaleIndex = Scale2Index(Scale);
     Metre[0] = 4;
     Metre[1] = 4; 
@@ -297,7 +232,13 @@ Bar::Bar(string clef, string scale) {
         Clef = "G-clef";
         ClefNumber = 5;
     }
-    
+    if ( !CheckScale(scale) ) {
+        cout << "Wrong format: " << scale 
+             << " ...using default C Major scale." << endl;
+        Scale = "C";
+        Mode = "Major";
+    }
+        
     ScaleIndex = Scale2Index(Scale);
     Metre[0] = 4;
     Metre[1] = 4; 
@@ -313,6 +254,13 @@ Bar::Bar(string clef, string metre, string scale) {
         cout << "Wrong format: " << clef << " ...using default" << endl;
         Clef = "G-clef";
         ClefNumber = 5;
+    }
+    
+    if ( !CheckScale(scale) ) {
+        cout << "Wrong format: " << scale 
+             << " ...using default C Major scale." << endl;
+        Scale = "C";
+        Mode = "Major";
     }
     
     ScaleIndex = Scale2Index(Scale);
@@ -333,6 +281,13 @@ Bar::Bar(string clef, int centre, string metre, string scale) {
         ClefNumber = 5;
     }
     
+    if ( !CheckScale(scale) ) {
+        cout << "Wrong format: " << scale 
+             << " ...using default C Major scale." << endl;
+        Scale = "C";
+        Mode = "Major";
+    }
+    
     ScaleIndex = Scale2Index(Scale);
     if ( !CheckMetre(metre) ) {
         Metre[0] = 4;
@@ -341,9 +296,10 @@ Bar::Bar(string clef, int centre, string metre, string scale) {
 }
 
 Bar::~Bar() {
-    if ( !ContentFlowPointer.empty() ) {
-        for ( int i; i < ContentFlowPointer.size(); i++ ) {
-             delete ContentFlowPointer[i];
+    if ( !ContentFlow.empty() ) {
+        for ( int i; i < ContentFlow.size(); i++ ) {
+             // release memory of each note
+             delete ContentFlow[i];
         }
     }
 }

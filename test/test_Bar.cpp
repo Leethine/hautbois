@@ -20,10 +20,16 @@ int main()
     bar1.AddNote(Rest("1/4"));
     bar1.AddNote(n4);
     bar1.PrintBar();
-    //cout << n3.PrintNoteGroup() << endl;
     
-    //Note * n4 = n3.clone();
-    //cout << n4->PrintNoteGroup() << endl;
+    Bar bar2 ("G-clef", "G#");
+    Bar bar3 ("G-clef", "D#");
+    Bar bar4 ("G-clef", "D");
+    Bar bar5 ("G-clef", "F");
+
+    cout << "Scale Index: " << bar2.Scale2Index(bar2.Scale) << endl; 
+    cout << "Scale Index: " << bar3.Scale2Index(bar3.Scale) << endl; 
+    cout << "Scale Index: " << bar4.Scale2Index(bar4.Scale) << endl; 
+    cout << "Scale Index: " << bar5.Scale2Index(bar5.Scale) << endl; 
     return 0;
 
 }

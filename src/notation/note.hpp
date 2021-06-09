@@ -68,6 +68,7 @@ class MusicNote: public Note {
     int DetectNotation(string name);
     bool CheckNotationName();
     int SciName2Index(string name);
+    int SciName2Index_alt(string name);
     int Latin2Index(string name);
     int Helm2Index(string name);
     /*
@@ -94,8 +95,12 @@ class MusicNote: public Note {
     bool isBlank();
     bool isRest();
     bool isNoteGroup();
-    
     int GetNotationSys();
+    
+    // Utility functions
+    string Index2SciName(int idx);
+    string Index2SciName_alt(int idx);
+    
     
     Note* clone() const;
     

@@ -50,6 +50,7 @@ class Bar {
     int ClefCentre;
     
     string Scale; // "C" "Am" "Ebm" etc
+    string Mode;
     string RelativeScale;
     // Ref: A. Danhauser, Théorie de la Musique Abrégé (Lesson.4-10)
     int ScaleIndex;    
@@ -57,7 +58,7 @@ class Bar {
     
     int Metre[2];
     string Speed;
-    string SpeedChangeFunc; // = "CONSTANT";
+    string SpeedChangeFunc; // e.g. = "CONSTANT", "Linear", etc.
     double SpeedBegin; // 1/4 = ?
     double SpeedEnd;   // 1/4 = ?
     
@@ -65,8 +66,7 @@ class Bar {
     int Offset[2];
     
     // Content
-    vector<Note> ContentFlow;
-    vector<Note*> ContentFlowPointer;
+    vector<Note*> ContentFlow;
     
     // TODO Leave Space for more properties
     // Key properties
@@ -86,6 +86,7 @@ class Bar {
     void PrintBar();
     
     int Clef2Number(string clef);
+    bool CheckScale(string scale);
     int Scale2Index(string scale);
     int GetRelativeScaleIndex(int s_idx);
     

@@ -88,9 +88,10 @@ int MusicNote::DetectNotation(string name) {
 // Returns 'S' for Scientific; 'L' for latin, 'D' for German. 
     if ( name.length() == 1 )
         return 'D';
-    else if ( isalpha(name[1]) )
+    else if ( isalpha(name[1]) && name[1] != 'b' )
         return 'L';
-    else if ( isdigit(name[1]) )
+    else if ( isalpha(name[0]) && (isdigit(name.back()) || 
+               name.back() == '#' || name.back() == 'b' ))
         return 'S';
     else
         return 'D';
@@ -136,7 +137,7 @@ int MusicNote::SciName2Index(string name) {
         dis = 11;
         break;
     default:
-        dis = 0;
+        dis = -500;
         break;
     }
     
@@ -157,6 +158,236 @@ int MusicNote::SciName2Index(string name) {
     note_index = dis + 4 + n_octave * 12 + postfix;
     
     return note_index;
+}
+
+int MusicNote::SciName2Index_alt(string name) {
+// Convert Scientific Name to Index on a standard keyboard. 
+// Alternative format e.g. "A#2". 
+    int note_index, dis, postfix, n_name, n_octave;
+    // get octave index and note name
+    n_octave = name[name.length()-1] - '1';
+    n_name = name[0];
+    // calculate the distance from current note to C
+    switch(toupper(n_name)) {
+    case 'C':
+        dis = 0;
+        break;
+    case 'D':
+        dis = 2;
+        break;
+    case 'E':
+        dis = 4;
+        break;
+    case 'F':
+        dis = 5;
+        break;
+    case 'G':
+        dis = 7;
+        break;
+    case 'A':
+        dis = 9;
+        break;
+    case 'B':
+        dis = 11;
+        break;
+    default:
+        dis = -500;
+        break;
+    }
+    
+    // get sharp or flat sign
+    if ( name.length() > 2 ) {
+        switch(name[1]) {
+        case '#':
+            postfix = +1;
+            break;
+        case 'b':
+            postfix = -1;
+            break;
+        default:
+            postfix = 0;
+            break;
+        }
+    }
+    else { postfix = 0; }
+    // Calc the index = distance + 4 + octaves + # or b
+    // the reason of +4 is dis(C-A) = 3
+    note_index = dis + 4 + n_octave * 12 + postfix;
+    return note_index;
+}
+
+
+string MusicNote::Index2SciName(int idx) {
+// Convert index to scientific notation name
+    
+    if ( idx < 1 || idx > 108 ) {
+        cout << "Index must be within range [1,108]" << endl;
+        return "";
+    }
+    
+    idx = idx - 1;
+    char note_name[3];
+    note_name[2] = ' ';
+    note_name[0] = idx % 12 + 1;
+    
+    char temp = note_name[0];
+    switch(temp) {
+    // do nothing for white keys
+    case 1:
+        note_name[0] = 'A';
+        break;
+    case 3:
+        note_name[0] = 'B';
+        break;
+    case 4:
+        note_name[0] = 'C';
+        break;
+    case 6:
+        note_name[0] = 'D';
+        break;
+    case 8:
+        note_name[0] = 'E';
+        break;
+    case 9:
+        note_name[0] = 'F';
+        break;
+    case 11:
+        note_name[0] = 'G';
+        break;
+    default:
+        note_name[2] = '#';
+        temp -= 1;
+        break;
+    }
+    
+    switch(temp) {
+    // do nothing for white keys
+    case 1:
+        note_name[0] = 'A';
+        break;
+    case 3:
+        note_name[0] = 'B';
+        break;
+    case 4:
+        note_name[0] = 'C';
+        break;
+    case 6:
+        note_name[0] = 'D';
+        break;
+    case 8:
+        note_name[0] = 'E';
+        break;
+    case 9:
+        note_name[0] = 'F';
+        break;
+    case 11:
+        note_name[0] = 'G';
+        break;
+    default:
+        note_name[2] = ' ';
+        note_name[0] = ' ';
+        break;
+    }
+    
+    note_name[1] = (idx + 9) / 12;
+    if ( note_name[1] < 0 ) 
+        note_name[1] = 0;
+    
+    note_name[1] += '0';
+    
+    if ( note_name[2] == ' ' )
+        return string(note_name, 2);
+    else
+        return string(note_name, 3);
+}
+
+string MusicNote::Index2SciName_alt(int idx) {
+// Convert index to scientific notation name
+    
+    if ( idx < 1 || idx > 108 ) {
+        cout << "Index must be within range [1,108]" << endl;
+        return "";
+    }
+    
+    idx = idx - 1;
+    char note_name[3];
+    note_name[2] = ' ';
+    note_name[0] = idx % 12 + 1;
+    
+    char temp = note_name[0];
+    switch(temp) {
+    // do nothing for white keys
+    case 1:
+        note_name[0] = 'A';
+        break;
+    case 3:
+        note_name[0] = 'B';
+        break;
+    case 4:
+        note_name[0] = 'C';
+        break;
+    case 6:
+        note_name[0] = 'D';
+        break;
+    case 8:
+        note_name[0] = 'E';
+        break;
+    case 9:
+        note_name[0] = 'F';
+        break;
+    case 11:
+        note_name[0] = 'G';
+        break;
+    default:
+        note_name[2] = '#';
+        temp -= 1;
+        break;
+    }
+    
+    switch(temp) {
+    // do nothing for white keys
+    case 1:
+        note_name[0] = 'A';
+        break;
+    case 3:
+        note_name[0] = 'B';
+        break;
+    case 4:
+        note_name[0] = 'C';
+        break;
+    case 6:
+        note_name[0] = 'D';
+        break;
+    case 8:
+        note_name[0] = 'E';
+        break;
+    case 9:
+        note_name[0] = 'F';
+        break;
+    case 11:
+        note_name[0] = 'G';
+        break;
+    default:
+        note_name[2] = ' ';
+        note_name[0] = ' ';
+        break;
+    }
+    
+    note_name[1] = (idx + 9) / 12;
+    if ( note_name[1] < 0 ) 
+        note_name[1] = 0;
+    
+    note_name[1] += '0';
+    
+    if ( note_name[2] == ' ' ) {
+        return string(note_name, 2);
+    }
+    else {
+        temp = note_name[2];
+        note_name[2] = note_name[1];
+        note_name[1] = temp;
+        return string(note_name, 3);
+    }
 }
 
 int MusicNote::Latin2Index(string name) {
@@ -355,7 +586,11 @@ MusicNote::MusicNote(string name, string duration) {
     // then notation
     switch (notation_sys) {
     case 'S':
-        NoteIndex = SciName2Index(name);
+        if ( name.length() > 2 && (name[1] == '#' || name[1] == 'b') )
+            NoteIndex = SciName2Index_alt(name);
+        else
+            NoteIndex = SciName2Index(name);
+        break;
         break;
     case 'L':
         NoteIndex = Latin2Index(name);
@@ -387,7 +622,10 @@ MusicNote::MusicNote(string name) {
     // then notation
     switch (notation_sys) {
     case 'S':
-        NoteIndex = SciName2Index(name);
+        if ( name.length() > 2 && (name[1] == '#' || name[1] == 'b') )
+            NoteIndex = SciName2Index_alt(name);
+        else
+            NoteIndex = SciName2Index(name);
         break;
     case 'L':
         NoteIndex = Latin2Index(name);
