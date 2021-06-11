@@ -54,7 +54,7 @@ Within each major release, versions are numbered by No.X, i.e., _**ReleaseName**
 For example:
 
 #### Currently under development:
-#### _Computer Concerto No.0_
+#### _Sonate par ordinateur n° 0_
 
 #### Completed release:
 #### _None_
