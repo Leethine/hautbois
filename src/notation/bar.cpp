@@ -202,8 +202,18 @@ vector<Note*> Bar::Modulation(int n_semi_tone, bool rewrite) {
     for ( int i = 0; i < ContentFlow.size(); i++ ) {
         new_notes.push_back(ContentFlow[i]->Modulation(n_semi_tone));
     }
-    if ( rewrite )
+    if ( rewrite ) {
+        // rewrite bar contents
         ContentFlow = new_notes;
+        
+        // modify scale name
+        MusicNote m(Scale+"4");
+        string temp_scale = m.Index2SciName_alt(m.GetNoteIndex()+n_semi_tone);
+        Scale = temp_scale.substr(0,temp_scale.length()-1);
+        // modify scale index
+        ScaleIndex = Scale2Index(Scale);
+        RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
+    }
     return new_notes;
 }
 
