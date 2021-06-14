@@ -39,7 +39,6 @@ class Note {
     
   public:
     virtual string PrintNote();
-    
     virtual string PrintNoteGroup();
     // Informative functions
     virtual bool isNote();
@@ -51,6 +50,9 @@ class Note {
     string GetName();
     int GetNoteIndex();
     tuple<int,int> GetDuration();
+    string GetDurationStr();
+    
+    virtual Note* Modulation(int semi_tones);
     
     virtual Note* clone() const;
     
@@ -101,7 +103,7 @@ class MusicNote: public Note {
     string Index2SciName(int idx);
     string Index2SciName_alt(int idx);
     
-    
+    Note* Modulation(int semi_tones);
     Note* clone() const;
     
     MusicNote(string name);
@@ -120,6 +122,7 @@ class Rest: public Note {
     bool isRest();
     bool isNoteGroup();
     
+    Note* Modulation(int semi_tones);
     Note* clone() const;
     
     Rest();
@@ -137,6 +140,7 @@ class Blank: public Note {
     bool isRest();
     bool isNoteGroup();
     
+    Note* Modulation(int semi_tones);
     Note* clone() const;
     
     Blank();
@@ -148,14 +152,14 @@ class Blank: public Note {
 class NoteGroup: public Note {
   private:
     // Every Note will follow the properties of the first Note
-    vector<Note> NoteList;
+    vector<MusicNote> NoteList;
   public:
-    void AddNote(Note new_note);
+    void AddNote(MusicNote new_note);
     void DelLastNote();
     Note PopLastNote();
     void ClearNotes();
     Note GetFirstNote();
-    vector<Note> GetNoteList();
+    vector<MusicNote> GetNoteList();
     
     // Informative functions
     bool isNote();
@@ -166,6 +170,7 @@ class NoteGroup: public Note {
     
     string PrintNoteGroup() override;
     
+    Note* Modulation(int semi_tones);
     Note* clone() const;
     
     NoteGroup(MusicNote note1, MusicNote note2);

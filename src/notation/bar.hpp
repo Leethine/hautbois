@@ -88,12 +88,12 @@ class Bar {
     int Clef2Number(string clef);
     bool CheckScale(string scale);
     int Scale2Index(string scale);
-    int GetRelativeScaleIndex(int s_idx);
+    int GetRelativeScaleIndex(int sidx);
     
-    vector<Note> Modulation(int n_semi_tone);
-    vector<Note> Modulation(string target_tone);
+    vector<Note*> Modulation(int n_semi_tone, bool = false);
+    //vector<Note*> Modulation(string target_tone);
     
-    vector<Note> ToRelativeScale();
+    vector<Note*> ToRelativeScale();
     
     
     // TODO More functions

@@ -187,12 +187,29 @@ int Bar::Scale2Index(string scale) {
     return sidx;
 }
 
-int Bar::GetRelativeScaleIndex(int s_idx) { return 0; };
+int Bar::GetRelativeScaleIndex(int sidx) { 
+// Refer to the circle of fifth, just turn 
+// the circle of fifth by 3 steps, anticlockwise
+    int relative_sidx = sidx + 3;
+    if ( relative_sidx > 7 )
+        relative_sidx = 7 - relative_sidx;
+    
+    return relative_sidx;
+}
 
-vector<Note> Bar::Modulation(int n_semi_tone) {};
-vector<Note> Bar::Modulation(string target_tone) {};
+vector<Note*> Bar::Modulation(int n_semi_tone, bool rewrite) {
+    vector<Note*> new_notes;
+    for ( int i = 0; i < ContentFlow.size(); i++ ) {
+        new_notes.push_back(ContentFlow[i]->Modulation(n_semi_tone));
+    }
+    if ( rewrite )
+        ContentFlow = new_notes;
+    return new_notes;
+}
 
-vector<Note> Bar::ToRelativeScale() {};
+//vector<Note*> Bar::Modulation(string target_tone) {};
+
+vector<Note*> Bar::ToRelativeScale() {};
 
 Bar::Bar() {
     // default
@@ -201,6 +218,7 @@ Bar::Bar() {
     ClefCentre = 2;
     Scale = "C";
     ScaleIndex = Scale2Index(Scale);
+    RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
     Metre[0] = 4;
     Metre[1] = 4; 
 }
@@ -218,6 +236,7 @@ Bar::Bar(string clef) {
     Scale = "C";
     Mode = "Major";
     ScaleIndex = Scale2Index(Scale);
+    RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
     Metre[0] = 4;
     Metre[1] = 4; 
 }
@@ -240,6 +259,7 @@ Bar::Bar(string clef, string scale) {
     }
         
     ScaleIndex = Scale2Index(Scale);
+    RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
     Metre[0] = 4;
     Metre[1] = 4; 
 }
@@ -264,6 +284,7 @@ Bar::Bar(string clef, string metre, string scale) {
     }
     
     ScaleIndex = Scale2Index(Scale);
+    RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
     if ( !CheckMetre(metre) ) {
         Metre[0] = 4;
         Metre[1] = 4;
@@ -289,6 +310,7 @@ Bar::Bar(string clef, int centre, string metre, string scale) {
     }
     
     ScaleIndex = Scale2Index(Scale);
+    RelativeScaleIndex = GetRelativeScaleIndex(ScaleIndex);
     if ( !CheckMetre(metre) ) {
         Metre[0] = 4;
         Metre[1] = 4;

@@ -76,7 +76,13 @@ tuple<int,int> Note::GetDuration() {
     return make_tuple(Duration[0], Duration[1]);
 }
 
+string Note::GetDurationStr() { 
+    return string(1,Duration[0]+'0') + "/" + string(1,Duration[1]+'0');
+}
+
 string Note::PrintNoteGroup() { return "PrintGroupBasicNoteClass"; }
+
+Note* Note::Modulation(int semi_tones) { return NULL; }
 
 Note* Note::clone() const { return NULL; }
 
@@ -573,6 +579,25 @@ bool MusicNote::isBlank() { return false; }
 bool MusicNote::isRest() { return false; }
 bool MusicNote::isNoteGroup() { return false; }
 
+Note* MusicNote::Modulation(int semi_tones) {
+    // save the note info
+    string old_name = Name;
+    int old_index = NoteIndex;
+    
+    // temporary change
+    NoteIndex += semi_tones;
+    Name = Index2SciName_alt(NoteIndex);
+    
+    // clone a new note
+    Note* NewNote = clone();
+    
+    // restore the current note
+    NoteIndex = old_index;
+    Name = old_name;
+    
+    return NewNote;
+}
+
 Note* MusicNote::clone() const { return new MusicNote(*this); }
 
 MusicNote::MusicNote(string name, string duration) {
@@ -657,6 +682,8 @@ bool Rest::isBlank() { return false; }
 bool Rest::isRest() { return true; }
 bool Rest::isNoteGroup() { return false; }
 
+Note* Rest::Modulation(int semi_tones) { return clone(); }
+
 Note* Rest::clone() const { return new Rest(*this); }
 
 Rest::Rest(string duration) {
@@ -694,6 +721,8 @@ bool Blank::isBlank() { return true; }
 bool Blank::isRest() { return false; }
 bool Blank::isNoteGroup() { return false; }
 
+Note* Blank::Modulation(int semi_tones) { return clone(); }
+
 Note* Blank::clone() const { return new Blank(*this); }
 
 Blank::Blank(string duration) {
@@ -720,7 +749,7 @@ Blank::Blank() {
 
 /* NoteGroup class */
 
-void NoteGroup::AddNote(Note new_note) {
+void NoteGroup::AddNote(MusicNote new_note) {
     NoteList.push_back(new_note);
 }
 
@@ -757,13 +786,13 @@ Note NoteGroup::GetFirstNote() {
     return first_note;
 }
         
-vector<Note> NoteGroup::GetNoteList() { 
+vector<MusicNote> NoteGroup::GetNoteList() { 
     if ( !NoteList.empty() ) {
         return NoteList;
     }
     else {
         cerr << "Note list still Empty!" << endl;
-        return vector<Note> () ;
+        return vector<MusicNote> () ;
     }
 }
 
@@ -777,7 +806,7 @@ string NoteGroup::PrintNoteGroup() {
     string output = "";
     if ( !NoteList.empty() ) {
         output += "[";
-        for ( vector<Note>::iterator it = NoteList.begin();
+        for ( vector<MusicNote>::iterator it = NoteList.begin();
               it != NoteList.end(); it++ ) {
             output += it->PrintNote();
             output += " ";
@@ -789,6 +818,25 @@ string NoteGroup::PrintNoteGroup() {
         output += "[EmptyGroup]";
     }
     return output;
+}
+
+Note* NoteGroup::Modulation(int semi_tones) {
+    // create a copy of original notes
+    vector<MusicNote> old_notes = NoteList;
+    Note* temp_note;
+    // clear current notes
+    ClearNotes();
+    string duration;
+    for ( int i = 0; i < old_notes.size(); i++ ) {
+        temp_note = old_notes[i].Modulation(semi_tones);
+        AddNote(MusicNote(temp_note->GetName(), temp_note->GetDurationStr()));
+    }
+    Note* NewGroup = this->clone();
+    ClearNotes();
+    // restore the previous note list
+    NoteList = old_notes;
+    
+    return NewGroup;
 }
 
 Note* NoteGroup::clone() const { return new NoteGroup(*this); }
