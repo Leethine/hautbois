@@ -49,12 +49,12 @@ The components in the developers' framework.
 
 Release that involves major break-through should use the name borrowed from classical music pieces.
 
-Within each major release, versions are numbered by No.X, i.e., _**ReleaseName**_ **No.X**. 
+Within each major release, versions are numbered by No.X, i.e., _**ReleaseName**_ **No.X**. There should also be a global version identifier along with **releasename+No.X** pattern, started with _**opus**_ or _**Op.**_
 
 For example:
 
 #### Currently under development:
-#### _Sonate par ordinateur n° 0_
+#### _Sonate par ordinateur n°0 (Op. 0.0.0)_ 
 
 #### Completed release:
 #### _None_
