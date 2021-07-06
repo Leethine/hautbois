@@ -23,6 +23,16 @@ using namespace std;
 
 enum note_type { music_note_, note_group_, rest_, blank_ };
 
+/* Definition of Ornament */
+struct note_properties {
+    string InstrumentName;
+    int InstrumentIndex;
+    string Force;
+    int ForceDegree;
+    string OrnamentType;
+    int OrnamentParam;
+};
+
 /* Definition of the "Note" Class *
  * Parent class, not to be used   */
 class Note {
@@ -82,14 +92,10 @@ class MusicNote: public Note {
     string Latin2Helm(string name);
     */
     
-  public:
     // Properties of the note, e.g. Force, Ornaments, etc.
-    string Force;
-    string OrnamentType;
-    string OrnamentParam;
-    // TODO Leave spaces for further properties
-    
-    
+    note_properties Properties;
+        
+  public:
     
     // Informative functions
     string PrintNote();
@@ -173,6 +179,7 @@ class NoteGroup: public Note {
     Note* Modulation(int semi_tones);
     Note* clone() const;
     
+    NoteGroup(MusicNote note1);
     NoteGroup(MusicNote note1, MusicNote note2);
     NoteGroup(MusicNote note1, MusicNote note2, MusicNote note3);
     NoteGroup(MusicNote note1, MusicNote note2, 

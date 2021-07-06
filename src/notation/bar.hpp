@@ -61,18 +61,14 @@ class Bar {
     string SpeedChangeFunc; // e.g. = "CONSTANT", "Linear", etc.
     double SpeedBegin; // 1/4 = ?
     double SpeedEnd;   // 1/4 = ?
+    // TODO Leave Space for more properties
+    
     
     // Offset at which the Bar will be added in the sheet, as Duration
     int Offset[2];
     
     // Content
     vector<Note*> ContentFlow;
-    
-    // TODO Leave Space for more properties
-    // Key properties
-    //vector<string> KeySignature; // format: ["#", "L3", "L4", "S2"]
-    //vector<tuple<char, char>> KeyRules; // format [('C','#'),('D', 'b')]
-    
     
     
     bool CheckMetre(string metre);

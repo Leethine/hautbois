@@ -840,7 +840,17 @@ Note* NoteGroup::Modulation(int semi_tones) {
 }
 
 Note* NoteGroup::clone() const { return new NoteGroup(*this); }
-       
+
+NoteGroup::NoteGroup(MusicNote note1) {
+    Name = "Group2Notes";
+    NoteType = note_group_;
+    
+    Duration[0] = get<0>(note1.GetDuration());
+    Duration[1] = get<1>(note1.GetDuration());
+    NoteIndex = -2;
+    AddNote(note1);
+}
+
 NoteGroup::NoteGroup(MusicNote note1, MusicNote note2) {
     Name = "Group2Notes";
     NoteType = note_group_;
