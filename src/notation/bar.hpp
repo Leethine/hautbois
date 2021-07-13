@@ -11,7 +11,7 @@
  * This file Defines one Bar in the musical score.
  * This one Bar should contain one voice (see Guide: Voice Separation).
  * Bar defines the clef type, speed, instrument type, key signature, etc.
- * Convertion functions are implemented, which allows converting from
+ * Conversion functions are implemented, which allows converting from
  * different notation system to notation index on a standard keyboard.
  */
 
