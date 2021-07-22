@@ -12,6 +12,9 @@
  */
 
 //#include "../notation/note.hpp"
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "../notation/bar.hpp"
 #include "hma_defs.h"
 #include "tempo.h"
@@ -38,6 +41,14 @@ typedef struct _hma_sheet_ {
     int freq;
 } hma_sheet;
 
+enum line_type_enum {
+    line_def,
+    line_bar,
+    line_undefined,
+    line_comment,
+    line_eof
+};
+
 enum property_enum {
     def_title,
     def_author,
@@ -57,14 +68,16 @@ enum property_enum {
 
 property_enum property_hashit(string property);
 
-string get_next_token_note(string line);
+note_type get_next_token_note(string& note_str, string& line);
 MusicNote read_token_musicnote(string note_str);
 Rest      read_token_restnote (string note_str);
 Blank     read_token_blanknote(string note_str);
 NoteGroup read_token_notegroup(string note_str);
 
-string get_next_line();
-//hma_type get_next_token(string &token, const string input);
+bool isBarLine(const string line);
+bool isComment(const string line);
+line_type_enum get_next_line(string& line, ifstream& myfile);
+note_type get_next_token_note(string& note, string& line);
 
 bool parse_defs(string line, hma_sheet &my_sheet);
 void parse_bar(string barnbr);

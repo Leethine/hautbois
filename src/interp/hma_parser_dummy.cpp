@@ -13,9 +13,6 @@
  */
 
 #include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
 #include <stdlib.h>
 #include <regex>
 #include <algorithm>
@@ -30,7 +27,115 @@
 
 using namespace std;
 
-string get_next_token_note(string line) {};
+
+property_enum property_hashit(string property) {
+/* Convert from string to enum, for switch(){} */ 
+
+    if ( boost::algorithm::to_lower_copy(property) == "title" )
+        return def_title;
+    else if ( boost::algorithm::to_lower_copy(property) == "author" )
+        return def_author;
+    else if ( boost::algorithm::to_lower_copy(property) == "ninstruments" )
+        return def_ninstruments;
+    else if ( boost::algorithm::to_lower_copy(property) == "instrument" )
+        return def_instrument;
+    else if ( boost::algorithm::to_lower_copy(property) == "notationsys" )
+        return def_notationsys;
+    else if ( boost::algorithm::to_lower_copy(property) == "tempo" )
+        return def_tempo;
+    else if ( boost::algorithm::to_lower_copy(property) == "speed" )
+        return def_speed;
+    else if ( boost::algorithm::to_lower_copy(property) == "meter" )
+        return def_meter;
+    else if ( boost::algorithm::to_lower_copy(property) == "nvoices" )
+        return def_nvoices;
+    else if ( boost::algorithm::to_lower_copy(property) == "voice" )
+        return def_voice;
+    else if ( boost::algorithm::to_lower_copy(property) == "tonality" )
+        return def_tonality;
+    else if ( boost::algorithm::to_lower_copy(property) == "fs" )
+        return def_fs;
+    else if ( boost::algorithm::to_lower_copy(property) == "freq" )
+        return def_freq;
+    else
+        return name_undefined;
+
+}
+
+bool isBarLine(const string line) {
+/* Check if this line defines a bar */
+    regex e1 ("@I[0-9]V[0-9]:");
+    smatch sm;
+    regex_search(line, sm, e1);
+    
+    if ( sm.size() == 0 ) 
+        return false;
+    else
+        return true; 
+}
+
+bool isComment(const string line) {
+/* Check if this line is comment */
+    regex e1 ("%*%");
+    smatch sm;
+    regex_search(line, sm, e1);
+    
+    if ( sm.size() == 0 ) 
+        return false;
+    else
+        return true; 
+}
+
+line_type_enum get_next_line(string& line, ifstream& myfile) {
+/* Get next line from a file stream. 
+ * If the line is a bar and is unfinished, 
+ * then get the whole line until the bar is finished. 
+ */
+    
+    line = "";
+    if ( myfile.eof() ) {
+        return line_eof;
+    }
+    char c;
+    while ( myfile.get(c) ) {
+        if ( c == '\n' )
+            break;
+        else
+            line += c;
+    }
+    
+    // proceed the same step until barline is finished
+    if ( isBarLine(line) && line.find("|;") == string::npos ) {
+        // if end of bar notation |; not found
+        while ( myfile.get(c) ) {
+            if ( c == '\n' )
+                ;
+            else if ( c == ';' && line[line.length()-1] == '|' ) {
+            // end of bar is found
+                line += c;
+                break;
+            }
+            else
+                line += c;
+        }
+    }
+    
+    if ( isBarLine(line) )
+        return line_bar;
+    else if ( isComment(line) )
+        return line_comment;
+    else
+        return line_def;
+};
+
+note_type get_next_token_note(string& note, string& line) {
+/* Get next note token and also its type from a line string. *
+ * If no note is found, the resulting line is empty.
+ * If note is found, the note will be cut off from the line string. 
+ */
+
+};
+
 
 MusicNote read_token_musicnote(string note_str) {
 /* Read music note token */
@@ -161,42 +266,6 @@ NoteGroup read_token_notegroup(string note_str) {
     return ng1;
 }
 
-//TODO
-string get_next_line() {};
-
-property_enum property_hashit(string property) {
-/* Convert from string to enum, for switch(){} */ 
-
-    if ( boost::algorithm::to_lower_copy(property) == "title" )
-        return def_title;
-    else if ( boost::algorithm::to_lower_copy(property) == "author" )
-        return def_author;
-    else if ( boost::algorithm::to_lower_copy(property) == "ninstruments" )
-        return def_ninstruments;
-    else if ( boost::algorithm::to_lower_copy(property) == "instrument" )
-        return def_instrument;
-    else if ( boost::algorithm::to_lower_copy(property) == "notationsys" )
-        return def_notationsys;
-    else if ( boost::algorithm::to_lower_copy(property) == "tempo" )
-        return def_tempo;
-    else if ( boost::algorithm::to_lower_copy(property) == "speed" )
-        return def_speed;
-    else if ( boost::algorithm::to_lower_copy(property) == "meter" )
-        return def_meter;
-    else if ( boost::algorithm::to_lower_copy(property) == "nvoices" )
-        return def_nvoices;
-    else if ( boost::algorithm::to_lower_copy(property) == "voice" )
-        return def_voice;
-    else if ( boost::algorithm::to_lower_copy(property) == "tonality" )
-        return def_tonality;
-    else if ( boost::algorithm::to_lower_copy(property) == "fs" )
-        return def_fs;
-    else if ( boost::algorithm::to_lower_copy(property) == "freq" )
-        return def_freq;
-    else
-        return name_undefined;
-
-}
 
 bool parse_defs(string line, hma_sheet &my_sheet) {
 /* Parse property definitions (on the top of the annotation file) */
