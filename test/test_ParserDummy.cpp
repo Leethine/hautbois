@@ -6,6 +6,7 @@ using namespace std;
 
 int main(void) {
     hma_sheet sheet;
+    /*
     string l1 = "@I2V2: | | | |;";
     string l2 = "@title    \"Sonata No.5\"";
     string l3 = "@instrument     1 \"Recorder\"";
@@ -26,6 +27,16 @@ int main(void) {
     read_token_restnote("(rest, 1/2)");
     read_token_blanknote("(blank, 6/1)");
     read_token_notegroup("{(G3,1/8)(B3)(D4)(G4)(D#4)(Ab3)}");
+    */
     
+    ifstream ifs;
+    ifs.open("../sample/sample_annotation.hma", ifstream::in);
+    string l;
+    while( !ifs.eof() ) {
+        get_next_line(l,ifs);
+        cout << l << endl;
+    }
+    
+    ifs.close();
     return 0;
 }
