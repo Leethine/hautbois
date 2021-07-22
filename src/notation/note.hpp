@@ -21,7 +21,7 @@
 
 using namespace std;
 
-enum note_type { music_note_, note_group_, rest_, blank_ };
+enum note_type { music_note_, note_group_, rest_, blank_, undef_ };
 
 /* Definition of Ornament */
 struct note_properties {
