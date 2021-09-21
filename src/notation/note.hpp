@@ -19,7 +19,10 @@
 #include <vector>
 #include <tuple>
 
-using namespace std;
+using std::cout;
+using std::string;
+using std::vector;
+using std::tuple;
 
 enum note_type { music_note_, note_group_, rest_, blank_, undef_ };
 

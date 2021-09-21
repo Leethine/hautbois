@@ -14,7 +14,7 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <regex>
+//#include <regex>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include "hma_parser_dummy.hpp"
@@ -27,6 +27,8 @@
 
 using namespace std;
 
+/*******************************************************************/
+/* PreDef of Types */
 
 property_enum property_hashit(string property) {
 /* Convert from string to enum, for switch(){} */ 
@@ -86,6 +88,9 @@ bool isComment(const string line) {
         return true; 
 }
 
+/*******************************************************************/
+/* Line processor */
+
 line_type_enum get_next_line(string& line, ifstream& myfile) {
 /* Get next line from a file stream. 
  * If the line is a bar and is unfinished, 
@@ -128,14 +133,88 @@ line_type_enum get_next_line(string& line, ifstream& myfile) {
         return line_def;
 };
 
-note_type get_next_token_note(string& note, string& line) {
-/* Get next note token and also its type from a line string. *
- * If no note is found, the resulting line is empty.
+note_type_enum get_next_token_note(string& token, string& line) {
+/* Get next note token as well as its type from a line string. *
+ * If no note is found, the resulting token is empty.
  * If note is found, the note will be cut off from the line string. 
  */
-
+    regex e1, e2;
+    e1 = regex("\\(.*\\)");
+    e2 = regex("\\{.*\\}");
+    
+    smatch sm;
+    regex_search(line, sm, e1);
+    
+    const int bracket_curly {1};
+    const int bracket_round {0};
+    int bracket_flag;
+    
+    int bracket_open, bracket_close;
+    
+    for ( int i=0; i < line.length(); i++ ) {
+        if ( line[i] == '(' ) {
+            bracket_flag = bracket_round;
+            bracket_open = i;
+            break;
+        }
+        if ( line[i] == '{' ) {
+            bracket_flag = bracket_curly;
+            bracket_open = i;
+            break;
+        }
+    }
+    
+    if ( bracket_flag == bracket_round )
+        for ( int i=0; i<line.length(); ++i )
+            if ( line[i] == ')' ) {
+                bracket_close = i;
+                break;
+            }
+    if ( bracket_flag == bracket_curly )
+        for ( int i=0; i<line.length(); ++i )
+            if ( line[i] == '}' ) {
+                bracket_close = i;
+                break;
+            }
+    
+    cout << bracket_open << " " << bracket_close << "\n";
+    
+    /*for (int i=0; i < line.length(); i++ ) {
+        if ( line[i] == '(' || line[i] == '{' ) {
+            bracket_open = i;
+            if ( line[i] == '(' ) {
+                for (int j=i; j < line.length(); j++ ) { 
+                    if ( line[j] == ')' ) {
+                        bracket_close = j;
+                        break;
+                    }
+                }
+            }
+            else if ( line[i] == '{' ) {
+                for (int j=i; j < line.length(); j++ ) { 
+                    if ( line[j] == '}' ) {
+                        bracket_close = j;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }*/
+    
+    token = line.substr(bracket_open, bracket_close - bracket_open + 1);
+    
+    // cut off token from line
+    line = line.substr(bracket_close+1);
+    
+    //TODO Continue here
+    
 };
 
+
+
+/*******************************************************************/
+/* Note reader */
 
 MusicNote read_token_musicnote(string note_str) {
 /* Read music note token */
@@ -266,6 +345,8 @@ NoteGroup read_token_notegroup(string note_str) {
     return ng1;
 }
 
+/*******************************************************************/
+/* Parser... */
 
 bool parse_defs(string line, hma_sheet &my_sheet) {
 /* Parse property definitions (on the top of the annotation file) */

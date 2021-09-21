@@ -15,13 +15,19 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <regex>
 #include "../notation/bar.hpp"
 #include "hma_defs.h"
 #include "tempo.h"
 
 //namespace HmaParser {
 
-using namespace std;
+using std::cout;
+using std::string;
+using std::vector;
+using std::tuple;
+using std::ifstream;
+using std::regex;
 
 typedef struct _hma_sheet_ {
     string title;
@@ -49,6 +55,13 @@ enum line_type_enum {
     line_eof
 };
 
+enum note_type_enum {
+    single_note,
+    group_note,
+    blank_note,
+    rest_note
+};
+
 enum property_enum {
     def_title,
     def_author,
@@ -68,7 +81,8 @@ enum property_enum {
 
 property_enum property_hashit(string property);
 
-note_type get_next_token_note(string& note_str, string& line);
+note_type_enum get_next_token_note(string& token, string& line);
+note_type_enum get_token_note_type(string& token);
 MusicNote read_token_musicnote(string note_str);
 Rest      read_token_restnote (string note_str);
 Blank     read_token_blanknote(string note_str);
@@ -77,7 +91,6 @@ NoteGroup read_token_notegroup(string note_str);
 bool isBarLine(const string line);
 bool isComment(const string line);
 line_type_enum get_next_line(string& line, ifstream& myfile);
-note_type get_next_token_note(string& note, string& line);
 
 bool parse_defs(string line, hma_sheet &my_sheet);
 void parse_bar(string barnbr);

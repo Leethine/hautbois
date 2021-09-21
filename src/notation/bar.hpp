@@ -23,7 +23,10 @@
 
 #include "note.hpp"
 
-using namespace std;
+using std::cout;
+using std::string;
+using std::vector;
+using std::tuple;
 
 #if (defined(__cplusplus) && (__cplusplus >= 201703) )
 
