@@ -1,23 +1,24 @@
-/* Definition of tempo text, to be modified */
+// Migration to C++ required
+/* Definition of tempo, to be replaced */
 
-#define PRESTISSIMO           200
-#define PRESTO                180
-#define VIVANCE               140
-#define ALLEGRO_ASSAI         160
-#define ALLEGRO_MOLTO         150
-#define ALLEGRO               140
-#define ALLEGRO_MA_NON_TROPPO 130
-#define ALLEGRO_NON_TROPPO    130
-#define ALLEGRO_MODERATO      120
-#define ALLEGRETTO            105
-#define MODERATO              100
-#define ADANTINO              90
-#define ANDANTE               80
-#define ADAGIETTO             75
-#define ADAGIO                68
-#define GRAVE                 65
-#define LARGHETTO             60
-#define LENTO                 50
-#define LARGO                 45
-#define LENTISSIMO            40
+#define PRESTISSIMO           XXX
+#define PRESTO                XXX
+#define VIVANCE               XXX
+#define ALLEGRO_ASSAI         XXX
+#define ALLEGRO_MOLTO         XXX
+#define ALLEGRO               XXX
+#define ALLEGRO_MA_NON_TROPPO XXX
+#define ALLEGRO_NON_TROPPO    XXX
+#define ALLEGRO_MODERATO      XXX
+#define ALLEGRETTO            XXX
+#define MODERATO              XXX
+#define ADANTINO              XXX
+#define ANDANTE               XXX
+#define ADAGIETTO             XXX
+#define ADAGIO                XXX
+#define GRAVE                 XXX
+#define LARGHETTO             XXX
+#define LENTO                 XXX
+#define LARGO                 XXX
+#define LENTISSIMO            XXX
 
