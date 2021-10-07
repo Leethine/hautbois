@@ -1,0 +1,23 @@
+% Comment %
+
+!@title          "Title of the piece"
+!@author         "Someone"
+!@ininstruments   2
+!@instrument     1 "Recorder"
+!@instrument     2 "Harpsichord"
+!@notationsys    "Scientific"
+!@tempo          "Allegro"
+!@speed          120
+!@meter          "2/4"
+!@nvoices        3
+!@tonality       "C"
+!@voice          1 1 "Clef-G"
+!@voice          2 1 "Clef-F"
+!@voice          2 2 "Clef-F"
+!@fs             44100
+!@freq           415
+
+@I1V1: (C4,1/2)+ | (C4,1/4) (D4,1/4,["trill":10]) | (F4,3/8) {(G3,1/8)(B3)(D4)(G4)} | (G4,1/2) |
+       (C4,1/2)+ | (C4,1/4) (D4,1/4,["trill":10]) | (F4,3/8) {(G3,1/8)(B3)(D4)(G4)} | (G4,1/2) |;
+@I2V1: | | | (E4,1/4) (r,1/4) |;
+@I2V2: | | | |;
