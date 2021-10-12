@@ -155,7 +155,7 @@ protected:
     
 public:
 
-    AnyNote()=default;
+    AnyNote()=delete;
     ~AnyNote()=default;
 
     // Rest note initialiser
@@ -219,7 +219,6 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& o, const AnyNote& n) {
-        
         switch (n.type)
         {
         case NoteType::RestNote :
@@ -234,7 +233,6 @@ public:
         default:
             break;
         }
-
         return o;
     }
 
