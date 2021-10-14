@@ -5,7 +5,7 @@ namespace hautbois
 {
 
 struct ClavichordNoteProperty : NoteProperty {
-    PropertyValue force;
+    ForcePropertyValue force;
 };
 
 }

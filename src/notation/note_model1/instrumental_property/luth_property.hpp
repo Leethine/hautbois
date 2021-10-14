@@ -5,8 +5,8 @@ namespace hautbois
 {
 
 struct LuthNoteProperty : NoteProperty {
-    PropertyValue stringnbr;
-    PropertyValue force;
+    StringPropertyValue stringnbr;
+    ForcePropertyValue force;
 };
 
 }

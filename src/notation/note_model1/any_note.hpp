@@ -3,6 +3,9 @@
 #include <iostream>
 #include <algorithm>
 #include "../defs.hpp"
+#include <memory>
+#include "property.hpp"
+#include "ornaments.hpp"
 
 namespace hautbois 
 {
@@ -154,6 +157,9 @@ protected:
     }
     
 public:
+
+    std::unique_ptr<NoteProperty> property;
+    std::unique_ptr<NoteOrnament> ornament;
 
     AnyNote()=delete;
     ~AnyNote()=default;

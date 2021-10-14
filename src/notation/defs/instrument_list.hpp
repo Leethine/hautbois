@@ -4,11 +4,9 @@ namespace hautbois
 {
     using InstrumentName=std::string;
 
-    namespace InstrumentList
-    {
-
-    enum class Renaissance{
-        //TODO
+    enum class InstrumentList {
+    // Renaissance
+        /*
         CHITARRA,
         CORNETTO,
         FLAUTO_DOLCE,
@@ -19,10 +17,9 @@ namespace hautbois
         TROMBA,
         TROMBA_DI_TIRARSI,
         VIOLE,
-        VIRGINALE
-    };
-
-    enum class Baroque {
+        VIRGINALE,
+        */
+    // BAROQUE
         ARPA,
         BASSO_CONTINUOTO,
         CHITARRA,
@@ -46,13 +43,9 @@ namespace hautbois
         TIMPANI,
         TIORBA,
         TROMBA,
-        TROMBONE
-    };
+        TROMBONE,
     
-    enum class Classical {
-        //TODO
-        NA
+    // Classical
+    //
     };
-
-    }
 }

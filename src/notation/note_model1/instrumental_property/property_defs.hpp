@@ -1,14 +1,20 @@
 /* Ornament definitions mother class */
 #pragma once
 #include "../../defs.hpp"
+#include <memory>
 
 namespace hautbois 
 {
-using PropertyValue=int;
+using ForcePropertyValue=int;
+using TimePropertyValue=Duration;
+using StringPropertyValue=int;
 
 struct NoteProperty
 {
-    PropertyValue length;
+    InstrumentList instrument;
+    TimePropertyValue delay;
+    TimePropertyValue duration;
+    NoteProperty()=default ;
 };
 
 }
