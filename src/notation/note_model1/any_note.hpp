@@ -71,18 +71,23 @@ protected:
         return true;
     }
 
-    void displaySingleNote(std::ostream& o) const noexcept {
-        o << "(\"" << name << "\", " << duration.num
-          << "/" << duration.denom << ")";
+    const std::string displaySingleNote() const noexcept {
+        std::string s;
+        s += "(\"" + name + "\", " + std::to_string(duration.num)
+          + "/" + std::to_string(duration.denom) + ")";
+        return s;
     }
-    void displayRestNote(std::ostream& o) const noexcept {
-        o << "(\"" << "p" << "\", " << duration.num
-          << "/" << duration.denom << ")";
+    const std::string displayRestNote() const noexcept {
+        std::string s;
+        s += "(\"" + std::string("p") + "\", " + std::to_string(duration.num)
+          + "/" + std::to_string(duration.denom) + ")";
+        return s;
     }
-    void displayGroupNote(std::ostream& o) const noexcept {
-        std::string s { "" };
-        std::string d { "" };
+    const std::string displayGroupNote() const noexcept {
+        std::string s;
+        std::string d;
 
+        std::string res;
         for (auto it {begin(groupname)}; it != end(groupname); it++) {
             s += "\"" + *it + "\"";
             s += "+";
@@ -95,16 +100,18 @@ protected:
         d.pop_back();
 
         if ( isSimpleChord(groupduration) ) {
-            o << "(" << 
+            res += "(" + 
             s
-            << ", " << groupduration.front().num
-            << "/" << groupduration.front().denom << ")";
+            + ", " + std::to_string(groupduration.front().num)
+            + "/" + std::to_string(groupduration.front().denom) + ")";
         }
         else {
-            o << "(" << 
+            res += "(" + 
             s
-            << ", " << d << ")";
+            + ", " + d + ")";
         }
+
+        return res;
     }
 
     bool verifySingleNote(const NameIndexTable& name_index_table) const {
@@ -224,27 +231,39 @@ public:
         return n;
     }
 
-    friend std::ostream& operator<<(std::ostream& o, const AnyNote& n) {
-        switch (n.type)
+    const std::string printNote() const {
+        std::string s;
+        switch (this->type)
         {
         case NoteType::RestNote :
-            n.displayRestNote(o);
+            s += displayRestNote();
             break;
         case NoteType::SingleNote :
-            n.displaySingleNote(o);
+            s += displaySingleNote();
             break;
         case NoteType::GroupNote :
-            n.displayGroupNote(o);
+            s += displayGroupNote();
             break;
         default:
             break;
         }
+        return s;
+    }
+
+    friend std::ostream& operator<<(std::ostream& o, const AnyNote& n) {
+        o << n.printNote();
         return o;
     }
 
     bool operator==(const AnyNote& n) {
+        // Not same type of note ==> false
         if ( this->type != n.type )
             return false;
+        // Both are chord of non-equal length ==> false
+        else if ( this->type == NoteType::GroupNote && 
+                  this->groupname.size() != n.groupname.size() )
+                return false;
+        // Both are chord of the same length ==> check one by one
         else if ( this->type == NoteType::GroupNote && 
                   this->groupname.size() == n.groupname.size() ) {
             for ( int i {0}; i < this->groupname.size() ; i++) {
@@ -254,11 +273,12 @@ public:
                      return false;
             }
         }
+        // Single note or rest note ==> simple check
         else {
             if ( this->index != n.index || 
                  this->duration.num != n.duration.num ||
                  this->duration.denom != n.duration.denom ) 
-                 return false;
+                return false;
         }
         return true;
     }

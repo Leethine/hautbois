@@ -14,7 +14,15 @@ struct Duration
     Beat num;
     Beat denom;
 
-    Duration()=default;
+    Duration(): 
+    num { 0 },
+    denom { 1 }
+    {};
+
+    Duration(Beat num, Beat denom): 
+    num { num },
+    denom { denom }
+    {};
 
     friend bool operator<(const Duration& d1, const Duration& d2) {
         return d1.num * d2.denom < d2.num * d1.denom;
@@ -35,6 +43,11 @@ struct Duration
 
     friend Duration operator+(const Duration& d1, const Duration& d2) {
         Duration d {d1.num*d2.denom + d2.num*d1.denom, d1.denom*d2.denom};
+        return d;
+    }
+
+    friend Duration operator-(const Duration& d1, const Duration& d2) {
+        Duration d {d1.num*d2.denom - d2.num*d1.denom, d1.denom*d2.denom};
         return d;
     }
 };

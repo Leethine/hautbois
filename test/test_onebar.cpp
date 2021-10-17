@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
     OneBar bar1;
-    bar1.appendRestNote({1,4});
+    bar1.appendRestNote({1  ,4});
     bar1.appendSingleNote("C4", {1,4});
     bar1.appendGroupNote({"C4", "E4", "G4"}, {{1,4},{1,4},{1,4}});
     bar1.appendGroupNote({"D4", "F#4", "A4"}, {1,4});

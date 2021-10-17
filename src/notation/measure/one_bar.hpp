@@ -21,7 +21,7 @@ protected:
     const TonalityType scale;
     const TonalityType relativescale;
 
-    ListNote notes;
+    mutable ListNote notes;
 
     NotationSystemType notationName2TypeQuery(NotationSystemName name) const {
         try { return notation_system_table.at(name); }
@@ -64,6 +64,10 @@ protected:
         assert(valid_length);
     }
 
+    void clearBar() {
+        notes.clear();
+    }
+
 public:
     bool connected;
     ~OneBar()=default;
@@ -76,16 +80,16 @@ public:
     connected { false }
     {}
 
-    explicit OneBar(NotationSystemName name, TonalityType scale, 
+    explicit OneBar(NotationSystemName& name, NoteName& scalename, 
                     Beat num, Beat denom) :
     sys { notationName2TypeQuery(name) },
     meter { Duration{num, denom} },
-    scale { scale },
-    relativescale { relativeScaleQuery(scale) },
+    scale { tonalityStr2TypeQuery(scalename) },
+    relativescale { relativeScaleQuery(this->scale) },
     connected { false }
     {}
     
-    AnyNote& getNthNote(size_t n) {
+    AnyNote& getNthNote(size_t n) const {
         try {
             if ( n >= notes.size() )  {
                throw std::out_of_range("Out of range! Getting the last note.");
@@ -104,7 +108,7 @@ public:
         }
     }
 
-    void printNthNote(size_t n) {
+    void printNthNote(size_t n) const {
         AnyNote& recovered_note = getNthNote(n);
         std::cout << recovered_note;
     }
