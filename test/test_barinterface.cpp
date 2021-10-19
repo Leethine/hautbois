@@ -14,4 +14,7 @@ int main() {
     b1.appendGroupNote({"D4", "F#4", "A4"}, {1,4});
     cout << boolalpha << b1.checkBarComplete() << endl;
     */
+    
+    //cout << b1.rmSpace(string("1/ 2"));
+    cout << b1.readDurationFromStr(string("1/16"));
 }
