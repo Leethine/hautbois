@@ -15,6 +15,12 @@ int main() {
     cout << boolalpha << b1.checkBarComplete() << endl;
     */
     
-    //cout << b1.rmSpace(string("1/ 2"));
-    cout << b1.readDurationFromStr(string("1/16"));
+    ParserUtl b2;
+    cout << b2.rmSpace(string("1/ 2")) << "\n";
+    cout << b2.readDurationFromStr(string("1/16")) << "\n";
+    cout << b2.deBracket("(\"C4\",\"1/2\")") << "\n";
+    cout << b2.deBracket("{(\"C4\",\"1/2\")}") << "\n";
+    cout << b2.deBracket("{(\"C4\",\"1/2\"),(\"E4\",\"1/2\")}") << "\n";
+    cout << b2.rmBracket("{(\"C4\",\"1/2\"),(\"E4\",\"1/2\")}") << "\n";
+    
 }

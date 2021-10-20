@@ -1,33 +1,9 @@
-#include "../onebar.hpp"
-#include <numeric>
-#include <algorithm>
-#include <regex>
-#include <boost/algorithm/string.hpp>
+#include "interface_defs.hpp"
 
 namespace hautbois {
 
-using BarPtrArray=std::vector<std::unique_ptr<OneBar>>;
-using TokenString=std::string;
-
-
-
-class BarLine : private OneBar {
+class BarLine : private OneBar, private ParserUtl {
     mutable BarPtrArray barline;
-
-    TokenString rmSpace(const TokenString& cstr) {
-        TokenString str { cstr };
-        str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
-        return str;
-    }
-
-    Duration readDurationFromStr(const TokenString& durationstr) {
-        std::vector<TokenString> result;
-        boost::split(result, durationstr, boost::is_any_of("/"));
-        assert(result.size()==2);
-        Duration duration { Beat(std::stoi(result[0])), 
-                            Beat(std::stoi(result[1])) };
-        return duration;
-    }
 
     bool checkBarComplete() const {
         Duration d;
@@ -37,17 +13,7 @@ class BarLine : private OneBar {
         if (d == meter) { return true; }
         else { return false; }
     }
-
-    NoteType checkType(TokenString& token) const {}
     
-    bool checkRestNoteFormatting(TokenString& token) const {}
-
-    bool checkSingleNoteFormatting(TokenString& token) const {}
-    
-    bool checkGroupNoteFormatting(TokenString& token) const {}
-
-    bool checkFormatting(NoteType type, TokenString& token) const {}
-
     void strAddSingleNote(TokenString& name, TokenString& duration) {}
 
     void strAddRestNote(const TokenString& duration) {
@@ -71,7 +37,7 @@ class BarLine : private OneBar {
     
     void tokenAddGroupNote(TokenString& token) {}
     
-    public:
+public:
     BarLine() : OneBar ()
     {}
     

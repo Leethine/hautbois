@@ -16,7 +16,8 @@ const NoteIndex GROUP_NOTE_INDEX {103};
 enum class NoteType {
     RestNote,
     SingleNote,
-    GroupNote
+    GroupNote,
+    TYPE_INVALID
 };
 
 class AnyNote {
