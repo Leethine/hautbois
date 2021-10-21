@@ -9,21 +9,24 @@ namespace hautbois
 
 using BarPtrArray=std::vector<std::unique_ptr<OneBar>>;
 using TokenString=std::string;
+using TokenVector=std::vector<TokenString>;
 
 class ParserUtl {
 public:
     static bool isBracket(char i) { 
-        return i == '(' || i == ')' || i == '{' || i == '}';
+        return i == '(' || i == ')' || 
+               i == '{' || i == '}' ||
+               i == '[' || i == ']' ;
     }
 
     TokenString rmSpace(const TokenString& cstr) {
         TokenString str { cstr };
-        str.erase(remove_if(str.begin(), str.end(), isspace), str.end());
+        str.erase(remove_if(str.begin(), str.end(), ::isspace), str.end());
         return str;
     }
 
     Duration readDurationFromStr(const TokenString& durationstr) {
-        std::vector<TokenString> result;
+        TokenVector result;
         boost::split(result, durationstr, boost::is_any_of("/"));
         // make sure the meter is well formated
         assert(result.size() == 2);
@@ -39,6 +42,8 @@ public:
             content_str = token_ns.substr(1, token_ns.length()-2);
         }
         else if ( token_ns.front() == '{' && token_ns.back() == '}' )
+            content_str = token_ns.substr(1, token_ns.length()-2);
+        else if ( token_ns.front() == '[' && token_ns.back() == ']' )
             content_str = token_ns.substr(1, token_ns.length()-2);
         else
             content_str = token_ns;
@@ -62,8 +67,12 @@ public:
         return content_str;
     }
 
-    std::vector<TokenString> splitNoteToken(const TokenString& token) {
-    } 
+    TokenVector splitToken(const TokenString& token, const std::string sep) {
+        TokenVector result;
+        boost::split(result, token, boost::is_any_of(sep), 
+                                    boost::token_compress_on);
+        return result;
+    }
 
     // TODO
     NoteType checkType(const TokenString& token) {
@@ -74,10 +83,21 @@ public:
             return NoteType::GroupNote;
         }
 
-        // check if it's rest
         else if ( token_ns.front() == '(' && token_ns.back() == ')' ) {
+            // check if it's rest
+            auto found1 = token_ns.find("Rest");
+            auto found2 = token_ns.find("R");
+            auto found3 = token_ns.find("rest");
+            auto found4 = token_ns.find("r");
+            if ( found1 != std::string::npos || found2 != std::string::npos ||
+                 found3 != std::string::npos || found4 != std::string::npos )
+                return NoteType::RestNote;
+            
+            // it must be a single note
+            else
+                return NoteType::SingleNote; 
         }
-        // must return invalid type
+        // none of above, invalid type
         else { return NoteType::TYPE_INVALID; }
     }
 

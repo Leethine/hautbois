@@ -18,9 +18,10 @@ int main() {
     ParserUtl b2;
     cout << b2.rmSpace(string("1/ 2")) << "\n";
     cout << b2.readDurationFromStr(string("1/16")) << "\n";
-    cout << b2.deBracket("(\"C4\",\"1/2\")") << "\n";
-    cout << b2.deBracket("{(\"C4\",\"1/2\")}") << "\n";
-    cout << b2.deBracket("{(\"C4\",\"1/2\"),(\"E4\",\"1/2\")}") << "\n";
-    cout << b2.rmBracket("{(\"C4\",\"1/2\"),(\"E4\",\"1/2\")}") << "\n";
+    cout << b2.deBracket("C4,1/2") << "\n";
+    cout << b2.deBracket("{(C4,1/2)}") << "\n";
+    cout << b2.deBracket("{(C4,1/2),(E4,1/2)}") << "\n";
+    cout << b2.rmBracket("{(C4,1/2),(E4,1/2)}") << "\n";
     
+    cout << b2.splitToken("(C4,1/2)", ",")[0] << "\n";
 }
