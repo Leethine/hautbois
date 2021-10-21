@@ -1,3 +1,4 @@
+#pragma once
 #include "interface_defs.hpp"
 
 namespace hautbois {

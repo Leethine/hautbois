@@ -1,8 +1,10 @@
+#pragma once
 #include "../onebar.hpp"
 #include <numeric>
 #include <algorithm>
 #include <regex>
 #include <boost/algorithm/string.hpp>
+#include "regex_pattern.hpp"
 
 namespace hautbois
 {
@@ -32,6 +34,7 @@ public:
         assert(result.size() == 2);
         Duration duration { Beat(std::stoi(result[0])), 
                             Beat(std::stoi(result[1])) };
+        assert(duration.num != 0 && duration.denom != 0);
         return duration;
     }
 
@@ -74,7 +77,6 @@ public:
         return result;
     }
 
-    // TODO
     NoteType checkType(const TokenString& token) {
         TokenString token_ns = rmSpace(token);
         
@@ -86,9 +88,10 @@ public:
         else if ( token_ns.front() == '(' && token_ns.back() == ')' ) {
             // check if it's rest
             auto found1 = token_ns.find("Rest");
-            auto found2 = token_ns.find("R");
-            auto found3 = token_ns.find("rest");
+            auto found2 = token_ns.find("rest");
+            auto found3 = token_ns.find("R");
             auto found4 = token_ns.find("r");
+
             if ( found1 != std::string::npos || found2 != std::string::npos ||
                  found3 != std::string::npos || found4 != std::string::npos )
                 return NoteType::RestNote;
@@ -101,15 +104,29 @@ public:
         else { return NoteType::TYPE_INVALID; }
     }
 
-    bool checkFormatting(NoteType type, TokenString& token_ns) {
+    bool checkFormatting(NoteType type, const TokenString& token_ns) {
+        std::regex rx;
+        switch (type)
+        {
+        case NoteType::RestNote:
+            rx = std::regex(RXPTN_RESTNOTE);
+            break;
+        case NoteType::SingleNote:
+            rx = std::regex(RXPTN_SINGLENOTE);
+            break;
+        case NoteType::GroupNote:
+            rx = std::regex(RXPTN_CHORD);
+            break;
+        default:
+            break;
+        }
+
+        // if matched, formatting is validated, otherwiser not
+        if ( std::regex_match(token_ns, rx) )
+            return true;
+        else 
+            return false;
     }
-    
-    bool checkRestNoteFormatting(TokenString& token) const {}
-
-    bool checkSingleNoteFormatting(TokenString& token) const {}
-    
-    bool checkGroupNoteFormatting(TokenString& token) const {}
-
     
 };
 
