@@ -3,7 +3,7 @@
 
 namespace hautbois {
 
-class BarLine : private OneBar, private ParserUtl {
+class OneBarInterface : protected OneBar, protected ParserUtl {
     mutable BarPtrArray barline;
 
     bool checkBarComplete() const {
@@ -14,18 +14,27 @@ class BarLine : private OneBar, private ParserUtl {
         if (d == meter) { return true; }
         else { return false; }
     }
-    
-    void strAddSingleNote(TokenString& name, TokenString& duration) {}
 
+    // if current bar is full, clear current bar and put in barline
+    // otherwise, do nothing
+    void packCurrentBar() {
+        if ( checkBarComplete() ) {
+            barline.emplace_back(  );
+            this->clearBar();
+        }
+    }
+    
     void strAddRestNote(const TokenString& duration) {
-        //appendRestNote();
+        appendRestNote(readDurationFromStr(duration));
     }
 
+    void strAddSingleNote(TokenString& name, TokenString& duration) {}
+
     void strAddSingleNote(TokenString& name, TokenString& duration,
-                       TokenString& property) {}
+                          TokenString& property) {}
     
     void strAddSingleNote(TokenString& name, TokenString& duration,
-                       TokenString& property, TokenString& ornament) {}
+                          TokenString& property, TokenString& ornament) {}
     
     void strAddGroupNote(GroupName& names, GroupDuration& durations) {}
     
@@ -39,10 +48,10 @@ class BarLine : private OneBar, private ParserUtl {
     void tokenAddGroupNote(TokenString& token) {}
     
 public:
-    BarLine() : OneBar ()
+    OneBarInterface() : OneBar ()
     {}
     
-    explicit BarLine (NotationSystemName& name, 
+    explicit OneBarInterface (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
     {}
@@ -53,7 +62,6 @@ public:
     void printBarLine() {}
     void printWholeBar() const {}
     
-
 };
 
 }

@@ -11,7 +11,7 @@
 
 // GroupNote: {SingleNote, SingleNote, ...}
 
-#include "barline.hpp"
+#include "one_bar_interface.hpp"
 
 using namespace hautbois;
 using namespace std;

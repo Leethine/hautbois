@@ -1,11 +1,11 @@
-#include "../src/notation/Interface/barline.hpp"
+#include "../src/notation/Interface/one_bar_interface.hpp"
 #include <iostream>
 
 using namespace hautbois; 
 using namespace std;
 
 int main() {
-    BarLine b1;
+    OneBarInterface b1;
     
     /*
     b1.appendRestNote({1,4});
@@ -24,4 +24,6 @@ int main() {
     cout << b2.rmBracket("{(C4,1/2),(E4,1/2)}") << "\n";
     
     cout << b2.splitToken("(C4,1/2)", ",")[0] << "\n";
+
+    
 }

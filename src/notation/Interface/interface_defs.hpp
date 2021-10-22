@@ -9,9 +9,10 @@
 namespace hautbois
 {
 
-using BarPtrArray=std::vector<std::unique_ptr<OneBar>>;
+using BarPtrArray=std::vector<std::unique_ptr<ListNote>>;
 using TokenString=std::string;
 using TokenVector=std::vector<TokenString>;
+using TokenStrVector=std::vector<TokenString>;
 
 class ParserUtl {
 public:
@@ -36,6 +37,14 @@ public:
                             Beat(std::stoi(result[1])) };
         assert(duration.num != 0 && duration.denom != 0);
         return duration;
+    }
+
+    GroupDuration readGroupDurationFromStr(const TokenStrVector& vec) {
+        GroupDuration durations;
+        for (auto d : vec) {
+            durations.push_back(readDurationFromStr(d));
+        }
+        return durations;
     }
 
     TokenString deBracket(const TokenString& token_ns) {
@@ -70,15 +79,14 @@ public:
         return content_str;
     }
 
-    TokenVector splitToken(const TokenString& token, const std::string sep) {
+    TokenVector splitToken(const TokenString& token_ns, const std::string& sep) {
         TokenVector result;
-        boost::split(result, token, boost::is_any_of(sep), 
-                                    boost::token_compress_on);
+        boost::split(result, token_ns, boost::is_any_of(sep), 
+                                       boost::token_compress_on);
         return result;
     }
 
-    NoteType checkType(const TokenString& token) {
-        TokenString token_ns = rmSpace(token);
+    NoteType checkType(const TokenString& token_ns) {
         
         // check if it's chord
         if ( token_ns.front() == '{' && token_ns.back() == '}' ) {
