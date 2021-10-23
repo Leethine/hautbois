@@ -75,7 +75,6 @@ public:
             ),
             content_str.end()
         );
-
         return content_str;
     }
 

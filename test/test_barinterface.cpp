@@ -15,6 +15,7 @@ int main() {
     cout << boolalpha << b1.checkBarComplete() << endl;
     */
     
+    /*
     ParserUtl b2;
     cout << b2.rmSpace(string("1/ 2")) << "\n";
     cout << b2.readDurationFromStr(string("1/16")) << "\n";
@@ -24,6 +25,9 @@ int main() {
     cout << b2.rmBracket("{(C4,1/2),(E4,1/2)}") << "\n";
     
     cout << b2.splitToken("(C4,1/2)", ",")[0] << "\n";
+    */
 
-    
+   //b1.tokenAddGroupNote("{(C4,1/4)(E4)(G4)}");
+   //b1.tokenAddGroupNote("{(C4,1/4)(E4,1/8)(G4,1/16)}");
+
 }
