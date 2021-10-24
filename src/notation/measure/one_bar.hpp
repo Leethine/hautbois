@@ -8,6 +8,7 @@
 #include <list>
 #include <memory>
 #include <string>
+#include <exception>
 
 namespace hautbois {
 
@@ -62,6 +63,9 @@ protected:
                       << "\n";
         }
         assert(valid_length);
+        if (valid_length == false) {
+            throw std::domain_error("bar length explode!");
+        }
     }
 
     void clearBar() {
@@ -192,13 +196,12 @@ public:
         }
     }
 
-    friend std::ostream& operator<<(std::ostream& o, OneBar& b) {
-        std::string s;
-        for(int i = 0; i < b.notes.size(); i++) {
-            s = (i == b.notes.size() - 1) ? "+ " : " ";
-            o << b.getNthNote(i) << s;
+    const std::string printBarLine() {
+        std::string result;
+        for(int i = 0; i < notes.size(); i++) {
+            result += getNthNote(i).printNote() + " ";
         }
-        return o;
+        return result;
     }
 };
 

@@ -80,12 +80,21 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
     void tokenAddRestNote(const TokenString& token_ns) {
         TokenVector token_vec = splitToken(deBracket(token_ns), ",");
         assert(token_vec.size() == 2);
+        if(token_vec.size() != 2) {
+            throw std::domain_error("Unable to parse " + token_ns);
+        }
+        
         strAddRestNote(token_vec[1]);
     }
 
     void tokenAddSingleNote(const TokenString& token_ns) {
         TokenVector token_vec = splitToken(deBracket(token_ns), ",");
-        assert(token_vec.size() <= 4 || token_vec.size() >= 2);
+        // pre-cheking
+        assert(token_vec.size() >= 2 && token_vec.size() <= 4);
+        if(token_vec.size() > 4 || token_vec.size() < 2) {
+            throw std::domain_error("Unable to parse " + token_ns);
+        }
+
         switch (token_vec.size())
         {
         case 2:
@@ -111,6 +120,10 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
         // then split by ")"
         TokenVector singlenotes = splitToken(token_ns_no_bracket, ")");
         assert(singlenotes.size() >= 2);
+        if (singlenotes.size() < 2) {
+            throw std::domain_error("Unable to parse " + token_ns
+                                    + ". Too few notes in the chord.");
+        }
         
         // clean up remaining bracket 
         for (int i = 0; i < singlenotes.size(); ++i) {
@@ -121,11 +134,16 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
         GroupName names;
         TokenStrVector durations;
 
-        // read the first note
+        // read the first note - prechecking
         TokenString duration_first;
         TokenVector token_vec = splitToken(singlenotes[0], ",");
-        assert(token_vec.size() >= 2 || token_vec.size() <= 4);
+        assert(token_vec.size() >= 2 && token_vec.size() <= 4);
+        if (token_vec.size() < 2 || token_vec.size() > 4) {
+            throw std::domain_error("Unable to parse " + token_ns
+                                    + ". First note failed to parse.");
+        }
 
+        // read the first note
         if (token_vec.size() == 2) {
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
@@ -149,7 +167,13 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
         for (int i = 1; i < singlenotes.size(); ++i) {
             // token_vec.clear(); // no need
             token_vec = splitToken(singlenotes[i], ",");
+            // prechecking
             assert(token_vec.size() == 1 || token_vec.size() == 2);
+            if (token_vec.size() != 1 && token_vec.size() != 2) {
+                throw std::domain_error("Unable to parse " + token_ns
+                                        + ". Notes failed to parse.");
+            }
+            
             if ( token_vec.size() == 1 ) {
                 names.push_back(token_vec[0]);
                 durations.push_back(duration_first);
@@ -186,12 +210,32 @@ public:
     
     void addNote(const TokenString& token) {
         TokenString token_ns = rmSpace(token);
-
+        try {
+            NoteType type = checkType(token_ns);
+            checkFormatting(type, token_ns);
+            switch (type)
+            {
+            case NoteType::RestNote:
+                tokenAddRestNote(token_ns);
+                break;
+            case NoteType::SingleNote:
+                tokenAddSingleNote(token_ns);
+                break;
+            case NoteType::GroupNote:
+                tokenAddGroupNote(token_ns);
+                break;
+            default:
+                break;
+            }
+        } catch (const std::exception &e) {
+            std::cout << "Error in addNote(): " << e.what() << "\n";
+        }
     }
 
-    void printBarLine() {}
-    void printWholeBar() const {}
-    
+    friend std::ostream& operator<<(std::ostream& o, OneBarInterface& b) {
+        o << b.printBarLine();
+        return o;
+    }
 
 };
 

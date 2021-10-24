@@ -62,6 +62,7 @@ protected:
             exit(EXIT_FAILURE);
         }
     }
+    
     bool isSimpleChord(const GroupDuration durations) const {
         Duration d { durations.front() };
 
@@ -74,24 +75,25 @@ protected:
 
     const std::string displaySingleNote() const noexcept {
         std::string s;
-        s += "(\"" + name + "\", " + std::to_string(duration.num)
+        s += "(" + name + "," + std::to_string(duration.num)
           + "/" + std::to_string(duration.denom) + ")";
         return s;
     }
+
     const std::string displayRestNote() const noexcept {
         std::string s;
-        s += "(\"" + std::string("p") + "\", " + std::to_string(duration.num)
+        s += "(" + std::string("r") + "," + std::to_string(duration.num)
           + "/" + std::to_string(duration.denom) + ")";
         return s;
     }
+    
     const std::string displayGroupNote() const noexcept {
         std::string s;
         std::string d;
 
         std::string res;
         for (auto it {begin(groupname)}; it != end(groupname); it++) {
-            s += "\"" + *it + "\"";
-            s += "+";
+            s += *it + "+";
         }
         s.pop_back(); // remove the last '+' symbol
         for (auto it {begin(groupduration)}; it != end(groupduration); it++) {
@@ -103,15 +105,14 @@ protected:
         if ( isSimpleChord(groupduration) ) {
             res += "(" + 
             s
-            + ", " + std::to_string(groupduration.front().num)
+            + "," + std::to_string(groupduration.front().num)
             + "/" + std::to_string(groupduration.front().denom) + ")";
         }
         else {
             res += "(" + 
             s
-            + ", " + d + ")";
+            + "," + d + ")";
         }
-
         return res;
     }
 

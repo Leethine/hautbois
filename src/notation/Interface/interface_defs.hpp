@@ -86,7 +86,6 @@ public:
     }
 
     NoteType checkType(const TokenString& token_ns) {
-        
         // check if it's chord
         if ( token_ns.front() == '{' && token_ns.back() == '}' ) {
             return NoteType::GroupNote;
@@ -108,7 +107,10 @@ public:
                 return NoteType::SingleNote; 
         }
         // none of above, invalid type
-        else { return NoteType::TYPE_INVALID; }
+        else { 
+            throw std::domain_error("Invalid type: " + token_ns);
+            return NoteType::TYPE_INVALID;
+        }
     }
 
     bool checkFormatting(NoteType type, const TokenString& token_ns) {
@@ -129,10 +131,11 @@ public:
         }
 
         // if matched, formatting is validated, otherwiser not
-        if ( std::regex_match(token_ns, rx) )
-            return true;
-        else 
+        if ( std::regex_match(token_ns, rx) ) { return true; }
+        else {
+            throw std::domain_error("Check formatting failed: " + token_ns);
             return false;
+        }   
     }
     
 };

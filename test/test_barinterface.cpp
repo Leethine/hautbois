@@ -30,4 +30,11 @@ int main() {
    //b1.tokenAddGroupNote("{(C4,1/4)(E4)(G4)}");
    //b1.tokenAddGroupNote("{(C4,1/4)(E4,1/8)(G4,1/16)}");
 
+    b1.addNote("(C4,1/4)");
+    b1.addNote("{(C4,1/4)(E4,1/8)(G4,1/16)}");
+    b1.addNote("(r, 1/4)");
+    b1.addNote("{(C4,1/4)(E4)(G4)}");
+    
+    cout << b1 << "\n";
+    b1.addNote("(r, 1/4)");
 }
