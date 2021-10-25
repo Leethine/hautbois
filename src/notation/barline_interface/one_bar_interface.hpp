@@ -23,22 +23,6 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
     void strAddSingleNote(TokenString& name, TokenString& duration) {
         OneBar::appendSingleNote(name, readDurationFromStr(duration));
     }
-
-
-    //MAYBE delete
-    void strAddSingleNote(TokenString& name, TokenString& duration,
-                          TokenString& property) {
-        OneBar::appendSingleNote(name, readDurationFromStr(duration));
-        // TODO properties
-    }
-    
-    //MAYBE delete
-    void strAddSingleNote(TokenString& name, TokenString& duration,
-                          TokenString& property, TokenString& ornament) {
-        OneBar::appendSingleNote(name, readDurationFromStr(duration));
-        // TODO properties
-        // TODO ornaments
-    }
     
     void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations) {
         OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
@@ -46,36 +30,6 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
 
     void strAddGroupNote(TokenStrVector& names, TokenString& duration) {
         OneBar::appendGroupNote(names, readDurationFromStr(duration));
-    }
-
-    //MAYBE delete
-    void strAddGroupNote(TokenStrVector& names, TokenString& duration,
-                         TokenString& property) {
-        OneBar::appendGroupNote(names, readDurationFromStr(duration));
-        // TODO properties
-    }
-
-    //MAYBE delete
-    void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations, 
-                         TokenString& property) {
-        OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
-        // TODO properties
-    }
-
-    //MAYBE delete
-    void strAddGroupNote(TokenStrVector& names, TokenString& duration,
-                         TokenString& property, TokenString& ornament) {
-        OneBar::appendGroupNote(names, readDurationFromStr(duration));
-        // TODO properties
-        // TODO ornaments
-    }
-    
-    //MAYBE delete
-    void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations, 
-                         TokenString& property, TokenString& ornament) {
-        OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
-        // TODO properties
-        // TODO ornaments
     }
 
     void tokenAddRestNote(const TokenString& token_ns) {
@@ -102,11 +56,13 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
             strAddSingleNote(token_vec[0], token_vec[1]);
             break;
         case 3:
-            strAddSingleNote(token_vec[0], token_vec[1], token_vec[2]);
+            strAddSingleNote(token_vec[0], token_vec[1]);
+            strAddProperty(token_vec[2]);
             break;
         case 4:
-            strAddSingleNote(token_vec[0], token_vec[1], 
-                             token_vec[2], token_vec[3]);
+            strAddSingleNote(token_vec[0], token_vec[1]);
+            strAddProperty(token_vec[2]);
+            strAddOrnament(token_vec[3]);
             break;
         default:
             break;
@@ -144,6 +100,9 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
                                     + ". First note failed to parse.");
         }
 
+        TokenString token_property;
+        TokenString token_ornament;
+
         // read the first note
         if (token_vec.size() == 2) {
             names.push_back(token_vec[0]);
@@ -154,14 +113,14 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
             durations.push_back(duration_first);
-            //TODO parse properties
+            token_property = token_vec[2];
         }
         else {
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
             durations.push_back(duration_first);
-            //TODO parse properties
-            //TODO parse ornaments
+            token_property = token_vec[2];
+            token_ornament = token_vec[3];
         }
         
         // read the following notes
@@ -187,8 +146,8 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
 
         // put the contents from the container to barline
         strAddGroupNote(names, durations);
-        // TODO properties
-        // TODO ornaments
+        strAddProperty(token_property);
+        strAddOrnament(token_ornament);
     }
     
 public:

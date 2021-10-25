@@ -1,6 +1,6 @@
 #pragma once
-#include "../defs.hpp"
-#include "../note.hpp"
+#include "../defs/defs.hpp"
+#include "../note/any_note.hpp"
 
 namespace hautbois {
 

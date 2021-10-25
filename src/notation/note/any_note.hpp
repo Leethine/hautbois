@@ -2,10 +2,10 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
-#include "../defs.hpp"
+#include "../defs/defs.hpp"
 #include <memory>
-#include "property.hpp"
-#include "ornaments.hpp"
+#include "../defs_property/property.hpp"
+#include "../defs_property/ornament.hpp"
 
 namespace hautbois 
 {

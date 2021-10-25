@@ -1,6 +1,6 @@
 /* Ornament definitions mother class */
 #pragma once
-#include "../defs.hpp"
+#include "../../defs/defs.hpp"
 
 namespace hautbois 
 {

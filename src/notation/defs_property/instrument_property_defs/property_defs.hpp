@@ -1,6 +1,6 @@
 /* Property and ornaments definitions mother class */
 #pragma once
-#include "../defs.hpp"
+#include "../../defs/defs.hpp"
 #include <memory>
 
 namespace hautbois 

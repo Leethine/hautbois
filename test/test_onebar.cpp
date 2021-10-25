@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../src/notation/onebar.hpp"
+#include "../src/notation/notation.hpp"
 
 using namespace hautbois;
 using namespace std;
@@ -17,11 +17,11 @@ int main() {
     
     cout << n0 << " " << n1 << " " << n2 << " " << n3 << "\n";
     
-    cout << bar1 << "\n";
+    cout << bar1.printBarLine() << "\n";
     //AnyNote& n5 = n0.duplicate();
     bar1.connected = true;
     
-    cout << bar1 << "\n";
+    cout << bar1.printBarLine() << "\n";
     
     bar1.appendGroupNote({"D6", "F#6", "A6"}, {1,4});
     

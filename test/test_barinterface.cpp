@@ -1,4 +1,4 @@
-#include "../src/notation/Interface/one_bar_interface.hpp"
+#include "../src/notation/notation.hpp"
 #include <iostream>
 
 using namespace hautbois; 

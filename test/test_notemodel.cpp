@@ -1,8 +1,7 @@
 #include <map>
 #include <iostream>
 #include <string>
-#include "../src/notation/defs.hpp"
-#include "../src/notation/note.hpp"
+#include "../src/notation/notation.hpp"
 
 #include <exception>
 
