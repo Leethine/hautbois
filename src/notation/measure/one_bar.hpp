@@ -112,9 +112,9 @@ public:
         }
     }
 
-    void printNthNote(size_t n) const {
+    const std::string printNthNote(size_t n) const {
         AnyNote& recovered_note = getNthNote(n);
-        std::cout << recovered_note;
+        return recovered_note.printNote();
     }
 
     void appendRestNote(const Duration& d) {
@@ -180,7 +180,7 @@ public:
         checkLength();
     };
     
-    void deleteNthNote(int n) {
+    void deleteNthNote(size_t n) {
         try {
             if ( n >= notes.size() )  {
                throw std::out_of_range("Out of range! Nothing to delete.");
@@ -196,7 +196,7 @@ public:
         }
     }
 
-    const std::string printBarLine() {
+    const std::string printBarLine() const {
         std::string result;
         for(int i = 0; i < notes.size(); i++) {
             result += getNthNote(i).printNote() + " ";

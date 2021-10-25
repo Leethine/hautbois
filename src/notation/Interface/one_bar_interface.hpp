@@ -6,6 +6,7 @@ namespace hautbois {
 
 class OneBarInterface : protected OneBar, protected ParserUtl {
     protected:
+    InstrumentList instrument;
 
     void strAddProperty(const TokenString& property) {
 
@@ -16,55 +17,55 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
     }
 
     void strAddRestNote(const TokenString& duration) {
-        appendRestNote(readDurationFromStr(duration));
+        OneBar::appendRestNote(readDurationFromStr(duration));
     }
 
     void strAddSingleNote(TokenString& name, TokenString& duration) {
-        appendSingleNote(name, readDurationFromStr(duration));
+        OneBar::appendSingleNote(name, readDurationFromStr(duration));
     }
 
 
     //MAYBE delete
     void strAddSingleNote(TokenString& name, TokenString& duration,
                           TokenString& property) {
-        appendSingleNote(name, readDurationFromStr(duration));
+        OneBar::appendSingleNote(name, readDurationFromStr(duration));
         // TODO properties
     }
     
     //MAYBE delete
     void strAddSingleNote(TokenString& name, TokenString& duration,
                           TokenString& property, TokenString& ornament) {
-        appendSingleNote(name, readDurationFromStr(duration));
+        OneBar::appendSingleNote(name, readDurationFromStr(duration));
         // TODO properties
         // TODO ornaments
     }
     
     void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations) {
-        appendGroupNote(names, readGroupDurationFromStr(durations));
+        OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
     }
 
     void strAddGroupNote(TokenStrVector& names, TokenString& duration) {
-        appendGroupNote(names, readDurationFromStr(duration));
+        OneBar::appendGroupNote(names, readDurationFromStr(duration));
     }
 
     //MAYBE delete
     void strAddGroupNote(TokenStrVector& names, TokenString& duration,
                          TokenString& property) {
-        appendGroupNote(names, readDurationFromStr(duration));
+        OneBar::appendGroupNote(names, readDurationFromStr(duration));
         // TODO properties
     }
 
     //MAYBE delete
     void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations, 
                          TokenString& property) {
-        appendGroupNote(names, readGroupDurationFromStr(durations));
+        OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
         // TODO properties
     }
 
     //MAYBE delete
     void strAddGroupNote(TokenStrVector& names, TokenString& duration,
                          TokenString& property, TokenString& ornament) {
-        appendGroupNote(names, readDurationFromStr(duration));
+        OneBar::appendGroupNote(names, readDurationFromStr(duration));
         // TODO properties
         // TODO ornaments
     }
@@ -72,7 +73,7 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
     //MAYBE delete
     void strAddGroupNote(TokenStrVector& names, TokenStrVector& durations, 
                          TokenString& property, TokenString& ornament) {
-        appendGroupNote(names, readGroupDurationFromStr(durations));
+        OneBar::appendGroupNote(names, readGroupDurationFromStr(durations));
         // TODO properties
         // TODO ornaments
     }
@@ -191,6 +192,7 @@ class OneBarInterface : protected OneBar, protected ParserUtl {
     }
     
 public:
+
     OneBarInterface() : OneBar ()
     {}
     
@@ -233,8 +235,16 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& o, OneBarInterface& b) {
-        o << b.printBarLine();
+        o << b.OneBar::printBarLine();
         return o;
+    }
+
+    AnyNote& getNthNote(size_t n) {
+        return OneBar::getNthNote(n);
+    }
+
+    const std::string printNthNote(size_t n) {
+        return OneBar::printNthNote(n);
     }
 
 };
