@@ -4,7 +4,7 @@ namespace hautbois
 {
     using InstrumentName=std::string;
 
-    enum class InstrumentList {
+    enum class InstrumentType {
     // Renaissance
         /*
         CHITARRA,

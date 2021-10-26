@@ -5,8 +5,8 @@
 namespace hautbois {
 
 class OneBarInterface : protected OneBar, protected ParserUtl {
-    protected:
-    InstrumentList instrument;
+protected:
+    InstrumentType instrument;
 
     void strAddProperty(const TokenString& property) {
 

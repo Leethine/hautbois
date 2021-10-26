@@ -6,6 +6,11 @@ namespace hautbois
 {
 
 class Partition {
+protected:
+    Tempo tempo;
+    InstrumentType instrument;
+
+public:
     
 };
 

@@ -8,13 +8,17 @@ namespace hautbois
 using ForcePropertyValue=int;
 using TimePropertyValue=Duration;
 using StringPropertyValue=int;
+using PropertyPtr=std::unique_ptr<NoteProperty>;
 
 struct NoteProperty
 {
-    InstrumentList instrument;
+    InstrumentType instrument;
     TimePropertyValue delay;
     TimePropertyValue duration;
-    NoteProperty()=default ;
+    NoteProperty() {};
+    NoteProperty(InstrumentType instrument):
+    instrument { instrument }
+    {};
 };
 
 }
