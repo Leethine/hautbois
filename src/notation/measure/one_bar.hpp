@@ -196,6 +196,10 @@ public:
         }
     }
 
+    AnyNote& getLastNote() const {
+        return getNthNote(notes.size() - 1);
+    }
+
     const std::string printBarLine() const {
         std::string result;
         for(int i = 0; i < notes.size(); i++) {

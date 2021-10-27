@@ -5,6 +5,7 @@ namespace hautbois
 {
 
 struct HarpsichordNoteProperty : NoteProperty {
+    bool delay;
 };
 
 }

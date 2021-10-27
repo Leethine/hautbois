@@ -85,7 +85,6 @@ struct NoteOrnament
 {
     NoteOrnament()=delete;
 
-    OrnamentName name;
     OrnamentType type;
     OrnamentValue value;
 
@@ -107,9 +106,7 @@ struct NoteOrnament
     type { type }
     {}
 
-    NoteOrnament(const OrnamentName& name):
-    name { name }
-    {
+    NoteOrnament(const OrnamentName& name) {
         setType(name);
     }
 };

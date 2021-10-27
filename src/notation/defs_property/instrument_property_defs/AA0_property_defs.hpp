@@ -11,13 +11,12 @@ using StringPropertyValue=int;
 
 struct NoteProperty
 {
-    NoteProperty()=delete;
-    InstrumentType instrument;
-    TimePropertyValue delay;
-    TimePropertyValue duration;
-    NoteProperty(InstrumentType instrument):
-    instrument { instrument }
-    {};
+    // wait how long to get in?
+    TimePropertyValue waits;
+    // lasts how long ?
+    TimePropertyValue lasts;
+
+    NoteProperty()=default;
 };
 
 
