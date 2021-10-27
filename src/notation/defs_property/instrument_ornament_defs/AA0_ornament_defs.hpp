@@ -1,6 +1,7 @@
 /* Ornament definitions mother class */
 #pragma once
 #include "../../defs/defs.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace hautbois 
 {
@@ -21,8 +22,9 @@ enum class OrnamentType
     TRILLO
 };
 
-const std::map<OrnamentName, OrnamentType> ornament_name_type_table {
-    // Italian
+const std::map<OrnamentName, OrnamentType> ornament_dictionary {
+    // To be deleted
+    /*
     {"Acciaccatura", OrnamentType::ACCIACCATURA},
     {"acciaccatura", OrnamentType::ACCIACCATURA},
     {"ACCIACCATURA", OrnamentType::ACCIACCATURA},
@@ -56,14 +58,60 @@ const std::map<OrnamentName, OrnamentType> ornament_name_type_table {
     {"trillo", OrnamentType::TRILLO},
     {"Trillo", OrnamentType::TRILLO},
     {"TRILLO", OrnamentType::TRILLO}
+    */
+
+    // Italian
+    {"ACCIACCATURA", OrnamentType::ACCIACCATURA},
+    {"APPOGGIATURA", OrnamentType::APPOGGIATURA},
+    {"ARPEGGIO", OrnamentType::ARPEGGIO},
+    {"CADENZA", OrnamentType::CADENZA},
+    {"DINAMICA", OrnamentType::DINAMICA},
+    {"FIORITURA", OrnamentType::FIORITURA},
+    {"GLISSANDO", OrnamentType::GLISSANDO},
+    {"GRUPPETTO", OrnamentType::GRUPPETTO},
+    {"MORDENTE", OrnamentType::MORDENTE},
+    {"TREMOLO", OrnamentType::TREMOLO},
+    {"TRILLO", OrnamentType::TRILLO},
+
+    // French
+
+    // German
+
+    // English
+
 };
 
 struct NoteOrnament
 {
+    NoteOrnament()=delete;
+
     OrnamentName name;
     OrnamentType type;
     OrnamentValue value;
-    NoteOrnament()=default;
+
+    void setType(const OrnamentName& name) {
+        OrnamentName uname { name };
+        boost::to_upper(uname);
+        // string query
+        try {
+            this->type = ornament_dictionary.at(uname);
+        }
+        catch(std::exception& e) {
+            std::cout << "Error: Invalid Ornament Name" << "\n"
+                      << e.what() << "\n";
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    NoteOrnament(OrnamentType type):
+    type { type }
+    {}
+
+    NoteOrnament(const OrnamentName& name):
+    name { name }
+    {
+        setType(name);
+    }
 };
 
 }

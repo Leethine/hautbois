@@ -1,5 +1,6 @@
 #include "../src/notation/notation.hpp"
 #include <iostream>
+#include <typeinfo>
 
 using namespace hautbois; 
 using namespace std;
@@ -54,6 +55,8 @@ int main() {
         AnyNote& n1 = b2.getNthNote(i);
         cout << "Note Object size: " << sizeof(n1) << "\n";
     }
+    
+
     b1.addNote("(r, 1/4)");
 
 }

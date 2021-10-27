@@ -9,7 +9,7 @@ protected:
     InstrumentType instrument;
 
     void strAddProperty(const TokenString& property) {
-
+        
     }
     
     void strAddOrnament(const TokenString& ornament) {
@@ -153,12 +153,16 @@ protected:
 public:
 
     OneBarInterface() : OneBar ()
-    {}
+    {
+        this->instrument = InstrumentType::NONE;
+    }
     
     explicit OneBarInterface (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
-    {}
+    {
+        this->instrument = InstrumentType::NONE;
+    }
 
     bool checkBarComplete() const {
         Duration d;

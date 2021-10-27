@@ -5,21 +5,6 @@ namespace hautbois
     using InstrumentName=std::string;
 
     enum class InstrumentType {
-    // Renaissance
-        /*
-        CHITARRA,
-        CORNETTO,
-        FLAUTO_DOLCE,
-        FLAUTO_TRAVERSO,
-        LIRA,
-        LIUTO,
-        ORGANO,
-        TROMBA,
-        TROMBA_DI_TIRARSI,
-        VIOLE,
-        VIRGINALE,
-        */
-    // BAROQUE
         ARPA,
         BASSO_CONTINUOTO,
         CHITARRA,
@@ -30,6 +15,7 @@ namespace hautbois
         FAGOTTO,
         FLAUTO_DOLCE,
         FLAUTO_TRAVERSO,
+        LIRA,
         LIUTO,
         MANDOLINO,
         OBOE,
@@ -38,14 +24,19 @@ namespace hautbois
         VIOLA,
         VIOLA_DA_GAMBA,
         VIOLA_DAMORE,
+        VIOLE,
         VIOLINO,
         VIOLONCELLO,
+        VIRGINALE,
         TIMPANI,
         TIORBA,
         TROMBA,
+        TROMBA_DI_TIRARSI,
         TROMBONE,
-    
-    // Classical
-    //
+
+    // Abstract field
+        NONE,
+        SINWAVE,
+
     };
 }

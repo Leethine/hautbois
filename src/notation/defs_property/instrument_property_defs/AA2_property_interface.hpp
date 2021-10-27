@@ -1,18 +1,12 @@
 #pragma once
-#include "../property.hpp"
+#include "AA1_property_headers.hpp"
 
 namespace hautbois 
 {
 namespace property
 {
 
-/*
-template<typename PropertyT>
-PropertyPtr newPropertyPtr() {
-    PropertyPtr ptr { new PropertyT(); }
-    return ptr;
-}
-*/
+//TODO how to automatically construct the struct into unique_ptr ?
 
 template<typename PropertyT>
 NoteProperty * newPropertyPtr() {
@@ -23,18 +17,18 @@ std::map<InstrumentType,NoteProperty*> instrument_table {
     //{ InstrumentType::ARPA, },
     //{ InstrumentType::BASSO_CONTINUOTO, },
     //{ InstrumentType::CHITARRA, },
-    //{ InstrumentType::CLAVICEMBALO, },
+    { InstrumentType::CLAVICEMBALO, newPropertyPtr<HarpsichordNoteProperty>() },
     { InstrumentType::CLAVICORDO, newPropertyPtr<ClavichordNoteProperty>() },
     //{ InstrumentType::CORNETTO, },
     //{ InstrumentType::CORNO, },
     //{ InstrumentType::FAGOTTO, },
     //{ InstrumentType::FLAUTO_DOLCE, },
     //{ InstrumentType::FLAUTO_TRAVERSO, },
-    //{ InstrumentType::LIUTO, },
+    { InstrumentType::LIUTO, newPropertyPtr<LuthNoteProperty>() },
     //{ InstrumentType::MANDOLINO, },
     //{ InstrumentType::OBOE, },
     //{ InstrumentType::OBOE_DAMORE, },
-    //{ InstrumentType::ORGANO, },
+    { InstrumentType::ORGANO, newPropertyPtr<OrganNoteProperty>() },
     //{ InstrumentType::VIOLA, },
     //{ InstrumentType::VIOLA_DA_GAMBA, },
     //{ InstrumentType::VIOLA_DAMORE, },
@@ -46,11 +40,9 @@ std::map<InstrumentType,NoteProperty*> instrument_table {
     //{ InstrumentType::TROMBONE, },
 };
 
-/*
-PropertyPtr getPropertyPtr(InstrumentType instrument) {
-    PropertyPtr ptr { &instrument_table.at(instrument) };
-    return ptr;
-}*/
+NoteProperty * getPropertyPtr(InstrumentType instrument) {
+    return instrument_table.at(instrument);
+}
 
 }
 }

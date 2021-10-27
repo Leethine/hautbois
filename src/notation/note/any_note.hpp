@@ -167,11 +167,14 @@ protected:
     
 public:
 
-    std::unique_ptr<NoteProperty> property;
-    std::unique_ptr<NoteOrnament> ornament;
+    //TODO create unique_ptr instead of old ptr
+    //std::unique_ptr<NoteProperty> property;
+    //std::unique_ptr<NoteOrnament> ornament;
+
+    NoteProperty * property;
+    NoteOrnament * ornament;
 
     AnyNote()=delete;
-    ~AnyNote()=default;
 
     // Rest note initialiser
     explicit AnyNote( const Beat num, const Beat denom ) :
@@ -180,6 +183,8 @@ public:
     index { REST_NOTE_INDEX },
     duration { num, denom }
     {
+        property = nullptr;
+        ornament = nullptr;
         assert( verifyRestNote() );
     }
 
@@ -193,6 +198,8 @@ public:
     index { singleName2IndexQuery(name_index_table, name) },
     duration { num, denom }
     {
+        property = nullptr;
+        ornament = nullptr;
         assert( verifyNote(name_index_table) );
     }
 
@@ -209,7 +216,19 @@ public:
     groupindex { groupName2IndexQuery(name_index_table, names) },
     groupduration { durations }
     {
+        property = nullptr;
+        ornament = nullptr;
         assert( verifyNote(name_index_table) );
+    }
+
+    ~AnyNote() {
+        if (property != nullptr)
+            delete property;
+        if (ornament != nullptr)
+            delete ornament;
+
+        //to be Removed
+        std::cout << "DEBUG_MSG: note deleted..." << "\n";
     }
 
     NoteName getName() const {
