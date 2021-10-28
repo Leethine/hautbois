@@ -3,9 +3,14 @@
 
 namespace hautbois 
 {
+using BoolValue=bool;
 
 struct HarpsichordNoteProperty : NoteProperty {
-    bool delay;
+    boost::optional<bool> delay;
+
+    HarpsichordNoteProperty() {
+        delay = boost::none;
+    }
 };
 
 }

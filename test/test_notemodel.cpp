@@ -6,10 +6,16 @@
 #include <exception>
 
 using namespace std;
+using namespace hautbois;
 
 int main() {
-    using namespace hautbois;
     
+    Duration d {1,4};
+    Duration d2;
+    d2 = Duration(d);
+
+    cout << d2 << endl;
+
     // constructor test 1
     AnyNote a(NoteType::SingleNote, SCI_NAME_INDEX, "C5", 1, 2);
     // constructor test 2

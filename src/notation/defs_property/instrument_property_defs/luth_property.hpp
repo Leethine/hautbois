@@ -4,10 +4,20 @@
 namespace hautbois 
 {
 
+using StringNbrValue=int;
+using ForceValue=int;
+using BoolValue=bool;
+
 struct LuthNoteProperty : NoteProperty {
-    StringPropertyValue stringnbr;
-    ForcePropertyValue force;
-    bool delay;
+    boost::optional<StringNbrValue> stringnbr;
+    boost::optional<ForceValue> force;
+    boost::optional<bool> delay;
+
+    LuthNoteProperty() {
+        stringnbr = boost::none;
+        force = boost::none;
+        delay = boost::none;
+    }
 };
 
 }
