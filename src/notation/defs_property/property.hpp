@@ -1,2 +1,2 @@
 #pragma once
-#include "instrument_property_defs/AA2_property_interface.hpp"
+#include "instrument_property_defs/property_interface.hpp"

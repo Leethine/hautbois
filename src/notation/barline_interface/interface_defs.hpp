@@ -129,7 +129,6 @@ public:
         default:
             break;
         }
-
         // if matched, formatting is validated, otherwiser not
         if ( std::regex_match(token_ns, rx) ) { return true; }
         else {
