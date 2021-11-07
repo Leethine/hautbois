@@ -45,7 +45,7 @@ The components in the developers' framework.
  
  - Instrument player
 
-    (instruments) Instrument modeller based on [FAUST](https://faust.grame.fr/ "Functional Programming Language for Real Time Signal Processing") and the [Synthesis ToolKik](https://ccrma.stanford.edu/software/stk/ "The Synthesis ToolKit in C++ (STK)")
+    (instruments) Instrument modeller based on [FAUST](https://faust.grame.fr/ "Functional Programming Language for Real Time Signal Processing") and the [Synthesis ToolKit](https://ccrma.stanford.edu/software/stk/ "The Synthesis ToolKit in C++ (STK)").
 
     (filter) Filter components
  
