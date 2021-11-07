@@ -13,7 +13,10 @@ using KeyValPair=std::map<std::string,std::string>;
 
 struct NoteProperty {
     KeyValPair entries;
-    virtual void addEntry(const std::string&, const std::string&) {};
+    virtual void addEntry(const std::string&, const std::string&) {
+    // to be deleted
+    std::cout << "DBGMSG: Parent Class" << "\n";
+    };
 };
 
 }

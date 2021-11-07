@@ -74,7 +74,6 @@ protected:
 
 public:
     bool connected;
-    ~OneBar()=default;
     
     OneBar() :
     sys { NotationSystemType::SCIENTIFIC },

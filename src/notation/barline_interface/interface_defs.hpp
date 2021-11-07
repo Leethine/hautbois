@@ -33,8 +33,8 @@ public:
         boost::split(result, durationstr, boost::is_any_of("/"));
         // make sure the meter is well formated
         assert(result.size() == 2);
-        Duration duration { Beat(std::stoi(result[0])), 
-                            Beat(std::stoi(result[1])) };
+        Duration duration { static_cast<Beat>(std::stoi(result[0])), 
+                            static_cast<Beat>(std::stoi(result[1])) };
         assert(duration.num != 0 && duration.denom != 0);
         return duration;
     }
@@ -85,56 +85,30 @@ public:
         return result;
     }
 
-    NoteType checkType(const TokenString& token_ns) {
-        // check if it's chord
-        if ( token_ns.front() == '{' && token_ns.back() == '}' ) {
+    NoteType checkFormatting(const TokenString& token_ns) {
+        std::regex rx_rest { std::regex(RXPTN_RESTNOTE) }; 
+        std::regex rx_single { std::regex(RXPTN_SINGLENOTE) };
+        std::regex rx_chord { std::regex(RXPTN_CHORD) };
+
+        // try 3 types, return matched type 
+        if ( std::regex_match(token_ns, rx_rest) ) {
+            return NoteType::RestNote;
+        }
+        else if ( std::regex_match(token_ns, rx_single) ) {
+            return NoteType::SingleNote;
+        }
+        else if ( std::regex_match(token_ns, rx_chord) ) {
             return NoteType::GroupNote;
         }
-
-        else if ( token_ns.front() == '(' && token_ns.back() == ')' ) {
-            // check if it's rest
-            auto found1 = token_ns.find("Rest");
-            auto found2 = token_ns.find("rest");
-            auto found3 = token_ns.find("R");
-            auto found4 = token_ns.find("r");
-
-            if ( found1 != std::string::npos || found2 != std::string::npos ||
-                 found3 != std::string::npos || found4 != std::string::npos )
-                return NoteType::RestNote;
-            
-            // it must be a single note
-            else
-                return NoteType::SingleNote; 
-        }
-        // none of above, invalid type
-        else { 
-            throw std::domain_error("Invalid type: " + token_ns);
+        else {
+            throw std::domain_error("Check formatting failed: " + token_ns);
             return NoteType::TYPE_INVALID;
         }
     }
 
-    bool checkFormatting(NoteType type, const TokenString& token_ns) {
-        std::regex rx;
-        switch (type)
-        {
-        case NoteType::RestNote:
-            rx = std::regex(RXPTN_RESTNOTE);
-            break;
-        case NoteType::SingleNote:
-            rx = std::regex(RXPTN_SINGLENOTE);
-            break;
-        case NoteType::GroupNote:
-            rx = std::regex(RXPTN_CHORD);
-            break;
-        default:
-            break;
-        }
-        // if matched, formatting is validated, otherwiser not
-        if ( std::regex_match(token_ns, rx) ) { return true; }
-        else {
-            throw std::domain_error("Check formatting failed: " + token_ns);
-            return false;
-        }   
+    bool isPropertyValid(const TokenString& property_token_ns) {
+        std::regex rx { RXPTN_PROPERTY };
+        return std::regex_match(property_token_ns, rx);
     }
     
 };

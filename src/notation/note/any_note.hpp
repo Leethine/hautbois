@@ -2,8 +2,8 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <boost/optional.hpp>
 #include "../defs/defs.hpp"
-#include <memory>
 #include "../defs_property/property.hpp"
 #include "../defs_property/ornament.hpp"
 
@@ -167,12 +167,13 @@ protected:
     
 public:
 
-    //TODO create unique_ptr instead of old ptr
     //std::unique_ptr<NoteProperty> property;
     //std::unique_ptr<NoteOrnament> ornament;
 
-    NoteProperty * property;
-    NoteOrnament * ornament;
+    //NoteProperty * property;
+    //NoteOrnament * ornament;
+
+    boost::optional<NoteProperty> property;
 
     AnyNote()=delete;
 
@@ -183,8 +184,8 @@ public:
     index { REST_NOTE_INDEX },
     duration { num, denom }
     {
-        property = nullptr;
-        ornament = nullptr;
+        //property = nullptr;
+        //ornament = nullptr;
         assert( verifyRestNote() );
     }
 
@@ -198,8 +199,8 @@ public:
     index { singleName2IndexQuery(name_index_table, name) },
     duration { num, denom }
     {
-        property = nullptr;
-        ornament = nullptr;
+        //property = nullptr;
+        //ornament = nullptr;
         assert( verifyNote(name_index_table) );
     }
 
@@ -216,20 +217,28 @@ public:
     groupindex { groupName2IndexQuery(name_index_table, names) },
     groupduration { durations }
     {
-        property = nullptr;
-        ornament = nullptr;
+        //property = nullptr;
+        //ornament = nullptr;
         assert( verifyNote(name_index_table) );
     }
-
+/*
     ~AnyNote() {
-        if (property != nullptr)
-            delete property;
-        if (ornament != nullptr)
-            delete ornament;
-
-        //to be Removed
-        std::cout << "DEBUG_MSG: note deleted..." << "\n";
+        std::cout << "DESTRUCTOR: " << printNote() << "\n"; 
+        if (this->property == nullptr) {
+        }
+        else {
+            delete this->property;
+            this->property = nullptr;
+        }
+            
+        if (this->ornament == nullptr) {   
+        }
+        else {
+            delete this->ornament;
+            this->ornament = nullptr;
+        }
     }
+*/
 
     NoteName getName() const {
         return name;

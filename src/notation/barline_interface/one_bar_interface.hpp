@@ -1,18 +1,46 @@
 #pragma once
 #include "interface_defs.hpp"
+#include <memory>
 #include <cassert>
 
 namespace hautbois {
 
 class OneBarInterface : protected OneBar, protected ParserUtl {
 protected:
-    InstrumentType instrument;
+    //InstrumentType instrument;
 
-    void strAddProperty(const TokenString& property) {
+    void strAddProperty(const TokenString& property_token) {
+        assert(!property_token.empty());
+        assert(isPropertyValid(property_token));
         
+        TokenString token = deBracket(property_token);
+        //NoteProperty * note_property = makeProperty(this->instrument);
+        auto note_property = makeProperty(this->instrument);
+
+        // first split into an array of key-val pairs
+        TokenVector token_vec = splitToken(token, ";");
+        if ( token_vec.size() == 0 ) {
+            // second split of key-val pair
+            // if only one key-val pair was defined
+            TokenVector pair = splitToken(token, ":");
+            assert(pair.size() == 2);
+            note_property->addEntry(pair[0],pair[1]);
+        }
+        else {
+            for (auto item : token_vec) {
+                // second split of each key-val pair
+                TokenVector pair = splitToken(item, ":");
+                assert(pair.size() == 2);
+                note_property->addEntry(pair[0],pair[1]);
+            }
+        }
+
+        assert(!notes.empty());
+        AnyNote& last_note = getLastNote();
+        last_note.property = NoteProperty{*note_property};
     }
     
-    void strAddOrnament(const TokenString& ornament) {
+    void strAddOrnament(const TokenString& ornament_token) {
         
     }
 
@@ -113,13 +141,13 @@ protected:
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
             durations.push_back(duration_first);
-            token_property = token_vec[2];
+            token_property = "[" + token_vec[2] + "]";
         }
         else {
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
             durations.push_back(duration_first);
-            token_property = token_vec[2];
+            token_property = "[" + token_vec[2] + "]";
             token_ornament = token_vec[3];
         }
         
@@ -146,11 +174,14 @@ protected:
 
         // put the contents from the container to barline
         strAddGroupNote(names, durations);
-        strAddProperty(token_property);
-        strAddOrnament(token_ornament);
+        if ( !token_property.empty() )
+            strAddProperty(token_property);
+        if ( !token_ornament.empty() )
+            strAddOrnament(token_ornament);
     }
     
 public:
+    InstrumentType instrument;
 
     OneBarInterface() : OneBar ()
     {
@@ -176,8 +207,8 @@ public:
     void addNote(const TokenString& token) {
         TokenString token_ns = rmSpace(token);
         try {
-            NoteType type = checkType(token_ns);
-            checkFormatting(type, token_ns);
+            NoteType type = checkFormatting(token_ns);
+            assert(type != NoteType::TYPE_INVALID);
             switch (type)
             {
             case NoteType::RestNote:
