@@ -24,9 +24,6 @@ struct HarpsichordNoteProperty : NoteProperty {
 
 struct LuthNoteProperty : NoteProperty {
     void addEntry(const std::string& key, const std::string& val) override {
-        // to be deleted
-        std::cout << "DBGMSG: Child Class" << "\n";
-
         std::string lkey { key };
         std::string lval { val };
         boost::to_lower(lkey);

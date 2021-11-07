@@ -167,12 +167,6 @@ protected:
     
 public:
 
-    //std::unique_ptr<NoteProperty> property;
-    //std::unique_ptr<NoteOrnament> ornament;
-
-    //NoteProperty * property;
-    //NoteOrnament * ornament;
-
     boost::optional<NoteProperty> property;
 
     AnyNote()=delete;
@@ -184,8 +178,6 @@ public:
     index { REST_NOTE_INDEX },
     duration { num, denom }
     {
-        //property = nullptr;
-        //ornament = nullptr;
         assert( verifyRestNote() );
     }
 
@@ -199,8 +191,6 @@ public:
     index { singleName2IndexQuery(name_index_table, name) },
     duration { num, denom }
     {
-        //property = nullptr;
-        //ornament = nullptr;
         assert( verifyNote(name_index_table) );
     }
 
@@ -221,24 +211,6 @@ public:
         //ornament = nullptr;
         assert( verifyNote(name_index_table) );
     }
-/*
-    ~AnyNote() {
-        std::cout << "DESTRUCTOR: " << printNote() << "\n"; 
-        if (this->property == nullptr) {
-        }
-        else {
-            delete this->property;
-            this->property = nullptr;
-        }
-            
-        if (this->ornament == nullptr) {   
-        }
-        else {
-            delete this->ornament;
-            this->ornament = nullptr;
-        }
-    }
-*/
 
     NoteName getName() const {
         return name;
@@ -255,6 +227,16 @@ public:
     Duration getDuration() const {
         return duration;
     }
+    std::string getProperty(const std::string& key) const {
+        if ( ! this->property.is_initialized() ) {
+            return "";
+        }
+        else {
+            NoteProperty p = this->property.get();
+            return p.getValue(key);
+        }
+    }
+
 
     AnyNote duplicate() const {
         AnyNote n { AnyNote(*this) };
