@@ -4,9 +4,11 @@
 
 The "**H**ybrid **a**nd **U**niversal **T**ext-**B**ased **O**rchestral **I**nstruments **S**imulator" project, aka Hautbois, as the name indicates, aimes to create a text-based simulator for classical music.
 
-<img src="https://raw.githubusercontent.com/Leethine/hautbois/c5dd6a35552d5d72adc3361fe90f631e63f6956c/icon.svg" width="120" height="120">
+<img src="https://raw.githubusercontent.com/Leethine/hautbois/c5dd6a35552d5d72adc3361fe90f631e63f6956c/icon.svg" width="150" height="150">
 
 ### Components
+
+If you are a not a developer, please read this paragraph. If you are a developer, please also read the following paragraph **(development)**.
 
 Like in the real world, the program consists of several components:
 
@@ -29,20 +31,25 @@ The components in the developers' framework.
 
  - Composer
 
-    (notation) Basic notation system definition.
-
-    (typesetting) Typesetter or engraver that generate PDF and SVG files.
-
+    (notation) A musical notation system that defines the basic symbols, i.e. musical note, bar, sheet.
+    (contrepoints) Counterpoint system based on pre-18-cetury contrepoints rules. 
+    (improvisor) Real-time improvisation.
+    (gregorian) Melodic generator for the Gregorian chant.
+    
  - Conductor
 
     (interp) Text-based sequence creator.
  
  - Instrument player
 
-    (instruments) Instrument modeller based on [FAUST](https://faust.grame.fr/ "Functional Programming Language for Real Time Signal Processing")
+    (instruments) Instrument modeller based on [FAUST](https://faust.grame.fr/ "Functional Programming Language for Real Time Signal Processing") and the [Synthesis ToolKik](https://ccrma.stanford.edu/software/stk/ "The Synthesis ToolKit in C++ (STK)")
 
     (filter) Filter components
-    
+ 
+ - Musical engravers
+
+    (typesetting) Typesetter or engraver that generates PDF and SVG files.
+    (monks) Typesetter for Medieval scripts of Gregorian chant.
 
 
 ### Release Names and Version Control
@@ -51,10 +58,6 @@ Release that involves major break-through should use the name borrowed from clas
 
 Within each major release, versions are numbered by No.X, i.e., _**ReleaseName**_ **No.X**. There should also be a global version identifier along with **releasename+No.X** pattern, started with _**opus**_ or _**Op.**_
 
-For example:
+#### The first release will be:
+#### _Invention n°1, Op. 0.1.1_ 
 
-#### Currently under development:
-#### _Sonate par ordinateur n°0 (Op. 0.0.0)_ 
-
-#### Completed release:
-#### _None_
