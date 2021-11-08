@@ -3,6 +3,7 @@
 #include "../../defs/defs.hpp"
 #include <boost/algorithm/string.hpp>
 
+/*
 namespace hautbois 
 {
 using OrnamentName=std::string;
@@ -24,7 +25,7 @@ enum class OrnamentType
 
 const std::map<OrnamentName, OrnamentType> ornament_dictionary {
     // To be deleted
-    /*
+    
     {"Acciaccatura", OrnamentType::ACCIACCATURA},
     {"acciaccatura", OrnamentType::ACCIACCATURA},
     {"ACCIACCATURA", OrnamentType::ACCIACCATURA},
@@ -58,7 +59,7 @@ const std::map<OrnamentName, OrnamentType> ornament_dictionary {
     {"trillo", OrnamentType::TRILLO},
     {"Trillo", OrnamentType::TRILLO},
     {"TRILLO", OrnamentType::TRILLO}
-    */
+    
 
     // Italian
     {"ACCIACCATURA", OrnamentType::ACCIACCATURA},
@@ -109,6 +110,44 @@ struct NoteOrnament
     NoteOrnament(const OrnamentName& name) {
         setType(name);
     }
+};
+
+}
+*/
+
+
+namespace hautbois 
+{
+
+struct NoteOrnament {
+    std::string key;
+    int value;
+    void addOrnament(const std::string& lkey, const std::string& lval) {
+        std::set<std::string> valid_keys {
+            "acciaccatura", "appoggiatura", "arpeggio",
+            "cadenza", "dinamica", "fioritura", "glissando",
+            "gruppetto", "mordente", "tremolo", "trillo"
+        };
+        auto search = valid_keys.find(lkey);
+        if ( search != valid_keys.end() ) {
+            this->key = lkey;
+            if ( lval.empty() ) 
+            this->value = 0;
+            else {
+                try {
+                    this->value = std::stoi(lval);
+                }
+                catch(std::exception &e) {
+                    std::cout << "Warning: " << "Value must be integer."
+                            << "\n" << e.what() << "\n";
+                    this->value = 0;
+                }
+            }
+        }
+        else {
+            throw std::domain_error("Not supported Key: " + lkey);
+        }
+    };
 };
 
 }

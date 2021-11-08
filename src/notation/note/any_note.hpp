@@ -168,6 +168,7 @@ protected:
 public:
 
     boost::optional<NoteProperty> property;
+    boost::optional<NoteOrnament> ornament;
 
     AnyNote()=delete;
 
@@ -236,7 +237,24 @@ public:
             return p.getValue(key);
         }
     }
-
+    std::string getOrnament() const {
+        if ( ! this->ornament.is_initialized() ) {
+            return "";
+        }
+        else {
+            NoteOrnament p = this->ornament.get();
+            return p.key;
+        }
+    }
+    int getOrnamentValue() const {
+        if ( ! this->ornament.is_initialized() ) {
+            return 0;
+        }
+        else {
+            NoteOrnament p = this->ornament.get();
+            return p.value;
+        }
+    }
 
     AnyNote duplicate() const {
         AnyNote n { AnyNote(*this) };

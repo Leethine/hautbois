@@ -22,6 +22,10 @@ public:
                i == '[' || i == ']' ;
     }
 
+    static bool isAngleBracket(char i) { 
+        return i == '<' || i == '>' ;
+    }
+
     TokenString rmSpace(const TokenString& cstr) {
         TokenString str { cstr };
         str.erase(remove_if(str.begin(), str.end(), ::isspace), str.end());
@@ -78,6 +82,20 @@ public:
         return content_str;
     }
 
+    TokenString rmAngleBracket(const TokenString& token_ns) {
+        // remove ALL brackets
+        TokenString content_str { token_ns };
+        content_str.erase(
+            std::remove_if(
+                content_str.begin(),
+                content_str.end(),
+                ParserUtl::isAngleBracket
+            ),
+            content_str.end()
+        );
+        return content_str;
+    }
+
     TokenVector splitToken(const TokenString& token_ns, const std::string& sep) {
         TokenVector result;
         boost::split(result, token_ns, boost::is_any_of(sep), 
@@ -109,6 +127,11 @@ public:
     bool isPropertyValid(const TokenString& property_token_ns) {
         std::regex rx { RXPTN_PROPERTY };
         return std::regex_match(property_token_ns, rx);
+    }
+
+    bool isOrnamentValid(const TokenString& ornament_token_ns) {
+        std::regex rx { RXPTN_ORNAMENT };
+        return std::regex_match(ornament_token_ns, rx);
     }
     
 };

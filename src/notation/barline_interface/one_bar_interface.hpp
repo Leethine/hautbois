@@ -14,7 +14,6 @@ protected:
         assert(isPropertyValid(property_token));
         
         TokenString token = deBracket(property_token);
-        //NoteProperty * note_property = makeProperty(this->instrument);
         auto note_property = makeProperty(this->instrument);
 
         // first split into an array of key-val pairs
@@ -41,7 +40,23 @@ protected:
     }
     
     void strAddOrnament(const TokenString& ornament_token) {
+        assert(!ornament_token.empty());
+        assert(isOrnamentValid(ornament_token));
+        TokenString token = deBracket(ornament_token);
+        NoteOrnament note_ornament;
+        // check if value is defined
+        TokenVector token_vec = splitToken(token, ":");
+        if ( token_vec.size() == 2 ) {
+            // if size is 2 ==> value is defined
+            note_ornament.addOrnament(rmAngleBracket(token_vec[0]), 
+                                      rmAngleBracket(token_vec[1]));
+        }
+        else {
+            note_ornament.addOrnament(rmAngleBracket(token), "");
+        }
         
+        AnyNote& last_note = getLastNote();
+        last_note.ornament = NoteOrnament(note_ornament);
     }
 
     void strAddRestNote(const TokenString& duration) {
@@ -85,7 +100,13 @@ protected:
             break;
         case 3:
             strAddSingleNote(token_vec[0], token_vec[1]);
-            strAddProperty(token_vec[2]);
+            // maybe it's ornament rather than property
+            if ( token_vec[2].front() == '<' && token_vec[2].back() == '>' ) {
+                strAddOrnament(token_vec[2]);
+            }
+            else {
+                strAddProperty(token_vec[2]);
+            }
             break;
         case 4:
             strAddSingleNote(token_vec[0], token_vec[1]);
@@ -141,7 +162,14 @@ protected:
             names.push_back(token_vec[0]);
             duration_first = token_vec[1];
             durations.push_back(duration_first);
-            token_property = "[" + token_vec[2] + "]";
+
+            // maybe it's ornament rather than property
+            if ( token_vec[2].front() == '<' && token_vec[2].back() == '>' ) {
+                token_ornament = token_vec[2];
+            }
+            else {
+                token_property = "[" + token_vec[2] + "]";
+            }
         }
         else {
             names.push_back(token_vec[0]);
