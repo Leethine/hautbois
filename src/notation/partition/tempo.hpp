@@ -31,6 +31,7 @@ enum class Tempo {
     GRAVE,
     ADAGISSIMO,
     LENTISSIMO,
+    UNKNOWN,
 };
 
 struct Range
@@ -67,9 +68,11 @@ const TempoBpmRangeMap TEMPO_BPM_TABLE {
     { Tempo::GRAVE, {0,0} },
     { Tempo::ADAGISSIMO, {0,0} },
     { Tempo::LENTISSIMO, {0,0} },
+    //{ Tempo::UNKNOWN, {0,0} },
 };
 
 using TempoTextTable=std::map<std::string,Tempo>;
+/*
 const TempoTextTable TEMPO_TEXT_TABLE_IT {
     { "prestissimo", Tempo::PRESTISSIMO},
     { "presto", Tempo::PRESTO},
@@ -96,6 +99,35 @@ const TempoTextTable TEMPO_TEXT_TABLE_IT {
     { "grave", Tempo::GRAVE},
     { "adagissimo", Tempo::ADAGISSIMO},
     { "lentissimo", Tempo::LENTISSIMO},
+};*/
+
+const TempoTextTable TEMPO_TEXT_TABLE_IT {
+    { "prestissimo", Tempo::PRESTISSIMO},
+    { "presto", Tempo::PRESTO},
+    { "allegrissimo", Tempo::ALLEGRISSIMO},
+    { "allegrovivance", Tempo::ALLEGRO_VIVANCE},
+    { "vivacissimo", Tempo::VIVACISSIMO},
+    { "vivance", Tempo::VIVANCE},
+    { "allegroassai", Tempo::ALLEGRO_ASSAI},
+    { "allegromolto", Tempo::ALLEGRO_MOLTO},
+    { "allegro", Tempo::ALLEGRO},
+    { "allegromanontroppo", Tempo::ALLEGRO_MA_NON_TROPPO},
+    { "allegronontroppo", Tempo::ALLEGRO_NON_TROPPO},
+    { "allegromoderato", Tempo::ALLEGRO_MODERATO},
+    { "allegretto", Tempo::ALLEGRETTO},
+    { "moderato", Tempo::MODERATO},
+    { "marciamoderato", Tempo::MARCIA_MODERATO},
+    { "adantino", Tempo::ADANTINO},
+    { "adante", Tempo::ANDANTE},
+    { "adagietto", Tempo::ADAGIETTO},
+    { "adagio", Tempo::ADAGIO},
+    { "larghetto", Tempo::LARGHETTO},
+    { "lento", Tempo::LENTO},
+    { "largo", Tempo::LARGO},
+    { "grave", Tempo::GRAVE},
+    { "adagissimo", Tempo::ADAGISSIMO},
+    { "lentissimo", Tempo::LENTISSIMO},
+    { "unknown", Tempo::UNKNOWN},
 };
 
 }

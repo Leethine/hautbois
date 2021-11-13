@@ -84,7 +84,7 @@ public:
     connected { false }
     {}
 
-    explicit OneBar(ScaleName& scalename, 
+    explicit OneBar(const ScaleName& scalename, 
                     Beat num, Beat denom) :
     sys { NotationSystemType::SCIENTIFIC },
     meter { Duration{num, denom} },

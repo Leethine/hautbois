@@ -11,7 +11,10 @@ enum class TonalityType {
 
     // Minors
     a, e, b, fs, cs, gs, ds,
-    eb, bb, f, c, g, d
+    eb, bb, f, c, g, d,
+
+    // Unset
+    UNKNOWN
 };
 
 using TonalityNameTypeTable=std::map<NoteName, TonalityType>;

@@ -7,11 +7,11 @@ namespace hautbois
 class BarElement : public OneBarInterface {
     Clef clef;
     ClefAt clef_at;
+    Tempo tempo;
 
-    
     public:
     
-    explicit BarElement (NoteName& scale, Beat num, Beat denom) : 
+    explicit BarElement (const NoteName& scale, Beat num, Beat denom) : 
     OneBarInterface(scale, num, denom)
     {
         clef = G_CLEF;
@@ -47,23 +47,44 @@ class BarElement : public OneBarInterface {
             throw std::domain_error("Invalid Clef name!");
         }
     }
+
+    void setTempo(const std::string& tempostr) {
+        std::string tempostr_ns = BarParserUtl::rmSpace(tempostr);
+        boost::to_lower(tempostr_ns);
+        try {
+            tempo = TEMPO_TEXT_TABLE_IT.at(tempostr_ns);
+        }
+        catch(std::exception& e) {
+            std::cout << "Error: invalid tempo: " << tempostr << "!\n";
+        }
+    }
+
+    void setTempo(Tempo tempo) {
+        this->tempo = tempo;
+    }
+
+    Tempo getTempo() {
+        return tempo;
+    }
 };
 
-//using BarVec=std::vector<BarElement>;
 using ListBar=std::list<std::unique_ptr<BarElement>>;
 class OneVoice {
     protected:
-
     const Meter meter;
     mutable ScaleName scale;
     mutable ListBar bars;
-    //mutable BarVec bars;
-
+    
+    InstrumentType instrument;
+    Tempo tempo;
+    
     public:
     OneVoice()=delete;
-    OneVoice(ScaleName scale, const Meter& meter) :
+    OneVoice(const ScaleName& scale, const Meter& meter) :
     scale { scale },
-    meter { meter }
+    meter { meter },
+    tempo { Tempo::UNKNOWN },
+    instrument { InstrumentType::NONE }
     {
         // create first empty bar
         bars.emplace_back( new BarElement(scale, meter.num, meter.denom) );
@@ -81,8 +102,8 @@ class OneVoice {
                 return *recovered_bar;
             }
         }
-        catch (std::exception e) {
-            std::cout << n << ": " << e.what() << "\n";
+        catch (std::exception& e) {
+            std::cout << "Error at " <<  n << ": " << e.what() << "\n";
             std::unique_ptr<BarElement>& recovered_bar = * bars.end();
             return *recovered_bar;
         }
@@ -111,8 +132,25 @@ class OneVoice {
     void showBars() {
         for (int i=0; i < bars.size(); i++) {
             BarElement& currentbar = getNthBar(i);
-            std::cout << currentbar << "\n"; 
+            std::cout << " " << currentbar << " |";
         }
+        std::cout << "|;\n";
+    }
+    
+    void setTempo(Tempo tempo) {
+        this->tempo = tempo;
+    }
+
+    Tempo getTempo() {
+        return tempo;
+    }
+
+    void setInstrument(InstrumentType instrument) {
+        this->instrument = instrument;
+    }
+
+    InstrumentType getInstrument() {
+        return this->instrument;
     }
 };
 

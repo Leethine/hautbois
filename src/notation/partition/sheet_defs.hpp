@@ -24,6 +24,11 @@ const int LINE5 { 5 };
 
 class myPairClef : public std::pair<Clef,ClefAt> {
     public:
+    myPairClef(Clef clef, UIntValue at) {
+        first = clef;
+        second = at;
+    }
+
     Clef clef() {
         return this->first;
     }

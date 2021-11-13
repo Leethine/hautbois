@@ -214,8 +214,8 @@ public:
         this->instrument = InstrumentType::NONE;
     }
 
-    explicit OneBarInterface (NoteName& scale, Beat num, Beat denom) :
-    OneBar(scale, num, denom) 
+    explicit OneBarInterface (const NoteName& scale, Beat num, Beat denom) :
+    OneBar(scale, num, denom)
     {
         this->instrument = InstrumentType::NONE;
     }

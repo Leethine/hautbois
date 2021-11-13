@@ -76,4 +76,19 @@ const InstrumentNameTypeTable INSTRUMENT_NAME_TABLE_IT {
     
 };
 
+namespace Instrument {
+
+InstrumentType str2Type(std::string str) {
+    try {
+        return INSTRUMENT_NAME_TABLE_IT.at(str);
+    }
+    catch (std::exception& e) {
+        std::cout << "Error: Instrument " << str << " cannot be recognized.\n"
+                  << e.what() << "\n"; 
+        return InstrumentType::NONE;
+    }
+}
+
+}
+
 }
