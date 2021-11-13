@@ -7,6 +7,7 @@
 namespace hautbois 
 {
 
+using UIntValue=unsigned int;
 using Beat=unsigned int;
 
 struct Duration

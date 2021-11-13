@@ -5,9 +5,9 @@
 
 namespace hautbois {
 
-class OneBarInterface : protected OneBar, protected ParserUtl {
+class OneBarInterface : protected OneBar, protected BarParserUtl {
 protected:
-    //InstrumentType instrument;
+    InstrumentType instrument;
 
     void strAddProperty(const TokenString& property_token) {
         assert(!property_token.empty());
@@ -209,13 +209,17 @@ protected:
     }
     
 public:
-    InstrumentType instrument;
-
     OneBarInterface() : OneBar ()
     {
         this->instrument = InstrumentType::NONE;
     }
-    
+
+    explicit OneBarInterface (NoteName& scale, Beat num, Beat denom) :
+    OneBar(scale, num, denom) 
+    {
+        this->instrument = InstrumentType::NONE;
+    }
+
     explicit OneBarInterface (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
@@ -267,6 +271,17 @@ public:
 
     const std::string printNthNote(size_t n) {
         return OneBar::printNthNote(n);
+    }
+
+    void setInstrument(InstrumentType istm) {
+        if (this->instrument == InstrumentType::NONE ||
+            this->instrument == InstrumentType::SINWAVE ) {
+            this->instrument = istm;
+        }
+        else {
+            std::cout << "Warning" 
+                      << "Instrument already set, do nothing" << "\n";
+        }
     }
 
 };

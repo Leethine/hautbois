@@ -14,6 +14,7 @@ namespace hautbois {
 
 using Meter=Duration;
 using ListNote=std::list<std::unique_ptr<AnyNote>>;
+using ScaleName=std::string;
 
 class OneBar {
 protected:
@@ -33,7 +34,7 @@ protected:
         }
     }
     
-    TonalityType tonalityStr2TypeQuery(NoteName name) const {
+    TonalityType tonalityStr2TypeQuery(ScaleName name) const {
         try { return tonality_str_type_table.at(name); }
         catch (std::out_of_range& e) {
             std::cout << "Could not detect tonality: " 
@@ -83,7 +84,16 @@ public:
     connected { false }
     {}
 
-    explicit OneBar(NotationSystemName& name, NoteName& scalename, 
+    explicit OneBar(ScaleName& scalename, 
+                    Beat num, Beat denom) :
+    sys { NotationSystemType::SCIENTIFIC },
+    meter { Duration{num, denom} },
+    scale { tonalityStr2TypeQuery(scalename) },
+    relativescale { relativeScaleQuery(this->scale) },
+    connected { false }
+    {}
+    
+    explicit OneBar(NotationSystemName& name, ScaleName& scalename, 
                     Beat num, Beat denom) :
     sys { notationName2TypeQuery(name) },
     meter { Duration{num, denom} },
@@ -91,7 +101,7 @@ public:
     relativescale { relativeScaleQuery(this->scale) },
     connected { false }
     {}
-    
+
     AnyNote& getNthNote(size_t n) const {
         try {
             if ( n >= notes.size() )  {
@@ -121,7 +131,7 @@ public:
         checkLength();
     }
     
-    void appendSingleNote(const NoteName& name, const Duration& d) {
+    void appendSingleNote(const ScaleName& name, const Duration& d) {
         switch (sys)
         {
         case NotationSystemType::SCIENTIFIC :

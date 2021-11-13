@@ -14,7 +14,7 @@ using TokenString=std::string;
 using TokenVector=std::vector<TokenString>;
 using TokenStrVector=std::vector<TokenString>;
 
-class ParserUtl {
+class BarParserUtl {
 public:
     static bool isBracket(char i) { 
         return i == '(' || i == ')' || 
@@ -75,7 +75,7 @@ public:
             std::remove_if(
                 content_str.begin(),
                 content_str.end(),
-                ParserUtl::isBracket
+                BarParserUtl::isBracket
             ),
             content_str.end()
         );
@@ -89,7 +89,7 @@ public:
             std::remove_if(
                 content_str.begin(),
                 content_str.end(),
-                ParserUtl::isAngleBracket
+                BarParserUtl::isAngleBracket
             ),
             content_str.end()
         );

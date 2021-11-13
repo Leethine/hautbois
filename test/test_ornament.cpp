@@ -8,10 +8,12 @@ using namespace std;
 int main() {
 
     OneBarInterface b1;
-    b1.instrument = InstrumentType::LIUTO;
-    b1.addNote("(C4, 1/4, [force:pp], <appoggiatura>)");
+    b1.setInstrument(InstrumentType::LIUTO);
+    b1.addNote("(C4, 1/8, [force:pp], <appoggiatura>)");
+    b1.addNote("(C4, 1/8, <appoggiatura>)");
+    //b1.addNote("(C4, 1/8, <appoggiatura>, [force:pp])");
     //cout << "success" << "\n";
-    b1.addNote("{(C4,1/4,[force:ff],<trillo:3>)(E4,1/8)(G4,1/16)}");
+    b1.addNote("{(C4,1/8,[force:ff],<trillo:3>)(E4,1/8)(G4,1/16)}");
     //cout << "success" << "\n";
     b1.addNote("(r, 1/4)");
     //cout << "success" << "\n";
