@@ -7,6 +7,7 @@ namespace hautbois
 class BarElement : public OneBarInterface {
     Clef clef;
     ClefAt clef_at;
+
     
     public:
     

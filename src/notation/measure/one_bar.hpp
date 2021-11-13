@@ -206,7 +206,10 @@ public:
     }
 
     AnyNote& getLastNote() const {
-        return getNthNote(notes.size() - 1);
+        if ( !notes.empty() )
+            return getNthNote(notes.size() - 1);
+        else
+            throw std::range_error("Error: Bar is empty");
     }
 
     const std::string printBarLine() const {

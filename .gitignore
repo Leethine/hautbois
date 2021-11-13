@@ -4,3 +4,6 @@ icon_old.svg
 drawing-horizontal.svg
 refs/
 */a.out
+
+.vscode
+src/*/.vscode

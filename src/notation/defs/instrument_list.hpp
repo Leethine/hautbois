@@ -43,7 +43,7 @@ enum class InstrumentType
 };
 
 using InstrumentNameTypeTable=std::map<InstrumentName,InstrumentType>;
-InstrumentNameTypeTable instrument_name_table_it {
+const InstrumentNameTypeTable INSTRUMENT_NAME_TABLE_IT {
     {"arpa", InstrumentType::ARPA},
     {"basso_continuoto", InstrumentType::BASSO_CONTINUOTO},
     {"chitarra", InstrumentType::CHITARRA},
