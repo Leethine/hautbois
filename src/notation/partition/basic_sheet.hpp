@@ -103,14 +103,7 @@ class BasicSheet {
             instrusment_list.push_back(InstrumentType::NONE);
         }
     }
-    /*
-    void resetTonalities() {
-        scale_list.clear();
-        for(int i=0; i < nb_voice; i++) {
-            scale_list.emplace_back(this->scale);
-        }
-    }
-    */
+    
     void resetClefs() {
         clefs_list.clear();
     }
@@ -190,13 +183,20 @@ class BasicSheet {
         }
     }
     
-    /*
-    void setTonalities(const std::vector<std::string>& val_list) {
-        assert( val_list.size() == nb_voice );
-        assert( scale_list.empty() );
-        scale_list = val_list;
+    // set Nth voice tonality
+    void setTonalyN(const std::string& scalestr, size_t n) {
+        assert( scale_list.size() == nb_voice );
+        assert( n < nb_voice );
+        if ( scale_list.size() == nb_voice ) {
+            throw std::runtime_error("Tonality not set yet!");
+        }
+        if ( n >= nb_voice ) {
+            throw std::range_error("Index N out of range!");
+        }
+        else {
+            scale_list[n] = scalestr;
+        }
     }
-    */
 
     void initializeSheet() {
         try {
