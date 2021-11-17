@@ -4,7 +4,7 @@
 namespace hautbois 
 {
 
-class BarElement : public OneBarInterface {
+class BarElement : public OneBarFacade {
     Clef clef;
     ClefAt clef_at;
     Tempo tempo;
@@ -12,7 +12,7 @@ class BarElement : public OneBarInterface {
     public:
     
     explicit BarElement (const NoteName& scale, Beat num, Beat denom) : 
-    OneBarInterface(scale, num, denom)
+    OneBarFacade(scale, num, denom)
     {
         clef = G_CLEF;
         clef_at = stave::LINE3;

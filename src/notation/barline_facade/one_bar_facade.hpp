@@ -1,11 +1,11 @@
 #pragma once
-#include "interface_defs.hpp"
+#include "facade_defs.hpp"
 #include <memory>
 #include <cassert>
 
 namespace hautbois {
 
-class OneBarInterface : protected OneBar, protected BarParserUtl {
+class OneBarFacade : protected OneBar, protected BarParserUtl {
 protected:
     InstrumentType instrument;
 
@@ -209,18 +209,18 @@ protected:
     }
     
 public:
-    OneBarInterface() : OneBar ()
+    OneBarFacade() : OneBar ()
     {
         this->instrument = InstrumentType::NONE;
     }
 
-    explicit OneBarInterface (const NoteName& scale, Beat num, Beat denom) :
+    explicit OneBarFacade (const NoteName& scale, Beat num, Beat denom) :
     OneBar(scale, num, denom)
     {
         this->instrument = InstrumentType::NONE;
     }
 
-    explicit OneBarInterface (NotationSystemName& name, 
+    explicit OneBarFacade (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
     {
@@ -260,7 +260,7 @@ public:
         }
     }
 
-    friend std::ostream& operator<<(std::ostream& o, OneBarInterface& b) {
+    friend std::ostream& operator<<(std::ostream& o, OneBarFacade& b) {
         o << b.OneBar::printBarLine();
         return o;
     }

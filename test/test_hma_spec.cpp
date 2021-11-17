@@ -11,14 +11,14 @@
 
 // GroupNote: {SingleNote, SingleNote, ...}
 
-#include "one_bar_interface.hpp"
+#include "../src/notation/notation.hpp"
 
 using namespace hautbois;
 using namespace std;
 
 namespace MyTest {
 
-bool checkFormatting(ParserUtl& p, NoteType type, const TokenString& token_ns) {
+bool checkFormatting(BarParserUtl& p, NoteType type, const TokenString& token_ns) {
 
     std::regex rx;
     switch (type)
@@ -44,7 +44,7 @@ bool checkFormatting(ParserUtl& p, NoteType type, const TokenString& token_ns) {
 }
 
 int main() {
-    ParserUtl p;
+    BarParserUtl p;
 
     TokenString s1 = "(C4,1/2)";
     TokenString s2 = "(R,1/2)";
@@ -56,13 +56,13 @@ int main() {
     TokenString s8 = "{(Gb5,1/16)(E#5,1/16)(Bb5,1/32)}";
     TokenString s9 = "{(Gb5,1/16)(E#5)(Bb5)}";
     
-    cout <<  boolalpha << s1 << " " << MyTest::checkFormatting(p, p.checkType(s1), s1) << "\n";
-    cout <<  boolalpha << s2 << " " << MyTest::checkFormatting(p, p.checkType(s2), s2) << "\n";
-    cout <<  boolalpha << s3 << " " << MyTest::checkFormatting(p, p.checkType(s3), s3) << "\n";
-    cout <<  boolalpha << s4 << " " << MyTest::checkFormatting(p, p.checkType(s4), s4) << "\n";
-    cout <<  boolalpha << s5 << " " << MyTest::checkFormatting(p, p.checkType(s5), s5) << "\n";
-    cout <<  boolalpha << s6 << " " << MyTest::checkFormatting(p, p.checkType(s6), s7) << "\n";
-    cout <<  boolalpha << s7 << " " << MyTest::checkFormatting(p, p.checkType(s7), s7) << "\n";
-    cout <<  boolalpha << s8 << " " << MyTest::checkFormatting(p, p.checkType(s8), s8) << "\n";
-    cout <<  boolalpha << s9 << " " << MyTest::checkFormatting(p, p.checkType(s9), s9) << "\n";
+    cout <<  boolalpha << s1 << " " << MyTest::checkFormatting(p, p.checkFormatting(s1), s1) << "\n";
+    cout <<  boolalpha << s2 << " " << MyTest::checkFormatting(p, p.checkFormatting(s2), s2) << "\n";
+    cout <<  boolalpha << s3 << " " << MyTest::checkFormatting(p, p.checkFormatting(s3), s3) << "\n";
+    cout <<  boolalpha << s4 << " " << MyTest::checkFormatting(p, p.checkFormatting(s4), s4) << "\n";
+    cout <<  boolalpha << s5 << " " << MyTest::checkFormatting(p, p.checkFormatting(s5), s5) << "\n";
+    cout <<  boolalpha << s6 << " " << MyTest::checkFormatting(p, p.checkFormatting(s6), s7) << "\n";
+    cout <<  boolalpha << s7 << " " << MyTest::checkFormatting(p, p.checkFormatting(s7), s7) << "\n";
+    cout <<  boolalpha << s8 << " " << MyTest::checkFormatting(p, p.checkFormatting(s8), s8) << "\n";
+    cout <<  boolalpha << s9 << " " << MyTest::checkFormatting(p, p.checkFormatting(s9), s9) << "\n";
 }

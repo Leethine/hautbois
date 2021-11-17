@@ -6,7 +6,7 @@ using namespace hautbois;
 using namespace std;
 
 int main() {
-    OneBarInterface b1;
+    OneBarFacade b1;
     
     /*
     b1.appendRestNote({1,4});
@@ -39,7 +39,7 @@ int main() {
     cout << b1 << "\n";
     cout << "Object size: " << sizeof(b1) << "\n";
 
-    OneBarInterface b2;
+    OneBarFacade b2;
     b2.addNote("(C4,1/8)");
     b2.addNote("(C#4,1/8)");
     b2.addNote("(r, 1/8)");

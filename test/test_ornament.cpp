@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
 
-    OneBarInterface b1;
+    OneBarFacade b1;
     b1.setInstrument(InstrumentType::LIUTO);
     b1.addNote("(C4, 1/8, [force:pp], <appoggiatura>)");
     b1.addNote("(C4, 1/8, <appoggiatura>)");

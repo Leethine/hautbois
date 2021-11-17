@@ -8,7 +8,7 @@ using namespace std;
 int main() {
 
     /*
-    OneBarInterface b1;
+    OneBarFacade b1;
     b1.addNote("(C4, 1/8, [force:pp], <appoggiatura>)");
     b1.addNote("(C4, 1/8, <appoggiatura>)");
     b1.addNote("{(C4,1/8,[force:ff],<trillo:3>)(E4,1/8)(G4,1/16)}");

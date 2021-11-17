@@ -7,8 +7,8 @@ using namespace std;
 
 int main() {
 
-    OneBarInterface b1;
-    b1.instrument = InstrumentType::LIUTO;
+    OneBarFacade b1;
+    b1.setInstrument(InstrumentType::LIUTO);
     b1.addNote("(C4, 1/4, [force:pp])");
     //cout << "success" << "\n";
     b1.addNote("{(C4,1/4,[force:ff])(E4,1/8)(G4,1/16)}");
