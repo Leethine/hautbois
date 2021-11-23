@@ -17,8 +17,10 @@ struct HarpsichordNoteProperty : NoteProperty {
         auto search = valid_keys.find(lkey);
         if ( search != valid_keys.end() )
             entries.emplace(lkey,lval);
-        else
+        else {
+            std::cout << "Not supported Key: " << lkey << "\n";
             throw std::domain_error("Not supported Key: " + lkey);
+        }
     }
 };
 
@@ -35,8 +37,10 @@ struct LuthNoteProperty : NoteProperty {
         auto search = valid_keys.find(lkey);
         if ( search != valid_keys.end() )
             entries.emplace(lkey,lval);
-        else
+        else {
+            std::cout << "Not supported Key: " << lkey << "\n";
             throw std::domain_error("Not supported Key: " + lkey);
+        }
     }
 };
 
@@ -51,10 +55,12 @@ struct SineWaveNoteProperty : NoteProperty {
             "waits","lasts"
         };
         auto search = valid_keys.find(lkey);
-        if ( search == valid_keys.end() )
+        if ( search != valid_keys.end() )
             entries.emplace(lkey,lval);
-        else
+        else {
+            std::cout << "Not supported Key: " << lkey << "\n";
             throw std::domain_error("Not supported Key: " + lkey);
+        }
     }
 };
 

@@ -122,10 +122,10 @@ class OneVoice {
             bars.emplace_back( new BarElement(scale,meter.num, meter.denom) );
             
             BarElement& lastbar = getLastBar();
-            lastbar.addNote(token);
+            lastbar.addNote(token, this->instrument);
         }
         else {
-            lastbar.addNote(token);
+            lastbar.addNote(token, this->instrument);
         }
     }
 

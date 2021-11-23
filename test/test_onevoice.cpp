@@ -20,6 +20,7 @@ int main() {
     */
     
     OneVoice voice1( "Cm", {4,4} );
+    voice1.setInstrument(InstrumentType::LIUTO);
     
     voice1.addNote("(C4, 1/8, [force:pp], <appoggiatura>)");
     voice1.addNote("(C4, 1/8, <appoggiatura>)");

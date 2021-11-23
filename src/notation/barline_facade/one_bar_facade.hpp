@@ -7,14 +7,14 @@ namespace hautbois {
 
 class OneBarFacade : protected OneBar, protected BarParserUtl {
 protected:
-    InstrumentType instrument;
-
-    void strAddProperty(const TokenString& property_token) {
+    
+    void strAddProperty(const TokenString& property_token, 
+                        InstrumentType instrument) {
         assert(!property_token.empty());
         assert(isPropertyValid(property_token));
         
         TokenString token = deBracket(property_token);
-        auto note_property = makeProperty(this->instrument);
+        auto note_property = makeProperty(instrument);
 
         // first split into an array of key-val pairs
         TokenVector token_vec = splitToken(token, ";");
@@ -85,7 +85,8 @@ protected:
         strAddRestNote(token_vec[1]);
     }
 
-    void tokenAddSingleNote(const TokenString& token_ns) {
+    void tokenAddSingleNote(const TokenString& token_ns, 
+                            InstrumentType instrument) {
         TokenVector token_vec = splitToken(deBracket(token_ns), ",");
         // pre-cheking
         assert(token_vec.size() >= 2 && token_vec.size() <= 4);
@@ -105,12 +106,12 @@ protected:
                 strAddOrnament(token_vec[2]);
             }
             else {
-                strAddProperty(token_vec[2]);
+                strAddProperty(token_vec[2], instrument);
             }
             break;
         case 4:
             strAddSingleNote(token_vec[0], token_vec[1]);
-            strAddProperty(token_vec[2]);
+            strAddProperty(token_vec[2], instrument);
             strAddOrnament(token_vec[3]);
             break;
         default:
@@ -118,7 +119,8 @@ protected:
         }
     }
 
-    void tokenAddGroupNote(const TokenString& token_ns) {
+    void tokenAddGroupNote(const TokenString& token_ns,
+                           InstrumentType instrument) {
         // remove curley brackets {()()...()} ==> ()()...()
         TokenString token_ns_no_bracket = deBracket(token_ns);
         // remove two round brackets ()()...() ==> )()...(
@@ -203,7 +205,7 @@ protected:
         // put the contents from the container to barline
         strAddGroupNote(names, durations);
         if ( !token_property.empty() )
-            strAddProperty(token_property);
+            strAddProperty(token_property, instrument);
         if ( !token_ornament.empty() )
             strAddOrnament(token_ornament);
     }
@@ -211,20 +213,17 @@ protected:
 public:
     OneBarFacade() : OneBar ()
     {
-        this->instrument = InstrumentType::NONE;
     }
 
     explicit OneBarFacade (const NoteName& scale, Beat num, Beat denom) :
     OneBar(scale, num, denom)
     {
-        this->instrument = InstrumentType::NONE;
     }
 
     explicit OneBarFacade (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
     {
-        this->instrument = InstrumentType::NONE;
     }
 
     bool checkBarComplete() const {
@@ -236,7 +235,7 @@ public:
         else { return false; }
     }
     
-    void addNote(const TokenString& token) {
+    void addNote(const TokenString& token, InstrumentType instrument) {
         TokenString token_ns = rmSpace(token);
         try {
             NoteType type = checkFormatting(token_ns);
@@ -247,10 +246,10 @@ public:
                 tokenAddRestNote(token_ns);
                 break;
             case NoteType::SingleNote:
-                tokenAddSingleNote(token_ns);
+                tokenAddSingleNote(token_ns, instrument);
                 break;
             case NoteType::GroupNote:
-                tokenAddGroupNote(token_ns);
+                tokenAddGroupNote(token_ns, instrument);
                 break;
             default:
                 break;
@@ -258,6 +257,10 @@ public:
         } catch (const std::exception &e) {
             std::cout << "Error in addNote(): " << e.what() << "\n";
         }
+    }
+
+    void addNote(const TokenString& token) {
+        addNote(token, InstrumentType::NONE);
     }
 
     friend std::ostream& operator<<(std::ostream& o, OneBarFacade& b) {
@@ -271,17 +274,6 @@ public:
 
     const std::string printNthNote(size_t n) {
         return OneBar::printNthNote(n);
-    }
-
-    void setInstrument(InstrumentType istm) {
-        if (this->instrument == InstrumentType::NONE ||
-            this->instrument == InstrumentType::SINWAVE ) {
-            this->instrument = istm;
-        }
-        else {
-            std::cout << "Warning" 
-                      << "Instrument already set, do nothing" << "\n";
-        }
     }
 
 };
