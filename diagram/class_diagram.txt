@@ -1,0 +1,32 @@
+@startuml
+package "notation" {
+enum InstrumentType
+enum Tempo
+class Duration
+class Property
+class Ornament
+class AnyNote
+class OneBar
+class BarParserUtl
+class OneBarFacade
+class BarElement
+class OneVoice
+class BasicSheet
+
+AnyNote "1" *-- Duration
+AnyNote "1" *-- "unique_ptr" Property
+AnyNote "1" *-- Ornament
+
+OneBar "listof" o-- "unique_ptr" AnyNote
+
+OneBarFacade <|-- OneBar : decorate
+OneBarFacade -- BarParserUtl : use
+BarElement <|-- OneBarFacade : decorate
+
+OneVoice "listof" o-- "unique_ptr" BarElement
+BasicSheet "1" *-- OneVoice
+
+OneVoice "1" *-- InstrumentType
+OneVoice "1" *-- Tempo
+}
+@enduml
