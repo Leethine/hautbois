@@ -279,7 +279,7 @@ const IndexNameTable INDEX_SCI_NAME {
     {88, "C8"}
 };
 
-
+#ifdef _ENABLE_ALL_NOTATION_SYS
 const NameIndexTable LATIN_NAME_INDEX {
     {"ut0",  4},
     {"do0",  4},
@@ -519,5 +519,6 @@ const IndexNameTable INDEX_LATIN_NAME {
 
     {88, "ut7" }
 };
+#endif
 
 }

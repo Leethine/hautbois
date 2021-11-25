@@ -1,4 +1,5 @@
 #pragma once
+#include "../measure/one_bar.hpp"
 #include "facade_defs.hpp"
 #include <memory>
 #include <cassert>
@@ -220,11 +221,13 @@ public:
     {
     }
 
+#ifdef _ENABLE_ALL_NOTATION_SYS
     explicit OneBarFacade (NotationSystemName& name, 
     NoteName& scale, Beat num, Beat denom) : 
     OneBar(name, scale, num, denom) 
     {
     }
+#endif
 
     bool checkBarComplete() const {
         Duration d;
