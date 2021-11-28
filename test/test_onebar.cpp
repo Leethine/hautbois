@@ -19,7 +19,7 @@ int main() {
     
     cout << bar1.printBarLine() << "\n";
     //AnyNote& n5 = n0.duplicate();
-    bar1.connected = true;
+    bar1.tied = true;
     
     cout << bar1.printBarLine() << "\n";
     

@@ -1,4 +1,7 @@
 #include "defs/defs.hpp"
 #include "note/any_note.hpp"
+#include "defs_property/property.hpp"
+#include "defs_property/ornament.hpp"
+#include "measure/one_bar.hpp"
 #include "barline_facade/one_bar_facade.hpp"
-#include "sheet_parser/sheet_parser.hpp"
+#include "partition/basic_sheet.hpp"
