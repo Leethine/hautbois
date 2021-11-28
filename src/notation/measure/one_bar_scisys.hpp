@@ -20,7 +20,7 @@ protected:
     const Meter meter;
     const TonalityType scale;
     const TonalityType relativescale;
-
+    
     mutable ListNote notes;
     
     TonalityType tonalityStr2TypeQuery(ScaleName name) const {
@@ -63,13 +63,13 @@ protected:
     }
 
 public:
-    bool connected;
+    bool tied;
     
     OneBar() :
     meter { Duration{4,4} },
     scale { tonalityStr2TypeQuery("C") },
     relativescale { relativeScaleQuery(scale) },
-    connected { false }
+    tied { false }
     {}
 
     explicit OneBar(const ScaleName& scalename, 
@@ -77,7 +77,7 @@ public:
     meter { Duration{num, denom} },
     scale { tonalityStr2TypeQuery(scalename) },
     relativescale { relativeScaleQuery(this->scale) },
-    connected { false }
+    tied { false }
     {}
 
     AnyNote& getNthNote(size_t n) const {

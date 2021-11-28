@@ -5,15 +5,10 @@
 namespace hautbois 
 {
 
-//using VoiceVec=std::vector<OneVoice>;
 using VoiceVecPtr=std::vector<std::unique_ptr<OneVoice>>;
 
 class BasicSheet {
     protected:
-
-    std::string title;
-    std::string author;
-    std::string date;
 
     UIntValue nb_voice;
     Tempo tempo;
@@ -23,7 +18,6 @@ class BasicSheet {
 
     std::vector<InstrumentType> instrusment_list;
     std::vector<myPairClef> clefs_list;
-    std::vector<ScaleName> scale_list;;
 
     VoiceVecPtr voices;
 
@@ -71,18 +65,14 @@ class BasicSheet {
         }
     }
 
-    void checkBasicSetUp() {
+    void checkSetUp() {
         if ( nb_voice == 0 || 
              scale == "unknown" ||
              meter.num == 0 ) {
             throw std::runtime_error("Sheet not yet set up.");
         }
-    }
 
-    void checkMiscSetUp() {
-        
         if ( instrusment_list.size() != nb_voice ||
-             scale_list.size() != nb_voice ||
              clefs_list.size() != nb_voice ) {
             throw std::runtime_error("Sheet not yet set up.");
         }
@@ -117,20 +107,9 @@ class BasicSheet {
     meter { Meter(0,1) }
     {
         resetInstruments();
+        resetClefs();
     }
-
-    void setAuthor(const std::string& author) {
-        this->author = author;
-    }
-
-    void setTitle(const std::string& title) {
-        this->title = title;
-    }
-
-    void setDate(const std::string& date) {
-        this->date = date;
-    }
-
+    
     void setTempo(const std::string& tempostr) {
         BarParserUtl parser;
         std::string tempostr_ns = parser.rmSpace(tempostr);
@@ -148,11 +127,6 @@ class BasicSheet {
         try {
             this->tonality = tonality_str_type_table.at(scalestr);
             this->scale = scalestr;
-            // if tonality of each voice is not set, set them now
-            scale_list.clear();
-            for (int i=0; i < nb_voice; i++) {
-                scale_list.emplace_back(this->scale);
-            }
         }
         catch(std::exception& e) {
             std::cout << "Error: Invalid tonality format "
@@ -182,27 +156,12 @@ class BasicSheet {
             appendClefs(it);
         }
     }
-    
-    // set Nth voice tonality
-    void setTonalyN(const std::string& scalestr, size_t n) {
-        assert( scale_list.size() == nb_voice );
-        assert( n < nb_voice );
-        if ( scale_list.size() == nb_voice ) {
-            throw std::runtime_error("Tonality not set yet!");
-        }
-        if ( n >= nb_voice ) {
-            throw std::range_error("Index N out of range!");
-        }
-        else {
-            scale_list[n] = scalestr;
-        }
-    }
 
     void initializeSheet() {
         try {
-            checkBasicSetUp();
+            checkSetUp();
             for (int i = 0; i < nb_voice; i++) {
-                voices.emplace_back( new OneVoice(scale_list[i], meter) );
+                voices.emplace_back( new OneVoice(scale, meter) );
             }
         }
         catch(std::exception& e) {

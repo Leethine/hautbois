@@ -66,6 +66,14 @@ class BarElement : public OneBarFacade {
     Tempo getTempo() {
         return tempo;
     }
+
+    void makeTie() {
+        tied = true;
+    }
+    
+    bool isTied() {
+        return tied;
+    }
 };
 
 using ListBar=std::list<std::unique_ptr<BarElement>>;
@@ -113,6 +121,10 @@ class OneVoice {
         return getNthBar(bars.size()-1);
     }
 
+    size_t getLength() {
+        return bars.size();
+    }
+
     void addNote(const TokenString& token) {
         BarElement& lastbar = getLastBar();
         if (lastbar.checkBarComplete()) {
@@ -151,6 +163,11 @@ class OneVoice {
 
     InstrumentType getInstrument() {
         return this->instrument;
+    }
+
+    void makeTieLastBar() {
+        BarElement& lastbar = getLastBar();
+        lastbar.makeTie();
     }
 };
 

@@ -12,11 +12,12 @@ int main() {
     b1.addNote("(C4, 1/8, <appoggiatura>)");
     //b1.addNote("(C4, 1/8, <appoggiatura>, [force:pp])");
     //cout << "success" << "\n";
+    b1.addNote("{(C4,1/8,[force:fp],<appoggiatura>)(E4)(G4)}",InstrumentType::LIUTO);
     b1.addNote("{(C4,1/8,[force:ff],<trillo:3>)(E4,1/8)(G4,1/16)}");
     //cout << "success" << "\n";
     b1.addNote("(r, 1/4)");
     //cout << "success" << "\n";
-    b1.addNote("{(C4,1/4)(E4)(G4)}");
+    b1.addNote("{(C4,1/8)(E4)(G4)}");
     //cout << "success" << "\n";
     cout << b1 << "\n";
 
@@ -24,6 +25,7 @@ int main() {
     AnyNote& n2 = b1.getNthNote(1);
     AnyNote& n3 = b1.getNthNote(2);
     AnyNote& n4 = b1.getNthNote(3);
+    AnyNote& n5 = b1.getNthNote(4);
     /*
     auto p1 = n1.property.get();
     auto p2 = n2.property.get();
@@ -39,11 +41,13 @@ int main() {
     cout << n2.getProperty("force") << "\n";
     cout << n3.getProperty("force") << "\n";
     cout << n4.getProperty("force") << "\n";
+    cout << n5.getProperty("force") << "\n";
 
     cout << n1.getOrnament() << "\n";
     cout << n2.getOrnament() << "\n";
     cout << n3.getOrnament() << "\n";
     cout << n4.getOrnament() << "\n";
+    cout << n5.getOrnament() << "\n";
 
 }
 
