@@ -1,23 +1,43 @@
 % Comment %
 
-!@title          "Title of the piece"
-!@author         "Someone"
-!@ininstruments   2
-!@instrument     1 "Recorder"
-!@instrument     2 "Harpsichord"
-!@notationsys    "Scientific"
+!@title          "15 Invensions - No.4"
+!@author         "J.S. Bach"
 !@tempo          "Allegro"
+!@meter          "3/8"
+
+% Specify speed in bpm, if ignored, the program will choose one randomly %
 !@speed          120
-!@meter          "2/4"
+
+% Disabled in current version %
+!@notationsys    "Scientific"
+!@instrument     1 "Harpsichord"
 !@nvoices        3
-!@tonality       "C"
-!@voice          1 1 "Clef-G"
-!@voice          2 1 "Clef-F"
-!@voice          2 2 "Clef-F"
+!@tonality       "Dm"
+% The format is: instrument-voice %
+!@voice          1-1 "Clef-G-2"
+!@voice          1-2 "Clef-F-4"
+
+% Synthesis options %
 !@fs             44100
 !@freq           415
+!@instrumentmodel 1 "Default harpsichord"
 
-@I1V1: (C4,1/2)+ | (C4,1/4) (D4,1/4,["trill":10]) | (F4,3/8) {(G3,1/8)(B3)(D4)(G4)} | (G4,1/2) |
-       (C4,1/2)+ | (C4,1/4) (D4,1/4,["trill":10]) | (F4,3/8) {(G3,1/8)(B3)(D4)(G4)} | (G4,1/2) |;
-@I2V1: | | | (E4,1/4) (r,1/4) |;
-@I2V2: | | | |;
+% Engraving options %
+!@nstaves        2
+% Specify the voices to put on each stave %
+% The format is: stave-voice1 or stave-voice1+voice2+voice3  %
+!@stave          1-1
+!@stave          2-2
+
+@V1: (D4,1/16) (E4,1/16) (F4,1/16) (G4,1/16) (A4,1/16) (Bb4,1/16)  |
+     (C#4,1/16) (Bb4,1/16) (A4,1/16) (G4,1/16) (F4,1/16) (E4,1/16) |
+     (F4,1/8) (A4,1/8) (D5,1/8) |
+     (G4,1/8) (C#5,1/8) (E5,1/8) |;
+
+@V2: (rest, 3/8) |
+     (rest, 3/8) |
+     (D3,1/16) (E3,1/16) (F3,1/16) (G3,1/16) (A3,1/16) (Bb3,1/16)  |
+     (C#3,1/16) (Bb3,1/16) (A3,1/16) (G3,1/16) (F3,1/16) (E3,1/16) |;
+
+
+
