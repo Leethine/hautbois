@@ -12,7 +12,7 @@ enum class NotationSystemType {
     HELMHOLTZ
 };
 
-const std::map<NotationSystemName,NotationSystemType> notation_system_table {
+const std::map<NotationSystemName,NotationSystemType> NOTATION_SYSTEM_TABLE {
     {"Latin", NotationSystemType::LATIN},
     {"latin", NotationSystemType::LATIN},
     {"LATIN", NotationSystemType::LATIN},

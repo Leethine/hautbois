@@ -24,7 +24,7 @@ protected:
     mutable ListNote notes;
     
     TonalityType tonalityStr2TypeQuery(ScaleName name) const {
-        try { return tonality_str_type_table.at(name); }
+        try { return TONALITY_STR_TYPE_TABLE.at(name); }
         catch (std::out_of_range& e) {
             std::cout << "Could not detect tonality: " 
                       << name << " is invalid." << "\n";
@@ -33,7 +33,7 @@ protected:
     }
 
     TonalityType relativeScaleQuery(TonalityType scale) const {
-        return circle_of_fifth.at(scale);
+        return CIRCLE_OF_FIFTH.at(scale);
     }
 
     void checkLength() const {

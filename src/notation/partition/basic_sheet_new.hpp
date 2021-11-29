@@ -10,19 +10,20 @@ using VoiceVecPtr=std::vector<std::unique_ptr<OneVoice>>;
 class BasicSheet {
     protected:
 
-    UIntValue nb_voice;
-    Tempo tempo;
-    TonalityType tonality;
-    ScaleName scale;
-    Meter meter;
+    const UIntValue nb_voice;
+    mutable Tempo tempo;
+    const TonalityType tonality;
+    const ScaleName scale;
+    const Meter meter;
 
-    std::vector<InstrumentType> instrusment_list;
-    std::vector<myPairClef> clefs_list;
+    const std::vector<InstrumentType> instrusment_list;
+    const std::vector<myPairClef> clefs_list;
 
     VoiceVecPtr voices;
 
     // append clef-at pair from token string, e.g. G-2
-    void appendClefs(const std::string& token) {
+    void appendClef(std::vector<myPairClef>& clefs_list, 
+                     const std::string& token) {
         BarParserUtl parser;
         TokenVector vec = parser.splitToken(token,"-");
         std::string clef = vec[0];
@@ -64,7 +65,21 @@ class BasicSheet {
             throw std::domain_error("Wrong format in clef pair: " + token);
         }
     }
+    
+    std::vector<InstrumentType>& makeClefList() {
+        
+    }
 
+    void appendInstrument(std::vector<InstrumentType>& instrusment_list, 
+                          const std::string& instrument_name) {
+        instrusment_list.emplace_back(Instrument::str2Type(instrument_name));
+    }
+
+    std::vector<InstrumentType>& makeInstrumentList() {
+        
+    }
+
+    /*
     void checkSetUp() {
         if ( nb_voice == 0 || 
              scale == "unknown" ||
@@ -85,18 +100,7 @@ class BasicSheet {
             throw std::runtime_error("Sheet not yet set up.");
         }
     }
-
-    // fill the vectors with undefined value
-    void resetInstruments() {
-        instrusment_list.clear();
-        for(int i=0; i < nb_voice; i++) {
-            instrusment_list.push_back(InstrumentType::NONE);
-        }
-    }
-    
-    void resetClefs() {
-        clefs_list.clear();
-    }
+    */
 
     public:
     BasicSheet(UIntValue nbvoices) :
@@ -106,8 +110,6 @@ class BasicSheet {
     scale { "unknown" },
     meter { Meter(0,1) }
     {
-        resetInstruments();
-        resetClefs();
     }
     
     void setTempo(const std::string& tempostr) {
@@ -119,53 +121,6 @@ class BasicSheet {
         }
         catch(std::exception& e) {
             std::cout << "Error: invalid tempo: " << tempostr << "!\n";
-        }
-    }
-
-    // Mandatory
-    void setScale(const std::string& scalestr) {
-        try {
-            this->tonality = TONALITY_STR_TYPE_TABLE.at(scalestr);
-            this->scale = scalestr;
-        }
-        catch(std::exception& e) {
-            std::cout << "Error: Invalid tonality format "
-                      << scalestr << " - " << e.what() << "\n";
-        }
-    }
-
-    // Mandatory
-    void setMeter(const std::string& meterstr) {
-        BarParserUtl parser;
-        std::string meterstr_ns = parser.rmSpace(meterstr);
-        this->meter = parser.readDurationFromStr(meterstr_ns);
-    }
-
-    void setInstruments(const std::vector<std::string>& val_list) {
-        assert( val_list.size() == nb_voice );
-        assert( instrusment_list.empty() );
-        for (auto it = begin(val_list); it != end(val_list); it++ ) {
-            instrusment_list.emplace_back( Instrument::str2Type(*it) );
-        }
-    }
-    
-    void setClefs(const std::vector<std::string>& val_list) {
-        assert( val_list.size() == nb_voice );
-        assert( clefs_list.empty() );
-        for (auto it : val_list) {
-            appendClefs(it);
-        }
-    }
-
-    void initializeSheet() {
-        try {
-            checkSetUp();
-            for (int i = 0; i < nb_voice; i++) {
-                voices.emplace_back( new OneVoice(scale, meter) );
-            }
-        }
-        catch(std::exception& e) {
-            std::cout << "Initialization error: " << e.what() << "\n";
         }
     }
 

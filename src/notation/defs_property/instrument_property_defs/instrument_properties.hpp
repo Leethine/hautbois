@@ -11,7 +11,7 @@ struct HarpsichordNoteProperty : NoteProperty {
         boost::to_lower(lkey);
         boost::to_lower(lval);
         
-        std::set<std::string> valid_keys {
+        const std::set<std::string> valid_keys {
             "waits","lasts","delay"
         };
         auto search = valid_keys.find(lkey);
@@ -31,7 +31,7 @@ struct LuthNoteProperty : NoteProperty {
         boost::to_lower(lkey);
         boost::to_lower(lval);
 
-        std::set<std::string> valid_keys {
+        const std::set<std::string> valid_keys {
             "waits","lasts","delay","force","stringnbr"
         };
         auto search = valid_keys.find(lkey);
@@ -51,7 +51,7 @@ struct SineWaveNoteProperty : NoteProperty {
         boost::to_lower(lkey);
         boost::to_lower(lval);
         
-        std::set<std::string> valid_keys {
+        const std::set<std::string> valid_keys {
             "waits","lasts"
         };
         auto search = valid_keys.find(lkey);

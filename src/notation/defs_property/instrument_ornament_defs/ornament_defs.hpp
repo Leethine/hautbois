@@ -15,7 +15,7 @@ struct NoteOrnament {
         boost::to_lower(lkey);
         boost::to_lower(lval);
         
-        std::set<std::string> valid_keys {
+        const std::set<std::string> valid_keys {
             "acciaccatura", "appoggiatura", "arpeggio",
             "cadenza", "dinamica", "fioritura", "glissando",
             "gruppetto", "mordente", "tremolo", "trillo"

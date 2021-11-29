@@ -19,7 +19,7 @@ enum class TonalityType {
 
 using TonalityNameTypeTable=std::map<NoteName, TonalityType>;
 
-TonalityNameTypeTable tonality_str_type_table {
+TonalityNameTypeTable TONALITY_STR_TYPE_TABLE {
     // Majors
     { "C", TonalityType::C },
     { "G", TonalityType::G },
@@ -83,7 +83,7 @@ TonalityNameTypeTable tonality_str_type_table {
     { "Dm", TonalityType::d }
 };
 
-std::map<TonalityType, TonalityType> circle_of_fifth {
+std::map<TonalityType, TonalityType> CIRCLE_OF_FIFTH {
     // Major to minor
     {TonalityType::C, TonalityType::a},
     {TonalityType::G, TonalityType::e},
