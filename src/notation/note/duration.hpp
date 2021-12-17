@@ -7,9 +7,6 @@
 namespace hautbois 
 {
 
-using UIntValue=unsigned int;
-using Beat=unsigned int;
-
 struct Duration
 {
     Beat num;
@@ -52,12 +49,6 @@ struct Duration
         return d;
     }
 };
-
-using NoteIndex=unsigned int;
-using NoteName=std::string;
-using GroupIndex=std::vector<NoteIndex>;
-using GroupName=std::vector<NoteName>;
-using GroupDuration=std::vector<Duration>;
 
 
 }
