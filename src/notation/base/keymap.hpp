@@ -5,10 +5,10 @@
 namespace hautbois 
 {
 
-using NameIndexTable=std::map<NoteName, NoteIndex>;
-using IndexNameTable=std::map<NoteIndex, NoteName>;
+using NoteNameIndexTable=std::map<NoteName, NoteIndex>;
+using NoteIndexNameTable=std::map<NoteIndex, NoteName>;
 
-const NameIndexTable SCI_NAME_INDEX {
+const NoteNameIndexTable _SCI_NAME_NOTE_INDEX_TABLE {
     {"A0",  1},
     {"A#0", 2},
     {"Bb0", 2},
@@ -143,7 +143,7 @@ const NameIndexTable SCI_NAME_INDEX {
     {"C8",  88}
 };
 
-const IndexNameTable INDEX_SCI_NAME {
+const NoteIndexNameTable _NOTE_INDEX_SCI_NAME_TABLE {
 /* Conversion from KeyIndex to NoteName: only # is allowed */
     {1,  "A0"},
     {2,  "A#0"},
@@ -280,7 +280,7 @@ const IndexNameTable INDEX_SCI_NAME {
 };
 
 #ifdef _ENABLE_ALL_NOTATION_SYS
-const NameIndexTable LATIN_NAME_INDEX {
+const NoteNameIndexTable _LATIN_NAME_NOTE_INDEX_TABLE {
     {"ut0",  4},
     {"do0",  4},
     {"ut0#", 5},
@@ -425,7 +425,7 @@ const NameIndexTable LATIN_NAME_INDEX {
     {"do7",  88}
 };
 
-const IndexNameTable INDEX_LATIN_NAME {
+const NoteIndexNameTable _NOTE_INDEX_LATIN_NAME_TABLE {
     {4,  "ut0" },
     {5,  "ut0#"},
     {6,  "re0" },

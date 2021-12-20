@@ -3,15 +3,17 @@
 #include<string>
 #include<vector>
 #include<iostream>
+#include "../base/000_base.hpp"
 
 namespace hautbois 
 {
 
-struct Duration
+class Duration
 {
-    Beat num;
-    Beat denom;
+    const Beat num;
+    const Beat denom;
 
+public:
     Duration(): 
     num { 0 },
     denom { 1 }
@@ -49,6 +51,5 @@ struct Duration
         return d;
     }
 };
-
 
 }

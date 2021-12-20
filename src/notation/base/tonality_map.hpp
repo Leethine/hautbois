@@ -4,22 +4,9 @@
 
 namespace hautbois
 {
-enum class TonalityType {
-    // Majors
-    C, G, D, A, E, B,
-    Fs, Gb, Cs, Db, Ab, Eb, Bb, F,
 
-    // Minors
-    a, e, b, fs, cs, gs, ds,
-    eb, bb, f, c, g, d,
-
-    // Unset
-    UNKNOWN
-};
-
-using TonalityNameTypeTable=std::map<NoteName, TonalityType>;
-
-TonalityNameTypeTable TONALITY_STR_TYPE_TABLE {
+using TonalityStrTypeTable=std::map<ScaleName, TonalityType>;
+const TonalityStrTypeTable _TONALITY_STR_TYPE_TABLE {
     // Majors
     { "C", TonalityType::C },
     { "G", TonalityType::G },
@@ -83,7 +70,8 @@ TonalityNameTypeTable TONALITY_STR_TYPE_TABLE {
     { "Dm", TonalityType::d }
 };
 
-std::map<TonalityType, TonalityType> CIRCLE_OF_FIFTH {
+using CircleOfFifthTable=std::map<TonalityType, TonalityType>;
+const CircleOfFifthTable _CIRCLE_OF_FIFTH_TABLE {
     // Major to minor
     {TonalityType::C, TonalityType::a},
     {TonalityType::G, TonalityType::e},
