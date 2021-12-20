@@ -1,12 +1,8 @@
 #pragma once
 #include "base_types.hpp"
-#include <map>
 
 namespace hautbois 
 {
-
-using NoteNameIndexTable=std::map<NoteName, NoteIndex>;
-using NoteIndexNameTable=std::map<NoteIndex, NoteName>;
 
 const NoteNameIndexTable _SCI_NAME_NOTE_INDEX_TABLE {
     {"A0",  1},

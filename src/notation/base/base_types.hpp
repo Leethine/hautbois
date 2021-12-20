@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<iostream>
+#include <map>
 
 namespace hautbois 
 {
@@ -15,6 +16,9 @@ using ScaleName=std::string;
 using InstrumentName=std::string;
 using GroupNoteName=std::vector<NoteName>;
 using GroupNoteIndex=std::vector<NoteIndex>;
+
+using NoteNameIndexTable=std::map<NoteName, NoteIndex>;
+using NoteIndexNameTable=std::map<NoteIndex, NoteName>;
 
 /* Instrument family types */
 enum class InstrumentFamilyType

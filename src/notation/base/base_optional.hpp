@@ -1,8 +1,9 @@
 #pragma once
 
-namespace hautbois {
 #ifdef __CXX17
 #include <optional>
+
+namespace hautbois {
 
 template<class T>
 class BaseOptional : public std::optional<T> {
@@ -24,12 +25,15 @@ public:
     }
 };
 
+} // namespace hautbois
 #else
 #include <boost/optional.hpp>
 
+namespace hautbois {
+
 template<class T>
 class BaseOptional : public boost::optional<T> {
-    public:
+public:
     constexpr BaseOptional() BOOST_NOEXCEPT : boost::optional<T>(boost::none)
     {
     }
@@ -42,12 +46,12 @@ class BaseOptional : public boost::optional<T> {
     bool hasValue() BOOST_NOEXCEPT {
         return boost::optional<T>::is_initialized();
     }
-    void resetValue BOOST_NOEXCEPT {
+    void resetValue() BOOST_NOEXCEPT {
         boost::optional<T>::reset();
     }
 };
 
-#endif
+} // namespace hautbois
 
-}
+#endif
 
