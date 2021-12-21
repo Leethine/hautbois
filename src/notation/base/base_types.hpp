@@ -4,6 +4,7 @@
 #include<vector>
 #include<iostream>
 #include <map>
+#include <cmath>
 
 namespace hautbois 
 {

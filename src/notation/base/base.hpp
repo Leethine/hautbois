@@ -3,8 +3,6 @@
 
 #define __CXX17
 
-#include "base_optional.hpp"
 #include "base_types.hpp"
 #include "tonality_map.hpp"
 #include "keymap.hpp"
-

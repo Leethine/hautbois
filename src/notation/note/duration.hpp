@@ -1,10 +1,6 @@
 #pragma once
 
-#include<string>
-#include<vector>
-#include<iostream>
-#include "../base/000_base.hpp"
-
+#include "../base/base.hpp"
 namespace hautbois 
 {
 
@@ -24,14 +20,18 @@ public:
     denom { denom }
     {}
 
-    Beat getNum() {
+    Beat getNum() const {
         return num;
     }
 
-    Beat getDenom() {
+    Beat getDenom() const {
         return denom;
     }
     
+    std::string printDuration() const {
+        return std::to_string(num) + "/" + std::to_string(denom);
+    }
+
     friend bool operator<(const Duration& d1, const Duration& d2) {
         return d1.num * d2.denom < d2.num * d1.denom;
     }
@@ -42,6 +42,10 @@ public:
 
     friend bool operator==(const Duration& d1, const Duration& d2) {
         return d1.num * d2.denom == d2.num * d1.denom;
+    }
+
+    friend bool operator!=(const Duration& d1, const Duration& d2) {
+        return d1.num * d2.denom != d2.num * d1.denom;
     }
 
     friend std::ostream& operator<<(std::ostream& o, const Duration& d) {
@@ -55,9 +59,14 @@ public:
     }
 
     friend Duration operator-(const Duration& d1, const Duration& d2) {
-        Duration d {d1.num*d2.denom - d2.num*d1.denom, d1.denom*d2.denom};
+        Duration d { d1.num*d2.denom > d2.num*d1.denom ? 
+                     d1.num*d2.denom - d2.num*d1.denom : 
+                     d2.num*d1.denom - d1.num*d2.denom, 
+                     d1.denom*d2.denom };
         return d;
     }
 };
+
+using GroupDuration=std::vector<Duration>;
 
 }

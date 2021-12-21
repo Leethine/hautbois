@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 #include "../base/000_base.hpp"
 #include "duration.hpp"
@@ -10,8 +11,8 @@ namespace hautbois
 namespace note_utility 
 {
 
-NoteIndex noteName2Index(const NameIndexTable& name_index_table,
-                              const NoteName& note_name) {
+NoteIndex noteName2Index(const NoteNameIndexTable& name_index_table,
+                         const NoteName& note_name) {
     NoteIndex index;
     try {
         index = name_index_table.at(note_name);
@@ -25,7 +26,7 @@ NoteIndex noteName2Index(const NameIndexTable& name_index_table,
     }
 }
 
-GroupNoteIndex groupNoteName2Index(const NameIndexTable& name_index_table,
+GroupNoteIndex groupNoteName2Index(const NoteNameIndexTable& name_index_table,
                                    const GroupNoteName& group_note_name) {
     GroupNoteIndex indices;
     auto it = group_note_name.begin();

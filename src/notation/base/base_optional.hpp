@@ -6,11 +6,11 @@
 namespace hautbois {
 
 template<class T>
-class BaseOptional : public std::optional<T> {
+class BaseOptional : protected std::optional<T> {
 public:
     constexpr BaseOptional() noexcept : std::optional<T>::optional( {} )
-    {
-    }
+    {}
+
     void emplaceValue(T val) {
         std::optional<T>::emplace(val);
     }
@@ -32,7 +32,7 @@ public:
 namespace hautbois {
 
 template<class T>
-class BaseOptional : public boost::optional<T> {
+class BaseOptional : protected boost::optional<T> {
 public:
     constexpr BaseOptional() BOOST_NOEXCEPT : boost::optional<T>(boost::none)
     {

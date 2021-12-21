@@ -1,83 +1,78 @@
 #include "one_note_base.hpp"
+#include "utility.hpp"
 
 namespace hautbois {
 
-using GroupDuration=std::vector<Duration>;
-
 class OneNoteChord : public OneNote {
 protected:
-    const GroupNoteName name;
-    const GroupNoteIndex index;
-    const GroupDuration duration;
+    const GroupNoteName names;
+    const GroupNoteIndex indices;
+    const GroupDuration durations;
 public:
-    OneNoteChord(GroupNoteName& groupname, GroupDuration& duration):
-    name { groupname }
-    index { note_utility::noteName2Index(groupname) },
-    duration { duration }
+    OneNoteChord(GroupNoteName groupname, GroupDuration duration):
+    names { groupname },
+    indices { note_utility::groupNoteName2Index( _SCI_NAME_NOTE_INDEX_TABLE,
+                                               groupname) },
+    durations { duration }
     {
-        type = NoteType::CHORD;
         //TODO Validate non empty
+        assert(!names.empty());
+        assert(!indices.empty());
     }
 
-    GroupNoteName getName() const override {
-        return name;
+    NoteName getName() const override {
+        return "Chord";
     }
-    GroupNoteIndex getIndex() const override {
-        return index;
+    NoteIndex getIndex() const override {
+        return _CHORD_NOTE_INDEX;
     }
-    GroupDuration getDuration() const override {
-        return duration;
+    Beat getDurationNum() const override {
+        return this->getDuration().getNum();
+    }
+    Beat getDurationDenom() const override {
+        return this->getDuration().getDenom();
+    }
+    Duration getDuration() const override {
+        return * std::max_element(durations.begin(),durations.end());
+    }
+    GroupNoteName getGroupName() const override {
+        return names;
+    }
+    GroupNoteIndex getGroupIndex() const override {
+        return indices;
+    }
+    GroupDuration getGroupDuration() const override {
+        return durations;
     }
 
     const std::string printNote() const override {
-        std::string = ns;
-        for (auto it=name.begin(); it != name.end(); it++) {
-            ns += *it + "+";
+        std::string notename_str;
+        for (auto it=names.begin(); it != names.end(); it++) {
+            notename_str += *it + "+";
         }
-        ns.pop_back();
-        std::string = ds;
-        if (isSimpleChord() && !duration.empty()) {
-            ds = std::to_string(duration[0].num) + "/" 
-               + std::to_string(duration[0].denom);
+        notename_str.pop_back();
+        std::string duration_str;
+        if (isSimpleChord()) {
+            duration_str = durations[0].printDuration();
         }
-        else if (!isSimpleChord()) {
-            for (auto it=duration.begin(); it != duration.end(); it++) {
-                ds += std::to_string(it->num) + "/"
-                    + std::to_string(it->denom) + "+";
+        else {
+            for (auto it=durations.begin(); it != durations.end(); it++) {
+                duration_str += it->printDuration() + "+";
             }
-            ds.pop_back();
-        }
-        else { // in this case duration is empty
-            ds = "";
+            duration_str.pop_back();
         }
 
-        std::string s { "(" + ns + "," + ds + ")" };
-        return s;
+        return "(" + notename_str + "," + duration_str + ")";
     }
+
+    NoteType getType() const override { return NoteType::CHORD; }
 
     bool isSimpleChord() const {
-        Duration d { duration.front() };
-        for (auto it=duration.begin() }; it != duration.end(); it++)
-            if ( d.num * it->denom != d.denom * it->num )
+        Duration d1 = durations.front();
+        for (auto it=durations.begin(); it != durations.end(); it++)
+            if ( d1.getNum() * it->getDenom() != d1.getDenom() * it->getNum() )
                 return false;
         return true;
-    }
-
-    bool operator==(const AnyNote& note2) const override {
-        if (this->duration.size( == note2.duration.size() &&
-            this->index.size() == note2.index.size()) {
-            for (auto it1=this->index.begin(), it2=note2.index.begin(),
-                 auto it3=this->duration.begin(), it4=note2.duration.begin();
-                 it1 != this->index.end() && it2 != note2.index.end(),
-                 it3 != this->duration.end() && it4 != note2.duration.end(); ;
-                 it1++, it2++, it3++, it4++) {
-                if ( *it1 != *it2 || *it3 != *it4 ) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        else { return false; }
     }
 };
 
