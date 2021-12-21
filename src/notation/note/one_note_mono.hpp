@@ -16,10 +16,33 @@ public:
         type = NoteType::MONO;
     }
 
+    NoteName getName() const override {
+        return name;
+    }
+    NoteIndex getIndex() const override {
+        return index;
+    }
+    Beat getDurationNum() const override {
+        return duration.getNum();
+    }
+    Beat getDurationDenom() const override {
+        return duration.getDenom();
+    }
+    Beat getDuration() const override {
+        return duration;
+    }
+
     const std::string printNote() const override {
         std::string s {   "(" + name + "," + std::to_string(duration.num) 
                         + "/" + std::to_string(duration.denom) ")"  };
         return s;
+    }
+
+    bool operator==(const AnyNote& note2) const override {
+        if (this->index == note2.index && this->duration == note2.duration)
+            return true;
+        else
+            return false;
     }
 };
 

@@ -6,7 +6,7 @@
 namespace hautbois 
 {
 
-//const NoteIndex _REST_NOTE_INDEX {101};
+const NoteIndex _REST_NOTE_INDEX {101};
 //const NoteIndex _CHORD_NOTE_INDEX {103};
 //const NoteIndex _XUPLET_NOTE_INDEX {106};
 
@@ -47,20 +47,23 @@ public:
     virtual void unTie() const {
         tied = false;
     }
-    /*
+
     virtual NoteName getName() const {
-        return name;
+        return "";
     }
     virtual NoteIndex getIndex() const {
-        return index;
+        return 0;
     }
     virtual Beat getDurationNum() const {
-        return duration.num;
+        return 0;
     }
     virtual Beat getDurationDenom() const {
-        return duration.denom;
+        return 1;
     }
-    */
+    virtual Duration getDuration() const {
+        return {0,1};
+    }
+
     virtual OneNote duplicate() const {
         OneNote n { OneNote(*this) };
         return n;
@@ -69,6 +72,10 @@ public:
     virtual const std::string printNote() const {
         std::string s { "()" };
         return s;
+    }
+
+    virtual bool operator==(const AnyNote& n) const {
+        return true;
     }
 
 };

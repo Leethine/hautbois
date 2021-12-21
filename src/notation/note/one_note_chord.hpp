@@ -19,6 +19,16 @@ public:
         //TODO Validate non empty
     }
 
+    GroupNoteName getName() const override {
+        return name;
+    }
+    GroupNoteIndex getIndex() const override {
+        return index;
+    }
+    GroupDuration getDuration() const override {
+        return duration;
+    }
+
     const std::string printNote() const override {
         std::string = ns;
         for (auto it=name.begin(); it != name.end(); it++) {
@@ -51,6 +61,23 @@ public:
             if ( d.num * it->denom != d.denom * it->num )
                 return false;
         return true;
+    }
+
+    bool operator==(const AnyNote& note2) const override {
+        if (this->duration.size( == note2.duration.size() &&
+            this->index.size() == note2.index.size()) {
+            for (auto it1=this->index.begin(), it2=note2.index.begin(),
+                 auto it3=this->duration.begin(), it4=note2.duration.begin();
+                 it1 != this->index.end() && it2 != note2.index.end(),
+                 it3 != this->duration.end() && it4 != note2.duration.end(); ;
+                 it1++, it2++, it3++, it4++) {
+                if ( *it1 != *it2 || *it3 != *it4 ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else { return false; }
     }
 };
 
