@@ -1,5 +1,5 @@
+#pragma once
 #include "one_note_base.hpp"
-#include "utility.hpp"
 
 namespace hautbois {
 
@@ -11,7 +11,7 @@ protected:
 public:
     OneNoteMono(NoteName name, Duration duration): 
     name { name },
-    index { note_utility::noteName2Index(_SCI_NAME_NOTE_INDEX_TABLE, name) },
+    index { base_mapping_utils::noteName2Index(_SCI_NAME_NOTE_INDEX_TABLE, name) },
     duration { duration }
     {}
 

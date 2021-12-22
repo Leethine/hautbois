@@ -1,12 +1,15 @@
 #pragma once
 
-#include<string>
-#include<vector>
-#include<iostream>
+#include <string>
+#include <vector>
 #include <map>
+#include <algorithm>
+#include <iostream>
+#include <memory>
 #include <cmath>
+#include <cassert>
 
-namespace hautbois 
+namespace hautbois
 {
 
 using UIntValue=unsigned int;
@@ -17,6 +20,7 @@ using ScaleName=std::string;
 using InstrumentName=std::string;
 using GroupNoteName=std::vector<NoteName>;
 using GroupNoteIndex=std::vector<NoteIndex>;
+using TokenVector=std::vector<std::string>;
 
 using NoteNameIndexTable=std::map<NoteName, NoteIndex>;
 using NoteIndexNameTable=std::map<NoteIndex, NoteName>;

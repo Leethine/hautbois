@@ -18,7 +18,18 @@ public:
     Duration(Beat num, Beat denom): 
     num { num },
     denom { denom }
-    {}
+    {
+        assert(denom != 0);
+        //TODO exeption handling
+    }
+
+    Duration(std::vector<Beat> vec): 
+    num { vec.front() },
+    denom { vec.back() }
+    {
+        assert(vec.size() == 2);
+        //TODO exeption handling
+    }
 
     Beat getNum() const {
         return num;

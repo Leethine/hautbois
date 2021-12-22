@@ -1,5 +1,5 @@
+#pragma once
 #include "one_note_base.hpp"
-#include "utility.hpp"
 
 namespace hautbois {
 
@@ -11,8 +11,8 @@ protected:
 public:
     OneNoteTuplet(GroupNoteName groupname, Duration duration):
     names { groupname },
-    indices { note_utility::groupNoteName2Index(_SCI_NAME_NOTE_INDEX_TABLE,
-                                                groupname) },
+    indices { base_mapping_utils::groupNoteName2Index(_SCI_NAME_NOTE_INDEX_TABLE,
+                                                      groupname) },
     duration { duration }
     {
         //TODO Validate non empty

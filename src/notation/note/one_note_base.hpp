@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../base/base.hpp"
 #include "duration.hpp"
 
@@ -25,6 +24,7 @@ protected:
     OneNote& operator=(const OneNote&)=delete;
     
 public:
+    //TODO enable somewhere
     //BaseOptional<NoteProperty> property;
     //BaseOptional<NoteOrnament> ornament;
     //BaseOptional<NoteTechnique> technique;

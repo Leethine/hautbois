@@ -1,3 +1,4 @@
+#pragma once
 #include "one_note_base.hpp"
 
 namespace hautbois {

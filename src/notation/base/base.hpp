@@ -4,5 +4,6 @@
 #define __CXX17
 
 #include "base_types.hpp"
-#include "tonality_map.hpp"
 #include "keymap.hpp"
+#include "tonality_map.hpp"
+#include "base_mapping_utils.hpp"
