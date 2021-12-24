@@ -4,9 +4,9 @@
 namespace hautbois 
 {
 
-using NotePtr=std::unique_ptr<OneNote>;
+using NotePtr=std::unique_ptr<OneNoteBase>;
 
-class Note {
+class OneNote {
     NotePtr newNotePtr(const std::string& note_name_token, 
                         const std::string& duration_token) {
         switch(note_creator_utils::checkNoteType(note_name_token)) {
@@ -39,7 +39,7 @@ class Note {
             exit(EXIT_FAILURE);
             break;
         default:
-            return std::make_unique<OneNote>();
+            return std::make_unique<OneNoteBase>();
             break;
         }
     }
@@ -47,7 +47,7 @@ class Note {
 protected:
     const NotePtr note;
 public:
-    Note(const std::string& note_name_token, 
+    OneNote(const std::string& note_name_token, 
          const std::string& duration_token):
     note { newNotePtr(note_name_token, duration_token) }
     {}
@@ -80,7 +80,7 @@ public:
         return note->printNote();
     }
 
-    friend std::ostream& operator<<(std::ostream& o, const Note& n) {
+    friend std::ostream& operator<<(std::ostream& o, const OneNote& n) {
         o << n.printNote();
         return o;
     } 

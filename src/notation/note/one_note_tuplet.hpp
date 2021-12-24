@@ -3,7 +3,7 @@
 
 namespace hautbois {
 
-class OneNoteTuplet : public OneNote {
+class OneNoteTuplet : public OneNoteBase {
 protected:
     const GroupNoteName names;
     const GroupNoteIndex indices;

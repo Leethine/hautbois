@@ -5,11 +5,11 @@
 
 using hautbois::NoteName;
 using hautbois::Duration;
-using hautbois::OneNote;
+using hautbois::OneNoteBase;
 using hautbois::OneNoteMono;
 
 // Test constructor
-OneNote * n = new OneNoteMono("C4", {1,4});
+OneNoteBase * n = new OneNoteMono("C4", {1,4});
 BOOST_AUTO_TEST_CASE(test1_constructor) {
     BOOST_CHECK(n->getType() == hautbois::NoteType::MONO);
     BOOST_CHECK_EQUAL(n->isTied(), false);

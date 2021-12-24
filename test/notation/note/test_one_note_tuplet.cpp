@@ -5,11 +5,11 @@
 
 using hautbois::NoteName;
 using hautbois::Duration;
-using hautbois::OneNote;
+using hautbois::OneNoteBase;
 using hautbois::OneNoteTuplet;
 
 // Test constructor
-OneNote * n = new OneNoteTuplet({"C4","E4","G4"}, {1,2});
+OneNoteBase * n = new OneNoteTuplet({"C4","E4","G4"}, {1,2});
 BOOST_AUTO_TEST_CASE(test1_constructor) {
     BOOST_CHECK(n->getType() == hautbois::NoteType::TUPLET);
 }

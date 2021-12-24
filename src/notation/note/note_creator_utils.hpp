@@ -7,6 +7,7 @@
 #include "one_note_tuplet.hpp"
 #include "one_note_chord.hpp"
 #include "../base/base_syntax.hpp"
+#define _DISABLE_UNSAFE_PTR_
 
 namespace hautbois 
 {
@@ -121,8 +122,8 @@ NoteType checkNoteType(const std::string& note_name_token) {
     else { return NoteType::VIRTUAL; }
 }
 
-/*
-OneNote * newOneNote(const std::string& note_name_token, 
+#ifndef _DISABLE_UNSAFE_PTR_
+OneNoteBase * newOneNote(const std::string& note_name_token, 
                      const std::string& duration_token) {
     switch(note_creator_utils::checkNoteType(note_name_token)) {
     case NoteType::REST :
@@ -150,11 +151,11 @@ OneNote * newOneNote(const std::string& note_name_token,
         exit(EXIT_FAILURE);
     break;
     default:
-        return new OneNote();
+        return new OneNoteBase();
     break;
     }
 }
-*/
+#endif
 
 } // namespace hautbois
 } // namespace note_creator_utils

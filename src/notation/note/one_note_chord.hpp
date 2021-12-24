@@ -3,7 +3,7 @@
 
 namespace hautbois {
 
-class OneNoteChord : public OneNote {
+class OneNoteChord : public OneNoteBase {
     bool isSimpleChord() const {
         Duration d1 = durations.front();
         for (auto it=durations.begin(); it != durations.end(); it++)

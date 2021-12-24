@@ -17,11 +17,11 @@ enum class NoteType {
     VIRTUAL,
 };
 
-class OneNote {
+class OneNoteBase {
 protected:
     mutable bool tied;
 
-    OneNote& operator=(const OneNote&)=delete;
+    OneNoteBase& operator=(const OneNoteBase&)=delete;
     
 public:
     //TODO enable somewhere
@@ -29,7 +29,7 @@ public:
     //BaseOptional<NoteOrnament> ornament;
     //BaseOptional<NoteTechnique> technique;
 
-    OneNote():    
+    OneNoteBase():    
     //type { NoteType::VIRTUAL },
     tied { false }
     {}
@@ -70,8 +70,8 @@ public:
     
     virtual NoteType getType() const { return NoteType::VIRTUAL; }
 
-    virtual OneNote duplicate() const {
-        OneNote n { OneNote(*this) };
+    virtual OneNoteBase duplicate() const {
+        OneNoteBase n { OneNoteBase(*this) };
         return n;
     }
 

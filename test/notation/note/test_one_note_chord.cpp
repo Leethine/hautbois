@@ -5,11 +5,11 @@
 
 using hautbois::NoteName;
 using hautbois::Duration;
-using hautbois::OneNote;
+using hautbois::OneNoteBase;
 using hautbois::OneNoteChord;
 
 // Test constructor
-OneNote * n1 = new OneNoteChord({"C4","E4","G4"}, {{1,4},{1,4},{1,4}});
+OneNoteBase * n1 = new OneNoteChord({"C4","E4","G4"}, {{1,4},{1,4},{1,4}});
 BOOST_AUTO_TEST_CASE(test1_constructor) {
     BOOST_CHECK(n1->getType() == hautbois::NoteType::CHORD);
 }
@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_CASE(test2_override) {
 }
 
 // Test override functions for note2
-OneNote * n2 = new OneNoteChord({"A3","C#4","E4"}, {{1,4},{1,4},{1,8}});
+OneNoteBase * n2 = new OneNoteChord({"A3","C#4","E4"}, {{1,4},{1,4},{1,8}});
 BOOST_AUTO_TEST_CASE(test3_override) {
     BOOST_CHECK_EQUAL(n2->printNote(), "(A3+C#4+E4,1/4+1/4+1/8)");
     BOOST_CHECK_EQUAL(n2->getName(), "Chord"); 

@@ -5,11 +5,11 @@
 
 using hautbois::NoteName;
 using hautbois::Duration;
-using hautbois::OneNote;
+using hautbois::OneNoteBase;
 using hautbois::OneNoteRest;
 
 // Test constructor
-OneNote * n = new OneNoteRest({1,4});
+OneNoteBase * n = new OneNoteRest({1,4});
 BOOST_AUTO_TEST_CASE(test1_constructor) {
     BOOST_CHECK(n->getType() == hautbois::NoteType::REST);
 }

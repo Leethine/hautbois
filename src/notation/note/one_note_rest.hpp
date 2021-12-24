@@ -3,7 +3,7 @@
 
 namespace hautbois {
 
-class OneNoteRest : public OneNote {
+class OneNoteRest : public OneNoteBase {
 protected:
     const Duration duration;
 public:

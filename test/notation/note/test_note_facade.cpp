@@ -5,11 +5,11 @@
 
 using namespace hautbois;
 
-Note n1 ("rest","1/4");
-Note n2 ("C#4","1/4");
-Note n3 ("C#4+E#4","1/4");
-Note n4 ("D5-E5-D5","1/2");
-Note n5 ("C#4+E#4+G5","1/4+1/4+1/8");
+OneNote n1 ("rest","1/4");
+OneNote n2 ("C#4","1/4");
+OneNote n3 ("C#4+E#4","1/4");
+OneNote n4 ("D5-E5-D5","1/2");
+OneNote n5 ("C#4+E#4+G5","1/4+1/4+1/8");
 
 // check types
 BOOST_AUTO_TEST_CASE(test1_getType) {

@@ -3,7 +3,7 @@
 
 namespace hautbois {
 
-class OneNoteMono : public OneNote {
+class OneNoteMono : public OneNoteBase {
 protected:
     const NoteName name;
     const NoteIndex index;

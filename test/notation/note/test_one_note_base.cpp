@@ -3,9 +3,9 @@
 #include <boost/test/unit_test.hpp>
 #include "../../../src/notation/note/one_note_base.hpp"
 
-using hautbois::OneNote;
+using hautbois::OneNoteBase;
 
-OneNote n;
+OneNoteBase n;
 BOOST_AUTO_TEST_CASE(test1_constructor) {
     BOOST_CHECK(n.getType() == hautbois::NoteType::VIRTUAL);
     BOOST_CHECK_EQUAL(n.isTied(), false);
