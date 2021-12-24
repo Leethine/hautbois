@@ -4,6 +4,13 @@
 namespace hautbois {
 
 class OneNoteChord : public OneNote {
+    bool isSimpleChord() const {
+        Duration d1 = durations.front();
+        for (auto it=durations.begin(); it != durations.end(); it++)
+            if ( d1.getNum() * it->getDenom() != d1.getDenom() * it->getNum() )
+                return false;
+        return true;
+    }
 protected:
     const GroupNoteName names;
     const GroupNoteIndex indices;
@@ -42,7 +49,10 @@ public:
         return indices;
     }
     GroupDuration getGroupDuration() const override {
-        return durations;
+        if (isSimpleChord()) {
+            return { durations.front() };    
+        }
+        else { return durations; }
     }
 
     const std::string printNote() const override {
@@ -66,14 +76,6 @@ public:
     }
 
     NoteType getType() const override { return NoteType::CHORD; }
-
-    bool isSimpleChord() const {
-        Duration d1 = durations.front();
-        for (auto it=durations.begin(); it != durations.end(); it++)
-            if ( d1.getNum() * it->getDenom() != d1.getDenom() * it->getNum() )
-                return false;
-        return true;
-    }
 };
 
 }

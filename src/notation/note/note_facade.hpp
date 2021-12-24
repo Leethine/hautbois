@@ -13,17 +13,17 @@ class Note {
         case NoteType::REST :
             return std::make_unique<OneNoteRest>
                 (note_creator_utils::str2Duration(duration_token));
-        break;
+            break;
         case NoteType::MONO :
             return std::make_unique<OneNoteMono>
                 (note_creator_utils::str2NoteName(note_name_token),
                  note_creator_utils::str2Duration(duration_token) );
-        break;
+            break;
         case NoteType::TUPLET :
             return std::make_unique<OneNoteTuplet>
                 (note_creator_utils::str2GroupNoteNameTuplet(note_name_token),
                     note_creator_utils::str2Duration(duration_token) );
-        break;
+            break;
         case NoteType::CHORD :
             if ( note_creator_utils::checkIfSingleDuration(duration_token) )
                 return std::make_unique<OneNoteChord>
@@ -33,14 +33,14 @@ class Note {
                 return std::make_unique<OneNoteChord>
                     (note_creator_utils::str2GroupNoteNameChord(note_name_token),
                      note_creator_utils::str2GroupDuration(duration_token) );
-        break;
+            break;
         case NoteType::VIRTUAL :
             std::cerr << "Syntax Error: " << note_name_token << "\n";
             exit(EXIT_FAILURE);
-        break;
+            break;
         default:
             return std::make_unique<OneNote>();
-        break;
+            break;
         }
     }
 
@@ -56,13 +56,34 @@ public:
         return note->getType();
     }
 
-    Duration getDuration() const {
-        return note->getDuration();
+    std::string getDuration() const {
+        std::string sout;
+        GroupDuration d = note->getGroupDuration();
+        for(auto it = d.begin(); it != d.end(); it++) {
+            sout += it->printDuration() + "+";
+        }
+        sout.pop_back();
+        return sout;
+    }
+
+    std::string getIndex() const {
+        std::string sout;
+        GroupNoteIndex idx = note->getGroupIndex();
+        for(auto it = idx.begin(); it != idx.end(); it++) {
+            sout += std::to_string(*it) + "+";
+        }
+        sout.pop_back();
+        return sout;
     }
 
     std::string printNote() const {
         return note->printNote();
     }
+
+    friend std::ostream& operator<<(std::ostream& o, const Note& n) {
+        o << n.printNote();
+        return o;
+    } 
 };
 
 }

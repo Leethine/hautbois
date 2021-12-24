@@ -40,6 +40,9 @@ public:
     GroupNoteIndex getGroupIndex() const override {
         return indices;
     }
+    GroupDuration getGroupDuration() const override {
+        return { duration };
+    }
 
     NoteType getType() const override { return NoteType::TUPLET; }
 

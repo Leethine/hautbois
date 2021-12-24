@@ -31,6 +31,18 @@ public:
         return duration;
     }
 
+    GroupNoteName getGroupName() const override {
+        return { name };
+    }
+
+    GroupNoteIndex getGroupIndex() const override {
+        return { index };
+    }
+
+    GroupDuration getGroupDuration() const override {
+        return { duration };
+    }
+
     NoteType getType() const override { return NoteType::MONO; }
     
     const std::string printNote() const override {
