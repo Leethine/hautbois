@@ -17,6 +17,7 @@ using Beat=unsigned int;
 using NoteIndex=unsigned int;
 using NoteName=std::string;
 using ScaleName=std::string;
+using TonalityName=std::string;
 using InstrumentName=std::string;
 using GroupNoteName=std::vector<NoteName>;
 using GroupNoteIndex=std::vector<NoteIndex>;

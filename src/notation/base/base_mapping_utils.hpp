@@ -41,6 +41,20 @@ GroupNoteIndex groupNoteName2Index(const NoteNameIndexTable& name_index_table,
     }
 }
 
+TonalityType tonalityStr2Type(const ScaleName& scale,
+                              const TonalityStrTypeTable& table) {
+    try { return table.at(scale); }
+    catch (std::out_of_range& e) {
+        std::cout << "Error: Tonality: " 
+                  << scale << " is invalid." << "\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+TonalityType findRelativeScale(TonalityType tonality_type,
+                                const CircleOfFifthTable& table) {
+    return table.at(tonality_type);
+}
 
 } // namespace hautbois
 } // namespace note_utility

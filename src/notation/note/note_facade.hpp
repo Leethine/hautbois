@@ -1,5 +1,10 @@
 #pragma once
 #include "note_creator_utils.hpp"
+#include "../note_property/control.hpp"
+#include "../note_property/ornament.hpp"
+#include "../note_property/technique.hpp"
+
+#include "../base/base_optional.hpp"
 
 namespace hautbois 
 {
@@ -47,16 +52,20 @@ class OneNote {
 protected:
     const NotePtr note;
 public:
+    //BaseOptional<NoteControl> property;
+    //BaseOptional<NoteOrnament> ornament;
+    //BaseOptional<NoteTechnique> technique;
+
     OneNote(const std::string& note_name_token, 
          const std::string& duration_token):
     note { newNotePtr(note_name_token, duration_token) }
     {}
 
-    NoteType getType() const {
+    virtual NoteType getType() const {
         return note->getType();
     }
 
-    std::string getDuration() const {
+    virtual std::string getDuration() const {
         std::string sout;
         GroupDuration d = note->getGroupDuration();
         for(auto it = d.begin(); it != d.end(); it++) {
@@ -66,7 +75,7 @@ public:
         return sout;
     }
 
-    std::string getIndex() const {
+    virtual std::string getIndex() const {
         std::string sout;
         GroupNoteIndex idx = note->getGroupIndex();
         for(auto it = idx.begin(); it != idx.end(); it++) {
@@ -76,7 +85,7 @@ public:
         return sout;
     }
 
-    std::string printNote() const {
+    virtual std::string printNote() const {
         return note->printNote();
     }
 

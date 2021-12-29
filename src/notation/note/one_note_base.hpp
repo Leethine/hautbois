@@ -24,11 +24,6 @@ protected:
     OneNoteBase& operator=(const OneNoteBase&)=delete;
     
 public:
-    //TODO enable somewhere
-    //BaseOptional<NoteProperty> property;
-    //BaseOptional<NoteOrnament> ornament;
-    //BaseOptional<NoteTechnique> technique;
-
     OneNoteBase():    
     //type { NoteType::VIRTUAL },
     tied { false }
