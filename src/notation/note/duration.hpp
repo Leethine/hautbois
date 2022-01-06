@@ -6,8 +6,8 @@ namespace hautbois
 
 class Duration
 {
-    const Beat num;
-    const Beat denom;
+    mutable Beat num;
+    mutable Beat denom;
 
 public:
     Duration(): 
@@ -75,6 +75,11 @@ public:
                      d2.num*d1.denom - d1.num*d2.denom, 
                      d1.denom*d2.denom };
         return d;
+    }
+
+    void operator+=(const Duration& d2) {
+        this->num = this->num*d2.denom + d2.num*this->denom;
+        this->denom = this->denom*d2.denom;
     }
 };
 

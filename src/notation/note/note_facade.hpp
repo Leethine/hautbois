@@ -52,7 +52,8 @@ class OneNote {
 protected:
     const NotePtr note;
 public:
-    //BaseOptional<NoteControl> property;
+    // TODO handle note properties
+    //BaseOptional<NoteControl> control;
     //BaseOptional<NoteOrnament> ornament;
     //BaseOptional<NoteTechnique> technique;
 
@@ -73,6 +74,12 @@ public:
         }
         sout.pop_back();
         return sout;
+    }
+
+    virtual Duration getPrincipalDuration() const {
+        GroupDuration d = note->getGroupDuration();
+        Duration d_max = *std::max_element(d.begin(),d.end());
+        return d_max;
     }
 
     virtual std::string getIndex() const {

@@ -8,6 +8,7 @@
 #include <memory>
 #include <cmath>
 #include <cassert>
+#include <iterator>
 
 namespace hautbois
 {

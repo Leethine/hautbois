@@ -41,4 +41,7 @@ BOOST_AUTO_TEST_CASE(test2_operators) {
     // << (printDuration)
     BOOST_CHECK_EQUAL(d1.printDuration(), "1/4");
     BOOST_CHECK_EQUAL(d2.printDuration(), "1/2");
+
+    d1 += d3;
+    BOOST_CHECK_EQUAL(d1, Duration(3,4));
 }
