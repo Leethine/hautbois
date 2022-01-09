@@ -16,6 +16,9 @@ g++ -ounittestdisplay -std=c++17 -lboost_unit_test_framework test_one_note_mono.
 g++ -ounittestdisplay -std=c++17 -lboost_unit_test_framework test_one_note_rest.cpp
 ./unittestdisplay
 
+g++ -ounittestdisplay -std=c++17 -lboost_unit_test_framework test_one_note_void.cpp
+./unittestdisplay
+
 g++ -ounittestdisplay -std=c++17 -lboost_unit_test_framework test_one_note_chord.cpp
 ./unittestdisplay
 

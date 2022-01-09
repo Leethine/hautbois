@@ -56,6 +56,11 @@ bool checkRestNoteSyntaxBool(const std::string& token_ns) {
     return std::regex_match(token_ns, regexp);
 }
 
+bool checkVoidNoteSyntaxBool(const std::string& token_ns) {
+    std::regex regexp(base_syntax_regexp::VOID_NOTE_TOKEN_PTN);
+    return std::regex_match(token_ns, regexp);
+}
+
 bool checkMonoNoteSyntaxBool(const std::string& token_ns) {
     std::regex regexp(base_syntax_regexp::MONO_NOTE_TOKEN_PTN);
     return std::regex_match(token_ns, regexp);

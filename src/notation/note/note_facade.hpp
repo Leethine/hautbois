@@ -1,5 +1,6 @@
 #pragma once
 #include "note_creator_utils.hpp"
+
 #include "../note_property/control.hpp"
 #include "../note_property/ornament.hpp"
 #include "../note_property/technique.hpp"
@@ -38,6 +39,10 @@ class OneNote {
                 return std::make_unique<OneNoteChord>
                     (note_creator_utils::str2GroupNoteNameChord(note_name_token),
                      note_creator_utils::str2GroupDuration(duration_token) );
+            break;
+        case NoteType::VOID :
+            return std::make_unique<OneNoteVoid>
+                (note_creator_utils::str2Duration(duration_token));
             break;
         case NoteType::VIRTUAL :
             std::cerr << "Syntax Error: " << note_name_token << "\n";

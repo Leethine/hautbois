@@ -6,7 +6,9 @@
 #include "one_note_mono.hpp"
 #include "one_note_tuplet.hpp"
 #include "one_note_chord.hpp"
+#include "one_note_void.hpp"
 #include "../base/base_syntax.hpp"
+
 #define _DISABLE_UNSAFE_PTR_
 
 namespace hautbois 
@@ -109,6 +111,9 @@ NoteType checkNoteType(const std::string& note_name_token) {
     std::string token_ns = rmWhiteSpace_copy(note_name_token);
     if ( base_syntax_utils::checkRestNoteSyntaxBool(token_ns) ) {
         return NoteType::REST;
+    }
+    else if ( base_syntax_utils::checkVoidNoteSyntaxBool(token_ns) ) {
+        return NoteType::VOID;
     }
     else if ( base_syntax_utils::checkMonoNoteSyntaxBool(token_ns) ) {
         return NoteType::MONO;

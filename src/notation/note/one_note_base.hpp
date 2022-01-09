@@ -8,6 +8,7 @@ namespace hautbois
 const NoteIndex _REST_NOTE_INDEX {101};
 const NoteIndex _CHORD_NOTE_INDEX {103};
 const NoteIndex _TUPLET_NOTE_INDEX {106};
+const NoteIndex _VOID_NOTE_INDEX {107};
 
 enum class NoteType {
     REST,
@@ -15,6 +16,7 @@ enum class NoteType {
     CHORD,
     TUPLET,
     VIRTUAL,
+    VOID
 };
 
 class OneNoteBase {
