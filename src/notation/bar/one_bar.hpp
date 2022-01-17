@@ -77,7 +77,7 @@ public:
             assert(checkBarHasSpace()); //TODO exception
         }
         if (checkBarExplode()) {
-            std::cerr << "Bar exploded! Aborted." << "\n";
+            std::cerr << "Bar exploded; Aborted." << "\n";
             assert(!checkBarExplode()); //TODO exception
         }
     }
