@@ -1,0 +1,1 @@
+g++ -ounittestdisplay -std=c++17 -I/usr/include -L/usr/lib -lboost_unit_test_framework unitest_core.cpp
