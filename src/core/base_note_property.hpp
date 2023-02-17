@@ -1,12 +1,12 @@
 #pragma once
 
-#ifndef base_property_H
-#define base_property_H
-#endif
+#ifndef BASE_NOTE_PROPERTY_H
+#define BASE_NOTE_PROPERTY_H
 
 #include "basetypes/base_def_types.hpp"
 #include "property/property_enum_types.hpp"
 #include "property/property_const.hpp"
+#include <vector>
 
 namespace hautbois {
 namespace core {
@@ -20,18 +20,33 @@ class BaseNoteProperty {
   UInt8 _dynamicsVal;
   UInt8 _ornamantVal;
  protected:
- public:
-  BaseNoteProperty():
-  _articulation { ArticulationEnum::UNKNOWN },
-  _dynamics { DynamicsEnum::UNKNOWN },
-  _ornamant { OrnamentEnum::UNKNOWN },
-  _articulationVal { property_values::UNKNOWN_VALUE },
-  _dynamicsVal { property_values::UNKNOWN_VALUE },
-  _ornamantVal { property_values::UNKNOWN_VALUE }
-  {}
+  virtual void warnInvalidPropertyName(const std::string& ivFunc) const;
 
+ public:
+  BaseNoteProperty();
+  virtual ~BaseNoteProperty();
+
+  virtual void setArticulation(const std::string& ivName, UInt8 ivVal);
+  virtual void setArticulation(const std::string& ivName);
+  virtual void setDynamics(const std::string& ivName, UInt8 ivVal);
+  virtual void setDynamics(const std::string& ivName);
+  virtual void setOrnament(const std::string& ivName, UInt8 ivVal);
+  virtual void setOrnament(const std::string& ivName);
+  virtual void set(const std::string& ivName, UInt8 ivVal);
+  virtual void set(const std::string& ivName);
+  virtual bool hasArticulation() const;
+  virtual bool hasDynamics() const;
+  virtual bool hasOrnament() const;
+  virtual void clearArticulation();
+  virtual void clearDynamics();
+  virtual void clearOrnament();
+  virtual void clear();
+  virtual std::pair<std::string, UInt8> getArticulation() const;
+  virtual std::pair<std::string, UInt8> getDynamics() const;
+  virtual std::pair<std::string, UInt8> getOrnament() const;
 };
 
 } // namespace core
 } // namespace hautbois
 
+#endif

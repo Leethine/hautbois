@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef tempo_enum_types_H
-#define tempo_property_H
-#endif
+#ifndef TEMPO_ENUM_TYPES_H
+#define TEMPO_ENUM_TYPES_H
 
 #include <string>
 #include <map>
@@ -99,3 +98,5 @@ std::map<TempoEnum, std::string> TEMPO_ENUM_TO_STRING {
 
 } // namespace core
 } // namespace hautbois
+
+#endif

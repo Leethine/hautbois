@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef note_enum_types_H
-#define note_enum_types_H
-#endif
+#ifndef NOTE_ENUM_TYPES_H
+#define NOTE_ENUM_TYPES_H
 
 #include <map>
 #include <string>
@@ -43,7 +42,7 @@ enum class RhythmicValuesEnum {
 };
 
 namespace notename_str_enum_convert {
-std::map<std::string,NoteNameEnum> SCINAME_STRING_TO_ENUM {
+const std::map<std::string,NoteNameEnum> SCINAME_STRING_TO_ENUM {
   {"C", NoteNameEnum::C},
   {"D", NoteNameEnum::D},
   {"E", NoteNameEnum::E},
@@ -58,7 +57,7 @@ std::map<std::string,NoteNameEnum> SCINAME_STRING_TO_ENUM {
   {"SILENCE", NoteNameEnum::S}
 };
 
-std::map<NoteNameEnum,std::string> SCINAME_ENUM_TO_STRING {
+const std::map<NoteNameEnum,std::string> SCINAME_ENUM_TO_STRING {
   {NoteNameEnum::C, "C"},
   {NoteNameEnum::D, "D"},
   {NoteNameEnum::E, "E"},
@@ -71,7 +70,7 @@ std::map<NoteNameEnum,std::string> SCINAME_ENUM_TO_STRING {
   {NoteNameEnum::S, "SILENCE"}
 };
 
-std::map<std::string,NoteNameEnum> LATINNAME_STRING_TO_ENUM {
+const std::map<std::string,NoteNameEnum> LATINNAME_STRING_TO_ENUM {
   {"DO", NoteNameEnum::C},
   {"UT", NoteNameEnum::C},
   {"RE", NoteNameEnum::D},
@@ -87,7 +86,7 @@ std::map<std::string,NoteNameEnum> LATINNAME_STRING_TO_ENUM {
   {"SILENCE", NoteNameEnum::S}
 };
 
-std::map<NoteNameEnum,std::string> LATINNAME_ENUM_TO_STRING {
+const std::map<NoteNameEnum,std::string> LATINNAME_ENUM_TO_STRING {
   {NoteNameEnum::C, "DO"},
   {NoteNameEnum::D, "RE"},
   {NoteNameEnum::E, "MI"},
@@ -104,7 +103,7 @@ std::map<NoteNameEnum,std::string> LATINNAME_ENUM_TO_STRING {
 
 namespace accidental_str_enum_convert {
 
-std::map<std::string,AccidentalEnum> ACCIDENTAL_STRING_TO_ENUM {
+const std::map<std::string,AccidentalEnum> ACCIDENTAL_STRING_TO_ENUM {
   {"n", AccidentalEnum::n},
   {"", AccidentalEnum::n},
   {"s", AccidentalEnum::s},
@@ -115,7 +114,7 @@ std::map<std::string,AccidentalEnum> ACCIDENTAL_STRING_TO_ENUM {
   {"bb", AccidentalEnum::bb}
 };
 
-std::map<AccidentalEnum,std::string> ACCIDENTAL_ENUM_TO_STRING {
+const std::map<AccidentalEnum,std::string> ACCIDENTAL_ENUM_TO_STRING {
   {AccidentalEnum::n, ""},
   {AccidentalEnum::s, "#"},
   {AccidentalEnum::x, "x"},
@@ -127,7 +126,7 @@ std::map<AccidentalEnum,std::string> ACCIDENTAL_ENUM_TO_STRING {
 
 namespace octave_str_enum_convert {
 
-std::map<std::string,OctaveEnum> OCTAVE_STRING_TO_ENUM {
+const std::map<std::string,OctaveEnum> OCTAVE_STRING_TO_ENUM {
   {"0", OctaveEnum::zeroth},
   {"1", OctaveEnum::first},
   {"2", OctaveEnum::second},
@@ -139,7 +138,7 @@ std::map<std::string,OctaveEnum> OCTAVE_STRING_TO_ENUM {
   {"8", OctaveEnum::eighth}
 };
 
-std::map<OctaveEnum,std::string> OCTAVE_ENUM_TO_STRING {
+const std::map<OctaveEnum,std::string> OCTAVE_ENUM_TO_STRING {
   {OctaveEnum::zeroth, "0"},
   {OctaveEnum::first,  "1"},
   {OctaveEnum::second, "2"},
@@ -155,3 +154,5 @@ std::map<OctaveEnum,std::string> OCTAVE_ENUM_TO_STRING {
 
 } // namespace notation
 } // namespace hautbois
+
+#endif

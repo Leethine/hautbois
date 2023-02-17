@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef base_def_types_H
-#define base_def_types_H
-#endif
+#ifndef BASE_DEF_TYPES_H
+#define BASE_DEF_TYPES_H
 
 #include <cstdint>
 #include <cfloat>
@@ -134,3 +133,5 @@ WCHAR_MAX      = 2147483647
 WINT_MIN       = 0
 WINT_MAX       = 4294967295
 */
+
+#endif

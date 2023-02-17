@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef sci_notename_to_index_H
-#define sci_notename_to_index_H
-#endif
+#ifndef SCI_NOTENAME_TO_INDEX_H
+#define SCI_NOTENAME_TO_INDEX_H
 
 #include <map>
 #include <string>
@@ -289,3 +288,5 @@ const StringToIndexMap SCINAME_STRING_TO_INDEX {
 } // namespace chart
 } // namespace core
 } // namespace hautbois
+
+#endif

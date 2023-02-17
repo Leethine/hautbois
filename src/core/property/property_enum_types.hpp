@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef property_enum_types_H
-#define property_enum_types_H
-#endif
+#ifndef PROPERTY_ENUM_TYPES_H
+#define PROPERTY_ENUM_TYPES_H
 
 #include <string>
 #include <map>
@@ -57,7 +56,7 @@ enum class OrnamentEnum {
 
 namespace articulation_str_enum_convert {
 
-std::map<std::string, ArticulationEnum> ARTICULATION_STRING_TO_ENUM {
+const std::map<std::string, ArticulationEnum> ARTICULATION_STRING_TO_ENUM {
   { "accento", ArticulationEnum::accento },
   { "experssivo", ArticulationEnum::experssivo },
   { "fermata", ArticulationEnum::fermata },
@@ -70,7 +69,7 @@ std::map<std::string, ArticulationEnum> ARTICULATION_STRING_TO_ENUM {
   { "tenuto", ArticulationEnum::tenuto }
 };
 
-std::map<ArticulationEnum, std::string> ARTICULATION_ENUM_TO_STRING {
+const std::map<ArticulationEnum, std::string> ARTICULATION_ENUM_TO_STRING {
   { ArticulationEnum::accento, "accento" },
   { ArticulationEnum::experssivo, "experssivo" },
   { ArticulationEnum::fermata, "fermata" },
@@ -80,14 +79,15 @@ std::map<ArticulationEnum, std::string> ARTICULATION_ENUM_TO_STRING {
   { ArticulationEnum::spiccato, "spiccato" },
   { ArticulationEnum::staccatissimo, "staccatissimo" },
   { ArticulationEnum::staccato, "staccato" },
-  { ArticulationEnum::tenuto, "tenuto" }
+  { ArticulationEnum::tenuto, "tenuto" },
+  { ArticulationEnum::UNKNOWN, "UNKNOWN" }
 };
 
 } // namespace articulation_str_enum_convert
 
 namespace dynamics_str_enum_convert {
 
-std::map<std::string, DynamicsEnum> DYNAMICS_STRING_TO_ENUM {
+const std::map<std::string, DynamicsEnum> DYNAMICS_STRING_TO_ENUM {
   { "ppp", DynamicsEnum::ppp },
   { "pp", DynamicsEnum::pp },
   { "p", DynamicsEnum::p },
@@ -103,7 +103,7 @@ std::map<std::string, DynamicsEnum> DYNAMICS_STRING_TO_ENUM {
   { "n", DynamicsEnum::n }
 };
 
-std::map<DynamicsEnum, std::string> DYNAMICS_ENUM_TO_STRING {
+const std::map<DynamicsEnum, std::string> DYNAMICS_ENUM_TO_STRING {
   { DynamicsEnum::ppp, "ppp" },
   { DynamicsEnum::pp, "pp" },
   { DynamicsEnum::p, "p" },
@@ -116,14 +116,15 @@ std::map<DynamicsEnum, std::string> DYNAMICS_ENUM_TO_STRING {
   { DynamicsEnum::fp, "fp" },
   { DynamicsEnum::cres, "cres" },
   { DynamicsEnum::dim, "dim" },
-  { DynamicsEnum::n, "n" }
+  { DynamicsEnum::n, "n" },
+  { DynamicsEnum::UNKNOWN, "UNKNOWN" }
 };
 
 } // namespace dynamics_str_enum_convert
 
 namespace ornament_str_enum_convert {
 
-std::map<std::string, OrnamentEnum> ORNAMENT_STRING_TO_ENUM {
+const std::map<std::string, OrnamentEnum> ORNAMENT_STRING_TO_ENUM {
   { "acciaccatura", OrnamentEnum::acciaccatura },
   { "appoggiatura", OrnamentEnum::appoggiatura },
   { "arpeggio", OrnamentEnum::arpeggio },
@@ -136,7 +137,7 @@ std::map<std::string, OrnamentEnum> ORNAMENT_STRING_TO_ENUM {
   { "tremolo", OrnamentEnum::tremolo }
 };
 
-std::map<OrnamentEnum, std::string> ORNAMENT_ENUM_TO_STRING {
+const std::map<OrnamentEnum, std::string> ORNAMENT_ENUM_TO_STRING {
   { OrnamentEnum::acciaccatura, "acciaccatura" },
   { OrnamentEnum::appoggiatura, "appoggiatura" },
   { OrnamentEnum::arpeggio, "arpeggio" },
@@ -146,10 +147,13 @@ std::map<OrnamentEnum, std::string> ORNAMENT_ENUM_TO_STRING {
   { OrnamentEnum::gruppetto, "gruppetto" },
   { OrnamentEnum::mordente, "mordente" },
   { OrnamentEnum::trillo, "trillo" },
-  { OrnamentEnum::tremolo, "tremolo" }
+  { OrnamentEnum::tremolo, "tremolo" },
+  { OrnamentEnum::UNKNOWN, "UNKNOWN" }
 };
 
 } // namespace ornament_str_enum_convert
 
 } // namespace core
 } // namespace hautbois
+
+#endif
