@@ -9,18 +9,23 @@ namespace hautbois {
 namespace core {
 namespace property_values {
 
-const UInt8 UNKNOWN_VALUE = 0;
+const UInt8 UNKNOWN_VALUE = 127;
 const UInt8 DEFAULT_VALUE = 0;
 
-/* Ornaments */
-// acciaccatura
-// appoggiatura
-// arpeggio
-// cadenza
-// fioritura
-// glissando
-// gruppetto
-// mordente
+/* Ornaments 
+  acciaccatura
+  appoggiatura
+  arpeggio
+  cadenza
+  fioritura
+  glissando
+  gruppetto
+  mordente
+  trillo
+  tremolo
+*/
+
+/* Value related to Mordent */
 const UInt8 MORDENT = 1;
 const UInt8 PRALL = 2;
 const UInt8 MORDENT_SEMITONE = 3;
@@ -34,10 +39,22 @@ const UInt8 PRALLMORDENT = 10;
 const UInt8 MORDENTMORDENT = 11;
 const UInt8 PRALLPRALL = 12;
 
-// trillo
-// tremolo
+/* Articulation
+  accento,
+  experssivo,
+  fermata,
+  legato,
+  marcato,
+  portato,
+  spiccato,
+  staccatissimo,
+  staccato,
+  tenuto
+*/
 
-//TODO add more property constants and spec
+/* Values related to Legato */
+const UInt8 LEGATO_BEGIN = 1;
+const UInt8 LEGATO_END = 2;
 
 } // property_values
 } // namespace core
