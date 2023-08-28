@@ -94,6 +94,9 @@ using UInt64 = uint64_t;
 /* Exceptions */
 using InvalidArgumentException = std::invalid_argument;
 using RunTimeException = std::runtime_error;
+using LogicError = std::logic_error;
+using OutOfRangeException = std::out_of_range;
+using LengthError = std::length_error;
 
 /* Misc definition */
 

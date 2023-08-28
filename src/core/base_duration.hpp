@@ -52,31 +52,44 @@ class BaseDuration {
     return std::to_string(_num) + "/" + std::to_string(_denom);
   }
 
-  inline virtual bool operator<(const BaseDuration& ivD2) {
+  inline virtual bool operator<(const BaseDuration& ivD2) const {
     return (UInt64) this->getNum() * (UInt64) ivD2.getDenom()
          < (UInt64) ivD2.getNum() * (UInt64) this->getDenom();
   }
 
-  inline virtual bool operator>(const BaseDuration& ivD2) {
+  inline virtual bool operator>(const BaseDuration& ivD2) const {
     return (UInt64) this->getNum() * (UInt64) ivD2.getDenom()
          > (UInt64) ivD2.getNum() * (UInt64) this->getDenom();
   }
 
-  inline virtual bool operator==(const BaseDuration& ivD2) {
+  inline virtual bool operator==(const BaseDuration& ivD2) const {
     return (UInt64) this->getNum() * (UInt64) ivD2.getDenom()
         == (UInt64) ivD2.getNum() * (UInt64) this->getDenom();
   }
 
-  inline virtual bool operator!=(const BaseDuration& ivD2) {
+  inline virtual bool operator!=(const BaseDuration& ivD2) const {
     return (UInt64) this->getNum() * (UInt64) ivD2.getDenom()
         != (UInt64) ivD2.getNum() * (UInt64) this->getDenom();
   }
 
-  virtual BaseDuration operator+(const BaseDuration& ivD2);
+  inline virtual bool operator>=(const BaseDuration& ivD2) const {
+    return (*this) > ivD2 || (*this) == ivD2;
+  }
 
-  virtual BaseDuration operator-(const BaseDuration& ivD2);
+  inline virtual bool operator<=(const BaseDuration& ivD2) const {
+    return (*this) < ivD2 || (*this) == ivD2;
+  }
 
-  inline void operator+=(const BaseDuration& ivD2);
+  inline virtual BaseDuration operator=(const BaseDuration& ivD2) const {
+    BaseDuration newDuration(ivD2);
+    return newDuration;
+  }
+
+  virtual BaseDuration operator+(const BaseDuration& ivD2) const;
+
+  virtual BaseDuration operator-(const BaseDuration& ivD2) const;
+
+  void operator+=(const BaseDuration& ivD2);
 };
 
 } // namespace core

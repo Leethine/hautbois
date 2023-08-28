@@ -38,6 +38,14 @@ enum class TempoEnum {
   UNKNOWN
 };
 
+enum class TempoChangeEnum {
+  ral, // slow down (rallentando)
+  acc, // accelerate (accelerando)
+  ral_poco, // slow down little by little
+  acc_poco, // accelerate little by little
+  UNKNOWN
+};
+
 namespace tempo_str_enum_convert {
 
 std::map<std::string, TempoEnum> TEMPO_STRING_TO_ENUM {

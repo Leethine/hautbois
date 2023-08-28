@@ -24,19 +24,20 @@ enum class ArticulationEnum {
 };
 
 enum class DynamicsEnum {
-  ppp, // Pianississimo
-  pp,  // Pianissimo
-  p,   // Piano
-  mp,  // Mezzo piano
-  mf,  // Mezzo forte
-  f,   // Forte
-  ff,  // Fortissimo
-  fff, // Fortississimo
-  sfz, // Sforzando
-  fp,  // Fortepiano
-  cres,// Crescendo
-  dim, // Diminuendo
-  n,   // Niente
+  ppp,   // Pianississimo
+  pp,    // Pianissimo
+  p,     // Piano
+  mp,    // Mezzo piano
+  mf,    // Mezzo forte
+  f,     // Forte
+  ff,    // Fortissimo
+  fff,   // Fortississimo
+  sfz,   // Sforzando
+  fp,    // Fortepiano
+  cres,  // Crescendo
+  decres,//Decrescendo
+  dim,   // Diminuendo
+  n,     // Niente
   UNKNOWN
 };
 

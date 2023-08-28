@@ -18,7 +18,8 @@ enum class LatinNoteNameEnum {
 };
 
 enum class OctaveEnum {
-  zeroth,first,second,third,fourth,fifth,sixth,seventh,eighth
+  zeroth,first,second,third,fourth,fifth,sixth,seventh,eighth,
+  unknown
 };
 
 enum class AccidentalEnum {
@@ -127,6 +128,7 @@ const std::map<AccidentalEnum,std::string> ACCIDENTAL_ENUM_TO_STRING {
 namespace octave_str_enum_convert {
 
 const std::map<std::string,OctaveEnum> OCTAVE_STRING_TO_ENUM {
+  {"", OctaveEnum::unknown},
   {"0", OctaveEnum::zeroth},
   {"1", OctaveEnum::first},
   {"2", OctaveEnum::second},

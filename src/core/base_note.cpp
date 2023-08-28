@@ -25,6 +25,29 @@ hautbois::core::BaseNote::BaseNote():
   _property {nullptr} {
 }
 
+hautbois::core::BaseNote::BaseNote(BaseNote& ivRhNote) {
+  BaseNote();
+  this->_name = ivRhNote._name;
+  this->_accidental = ivRhNote._accidental;
+  this->_octave = ivRhNote._octave;
+  this->_index = ivRhNote._index;
+  this->_connected = ivRhNote._connected;
+  this->_duration = new BaseDuration(*ivRhNote._duration);
+  if(ivRhNote._chordNoteNameList) {
+    this->_chordNoteNameList = new std::vector<NoteNameEnum>(*ivRhNote._chordNoteNameList);
+  }
+  if(ivRhNote._chordAccidentalList) {
+    this->_chordAccidentalList = new std::vector<AccidentalEnum>(*ivRhNote._chordAccidentalList);
+  }
+  if(ivRhNote._chordOctaveList) {
+    this->_chordOctaveList = new std::vector<OctaveEnum>(*ivRhNote._chordOctaveList);
+  }
+  if(ivRhNote._chordIndexList) {
+    this->_chordIndexList = new std::vector<UInt8>(*ivRhNote._chordIndexList);
+  }
+  // No property copying
+}
+
 void hautbois::core::BaseNote::setNoteName(const std::string& ivName) {
   if (notename_str_enum_convert::SCINAME_STRING_TO_ENUM.find(ivName)
       != notename_str_enum_convert::SCINAME_STRING_TO_ENUM.end()) {
@@ -317,12 +340,24 @@ hautbois::core::BaseNote::BaseNote(const std::vector<std::string>& ivListNoteV,
 }
 
 hautbois::core::BaseNote::~BaseNote() {
-  delete _duration;
-  delete _property;
-  delete _chordNoteNameList;
-  delete _chordAccidentalList;
-  delete _chordOctaveList;
-  delete _chordIndexList;
+  if (_duration) {
+    delete _duration;
+  }
+  if (_chordNoteNameList) {
+    delete _chordNoteNameList;
+  }
+  if (_chordAccidentalList) {
+    delete _chordAccidentalList;
+  }
+  if (_chordOctaveList) {
+    delete _chordOctaveList;
+  }
+  if (_chordIndexList) {
+    delete _chordIndexList;
+  }
+  if (_property) {
+    delete _property;
+  }
 }
 
 hautbois::core::BaseDuration hautbois::core::BaseNote::getDuration() const {
@@ -388,7 +423,6 @@ std::string hautbois::core::BaseNote::getDurationAsString() const {
   }
 }
 
-
 void hautbois::core::BaseNote::addProperty(const std::string& ivProperty) {
   if (_property == nullptr) {
     _property = new BaseNoteProperty();
@@ -403,9 +437,9 @@ void hautbois::core::BaseNote::addProperty(const std::string& ivProperty, UInt8 
   _property->set(ivProperty, ivValue);
 }
 
-std::map<hautbois::core::BaseNote::PropertyType, hautbois::core::BaseNote::PropertyNameValuePair>
+std::map<std::string, hautbois::core::BaseNote::PropertyNameValuePair>
   hautbois::core::BaseNote::getPropertyAsMap() const {
-  std::map<hautbois::core::BaseNote::PropertyType, hautbois::core::BaseNote::PropertyNameValuePair> ovMap;
+  std::map<std::string, hautbois::core::BaseNote::PropertyNameValuePair> ovMap;
   if (_property == nullptr) {
     return ovMap;
   }

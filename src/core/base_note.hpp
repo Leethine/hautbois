@@ -79,7 +79,7 @@ class BaseNote {
 
   virtual void throwExceptionForChordListInput(const std::string& ivMathod, 
                                const std::vector<std::string>& ivSciNoteVec);
- 
+
   virtual void addToChordList(const std::string& ivFullNoteNameStr);
 
   virtual void reinitChordList();
@@ -100,6 +100,8 @@ class BaseNote {
 
   BaseNote(const std::vector<std::string>& ivListNoteV,
            const UInt8 ivNoteValueD, const std::string& ivDotsS);
+
+  BaseNote(BaseNote& ivRhNote);
 
   ~BaseNote();
 
@@ -155,12 +157,10 @@ class BaseNote {
   }
 
   virtual void addProperty(const std::string& ivProperty);
-  
-  virtual void addProperty(const std::string& ivProperty, UInt8 ivValue);
 
-  using PropertyType = std::string;
+  virtual void addProperty(const std::string& ivProperty, UInt8 ivValue);
   using PropertyNameValuePair = std::pair<std::string, UInt8>;
-  virtual std::map<PropertyType, PropertyNameValuePair> getPropertyAsMap() const;
+  virtual std::map<std::string, PropertyNameValuePair> getPropertyAsMap() const;
 
   virtual BaseNoteProperty getProperty() const;
 };

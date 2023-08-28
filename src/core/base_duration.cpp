@@ -86,11 +86,12 @@ hautbois::core::BaseDuration::BaseDuration(const BaseDuration &d) {
   this->_num = d.getNum();
   this->_denom = d.getDenom();
 }
+
 hautbois::core::BaseDuration::~BaseDuration() {
 }
 
 hautbois::core::BaseDuration hautbois::core::BaseDuration::operator+
-  (const BaseDuration& ivD2) {
+  (const BaseDuration& ivD2) const {
   
   UInt64 tvNum = (UInt64)this->getNum() * (UInt64)ivD2.getDenom()
                  + (UInt64)ivD2.getNum() * (UInt64)this->getDenom();
@@ -100,7 +101,7 @@ hautbois::core::BaseDuration hautbois::core::BaseDuration::operator+
 }
 
 hautbois::core::BaseDuration hautbois::core::BaseDuration::operator-
-  (const BaseDuration& ivD2) {
+  (const BaseDuration& ivD2) const {
     if ((*this) == ivD2) {
       throw InvalidArgumentException(
           "Operation not supported between equal Durations: "

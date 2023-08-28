@@ -2,68 +2,39 @@
 
 ### The Hautbois Project
 
-The "**H**ybrid **a**nd **U**niversal **T**ext-**B**ased **O**rchestral **I**nstruments **S**imulator" project, abbreviated as "Hautbois". The initial aim was to create a classical music simulator from text-based scripts. However, this project has grown with time, the features extended beyond a simple simulator, but more of a versatile system.
+The "**H**ybrid **a**nd **U**niversal **T**ext-**B**ased **O**rchestral **I**nstruments **S**imulator" project, abbreviated as "Hautbois". The initial aim was to create a classical music simulator from text-based scripts. With the growth of this project, new features may be added that extends the system beyond simply a simulator.
 
-<img src="https://raw.githubusercontent.com/Leethine/hautbois/c5dd6a35552d5d72adc3361fe90f631e63f6956c/icon.svg" width="180" height="180">
-
-[pipeline]
-
+<img  src="https://raw.githubusercontent.com/Leethine/hautbois/c5dd6a35552d5d72adc3361fe90f631e63f6956c/icon.svg"  width="180"  height="180">
+  
 ### Components
 
- - [kernel] Logical representation kernel [status]
+-  [kernel] Logical representation kernel
 
- - [compile] Music script compiler [status]
- 
- - [theory] Music theory related definitions [status]
+-  ~~[compile] Music script compiler~~
 
- - [audio] Sound synthesis and audio generation [status]
+-  ~~[theory] Music theory related definitions~~
 
- - [interp] Music interpretation from the script [status]
+-  ~~[audio] Sound synthesis and audio generation~~
 
- - [analysis] Musical analysis module [status]
+-  ~~[interp] Music interpretation from the script~~
 
- - [composition] Computer-aided composition [status]
+-  ~~[analysis] Musical analysis module~~
 
- - [gregorian] Gregorian chant module [status]
+-  ~~[composition] Computer-aided composition~~
+
+-  ~~[gregorian] Gregorian chant module~~
 
 
-### Development quick note
+### Installation
 
- - kernel
-
-    [c][notation] notation system that defines musical notation symbols, elements, etc
-    [c][charts] definition of map classes for quick-card look-up
-
- - compile
-
-    [c][parse] "syntax" checker
-    [c][lyutils] lilypond utilities
-
- - theory
-    [c][concepts] definition of musical theory concepts
-    [c][rules] rules related to counterpoint, chords, cadence, etc.
- 
- - audio
-
-    [c][filter] Filter components
-    [c][model] instrument models
-    
- - interp
-
- - analysis
-
- - composition
-
- - gregorian
+`make`
 
 
 ### Release Names and Version Control
 
 Release that involves major break-through should use the name borrowed from classical music pieces.
 
-Within each major release, versions are numbered by `n°X`, i.e., `_**ReleaseName**_ **n°X**`. There is also a global version identifier along with  `_ReleaseName_ n°X pattern`, in the format of _**Op. X.X.X**_
-
-[DATE] The latest release is _Invention n°1, Op. 0.1.1_
+Within each major release, versions are numbered by `n°X`, i.e., `_**ReleaseName**_ **n°X**`. There is also a global version identifier along with `_ReleaseName_ n°X pattern`, in the format of _**Op. X.X.X**_
 
 See release log for details.
 
@@ -71,14 +42,14 @@ See release log for details.
 
 Please star or fork this repository!
 
-Icon design
+Following support will be appreciated:
 
-Architecture review
+- Icon design
 
-Code refactoring
+- Architecture review
 
-Pull request
+- Code refactoring
 
-Musical knowledge support
+- Pull request
 
-Donation
+- Donation
