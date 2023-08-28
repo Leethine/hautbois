@@ -61,6 +61,7 @@ bool hautbois::core::BaseVoice::padVoice(const BaseDuration& ivDuration, NoteNam
     throw OutOfRangeException("Error in BaseVoice::padVoice. Total duration: " + countTotalDuration().toString() + " Given max duration: " + ivDuration.toString());
     return false;
   }
+  return true;
 }
 
 bool hautbois::core::BaseVoice::frontPadWithSilence(const BaseDuration& ivDuration) {
@@ -79,9 +80,9 @@ bool hautbois::core::BaseVoice::backPadWithRest(const BaseDuration& ivDuration) 
   return padVoice(ivDuration, NoteNameEnum::R, false);
 }
 
-bool hautbois::core::BaseVoice::trimFront(const BaseDuration& ivDuration) {
+void hautbois::core::BaseVoice::trimFront(const BaseDuration& ivDuration) {
   if (_voice.empty()) {
-    return true;
+    return ;
   }
   BaseDuration totalDuration = countTotalDuration();
   if (totalDuration > ivDuration) {
@@ -105,13 +106,13 @@ bool hautbois::core::BaseVoice::trimFront(const BaseDuration& ivDuration) {
   }
   else {
     // array not full, nothing to trim
-    return true;
+    return ;
   }
 }
 
-bool hautbois::core::BaseVoice::trimBack(const BaseDuration& ivDuration) {
+void hautbois::core::BaseVoice::trimBack(const BaseDuration& ivDuration) {
   if (_voice.empty()) {
-    return true;
+    return ;
   }
   BaseDuration totalDuration = countTotalDuration();
   if (totalDuration > ivDuration) {
@@ -135,7 +136,7 @@ bool hautbois::core::BaseVoice::trimBack(const BaseDuration& ivDuration) {
   }
   else {
     // array not full, nothing to trim
-    return true;
+    return ;
   }
 }
 

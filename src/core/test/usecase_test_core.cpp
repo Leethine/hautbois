@@ -1,6 +1,7 @@
-#include "base_duration.hpp"
-#include "base_note_property.hpp"
-#include "base_note.hpp"
+#include "../base_duration.hpp"
+#include "../base_note_property.hpp"
+#include "../base_note.hpp"
+#include "../base_voice.hpp"
 #include <vector>
 #include <string>
 #include <iostream>
@@ -50,6 +51,8 @@ int main () {
 
   std::cout << d14_1.toString() << "\n";
   std::cout << d14_2.toString() << "\n";
+
+  std::cout << "SILENCE_NOTE_INDEX " << int(hautbois::core::SILENCE_NOTE_INDEX) << "\n";
 
   try {
     n1.addProperty("pp");

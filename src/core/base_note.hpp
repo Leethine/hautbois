@@ -9,6 +9,7 @@
 
 #include "basetypes/base_def_types.hpp"
 #include "basetypes/note_enum_types.hpp"
+#include "basetypes/note_enum_converter.hpp"
 #include "charts/sci_notename_to_index.hpp"
 #include "base_duration.hpp"
 #include "base_note_property.hpp"

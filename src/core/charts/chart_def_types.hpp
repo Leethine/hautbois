@@ -12,11 +12,11 @@
 namespace hautbois {
 namespace core {
 
-const UInt8 SILENCE_NOTE_INDEX = 109;
-const UInt8 REST_NOTE_INDEX = 110;
-const UInt8 CHORD_INDEX = 111;
-const UInt8 XPLET_INDEX = 112;
-const UInt8 ERROR_NOTE_INDEX = 120;
+constexpr const hautbois::UInt8 SILENCE_NOTE_INDEX = 109;
+constexpr const hautbois::UInt8 REST_NOTE_INDEX = 110;
+constexpr const hautbois::UInt8 CHORD_INDEX = 111;
+constexpr const hautbois::UInt8 XPLET_INDEX = 112;
+constexpr const hautbois::UInt8 ERROR_NOTE_INDEX = 120;
 
 namespace notename_str_index_table {
 
