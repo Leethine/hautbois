@@ -20,13 +20,13 @@ hautbois::core::BaseDuration hautbois::core::BaseVoice::countTotalDuration() con
   return totalDuration;
 }
 
-bool hautbois::core::BaseVoice::checkFull(const BaseDuration& ivDuration) const {
-  if (_voice.empty() && ivDuration.getNum() != 0) {
+bool hautbois::core::BaseVoice::checkFull(const BaseDuration& ivFullDuration) const {
+  if (_voice.empty() && ivFullDuration.getNum() != 0) {
     return false;
   }
 
   BaseDuration totalDuration = countTotalDuration();
-  if (totalDuration >= ivDuration) {
+  if (totalDuration >= ivFullDuration) {
     return true;
   }
   else {
@@ -34,11 +34,11 @@ bool hautbois::core::BaseVoice::checkFull(const BaseDuration& ivDuration) const 
   }
 }
 
-bool hautbois::core::BaseVoice::padVoice(const BaseDuration& ivDuration, NoteNameEnum ivNoteName, bool ivPadFront=false) {
+bool hautbois::core::BaseVoice::padVoice(const BaseDuration& ivFullDuration, NoteNameEnum ivNoteName, bool ivPadFront=false) {
   BaseNote * paddingNote = nullptr;
-  if (!checkFull(ivDuration)) {
+  if (!checkFull(ivFullDuration)) {
     BaseDuration totalDuration = countTotalDuration();
-    BaseDuration fullDuration = BaseDuration(ivDuration);
+    BaseDuration fullDuration = BaseDuration(ivFullDuration);
     BaseDuration paddingDuration = fullDuration - totalDuration;
     if (ivNoteName == NoteNameEnum::S) {
       paddingNote = new BaseNote("S", "", "", paddingDuration.getNum(),  paddingDuration.getDenom());
@@ -58,35 +58,35 @@ bool hautbois::core::BaseVoice::padVoice(const BaseDuration& ivDuration, NoteNam
     }
   }
   else {
-    throw OutOfRangeException("Error in BaseVoice::padVoice. Total duration: " + countTotalDuration().toString() + " Given max duration: " + ivDuration.toString());
+    throw OutOfRangeException("Error in BaseVoice::padVoice. Total duration: " + countTotalDuration().toString() + " Given max duration: " + ivFullDuration.toString());
     return false;
   }
   return true;
 }
 
-bool hautbois::core::BaseVoice::frontPadWithSilence(const BaseDuration& ivDuration) {
-  return padVoice(ivDuration, NoteNameEnum::S, true);
+bool hautbois::core::BaseVoice::frontPadWithSilence(const BaseDuration& ivFullDuration) {
+  return padVoice(ivFullDuration, NoteNameEnum::S, true);
 }
 
-bool hautbois::core::BaseVoice::frontPadWithRest(const BaseDuration& ivDuration) {
-  return padVoice(ivDuration, NoteNameEnum::R, true);
+bool hautbois::core::BaseVoice::frontPadWithRest(const BaseDuration& ivFullDuration) {
+  return padVoice(ivFullDuration, NoteNameEnum::R, true);
 }
 
-bool hautbois::core::BaseVoice::backPadWithSilence(const BaseDuration& ivDuration) {
-  return padVoice(ivDuration, NoteNameEnum::S, false);
+bool hautbois::core::BaseVoice::backPadWithSilence(const BaseDuration& ivFullDuration) {
+  return padVoice(ivFullDuration, NoteNameEnum::S, false);
 }
 
-bool hautbois::core::BaseVoice::backPadWithRest(const BaseDuration& ivDuration) {
-  return padVoice(ivDuration, NoteNameEnum::R, false);
+bool hautbois::core::BaseVoice::backPadWithRest(const BaseDuration& ivFullDuration) {
+  return padVoice(ivFullDuration, NoteNameEnum::R, false);
 }
 
-void hautbois::core::BaseVoice::trimFront(const BaseDuration& ivDuration) {
+void hautbois::core::BaseVoice::trimFront(const BaseDuration& ivFullDuration) {
   if (_voice.empty()) {
     return ;
   }
   BaseDuration totalDuration = countTotalDuration();
-  if (totalDuration > ivDuration) {
-    BaseDuration extraDuration = totalDuration - ivDuration;
+  if (totalDuration > ivFullDuration) {
+    BaseDuration extraDuration = totalDuration - ivFullDuration;
     BaseDuration zeroDuration(0,4);
     while (extraDuration > zeroDuration) {
       if (extraDuration >= _voice.front()->getDuration()) {
@@ -110,13 +110,13 @@ void hautbois::core::BaseVoice::trimFront(const BaseDuration& ivDuration) {
   }
 }
 
-void hautbois::core::BaseVoice::trimBack(const BaseDuration& ivDuration) {
+void hautbois::core::BaseVoice::trimBack(const BaseDuration& ivFullDuration) {
   if (_voice.empty()) {
     return ;
   }
   BaseDuration totalDuration = countTotalDuration();
-  if (totalDuration > ivDuration) {
-    BaseDuration extraDuration = totalDuration - ivDuration;
+  if (totalDuration > ivFullDuration) {
+    BaseDuration extraDuration = totalDuration - ivFullDuration;
     BaseDuration zeroDuration(0,4);
     while (extraDuration > zeroDuration) {
       if (extraDuration >= _voice.back()->getDuration()) {
@@ -174,4 +174,21 @@ hautbois::core::BaseNote* hautbois::core::BaseVoice::getNoteNoRangeLimit(UInt16 
   else {
     return _voice[ivPosition];
   }
+}
+
+void hautbois::core::BaseVoice::autoPadding(const BaseDuration& ivFrontDuration, const BaseDuration& ivBackDuration, bool padWithSilence=true) {
+  if (_voice.empty()) {
+    return;
+  }
+  else {
+    std::string note_name = padWithSilence ? "S" : "R";
+    BaseNote * frontNote = new BaseNote(note_name, "", "", ivFrontDuration.getNum(), ivFrontDuration.getDenom());
+    BaseNote * backNote = new BaseNote(note_name, "", "", ivBackDuration.getNum(), ivBackDuration.getDenom());
+    _voice.insert(_voice.begin(), frontNote);
+    _voice.push_back(backNote);
+  }
+}
+
+hautbois::UInt16 hautbois::core::BaseVoice::getTotalNotes() const {
+  return _voice.size();
 }

@@ -6,6 +6,8 @@
 #include "basetypes/base_def_types.hpp"
 #include "property/property_enum_types.hpp"
 #include "property/property_const.hpp"
+#include "property/property_enum_converter.hpp"
+
 #include <vector>
 
 namespace hautbois {

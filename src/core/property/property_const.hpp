@@ -9,8 +9,8 @@ namespace hautbois {
 namespace core {
 namespace property_values {
 
-const UInt8 UNKNOWN_VALUE = 127;
-const UInt8 DEFAULT_VALUE = 0;
+constexpr const UInt8 UNKNOWN_VALUE = 127;
+constexpr const UInt8 DEFAULT_VALUE = 0;
 
 /* Ornaments 
   acciaccatura
@@ -26,18 +26,18 @@ const UInt8 DEFAULT_VALUE = 0;
 */
 
 /* Value related to Mordent */
-const UInt8 MORDENT = 1;
-const UInt8 PRALL = 2;
-const UInt8 MORDENT_SEMITONE = 3;
-const UInt8 PRALL_SEMITONE = 4;
-const UInt8 UPMORDENT = 5;
-const UInt8 PRALLUP = 6;
-const UInt8 DOWNMORDENT = 7;
-const UInt8 PRALLDOWN = 8;
-const UInt8 DOWNPRALL = 9;
-const UInt8 PRALLMORDENT = 10;
-const UInt8 MORDENTMORDENT = 11;
-const UInt8 PRALLPRALL = 12;
+constexpr const UInt8 MORDENT = 1;
+constexpr const UInt8 PRALL = 2;
+constexpr const UInt8 MORDENT_SEMITONE = 3;
+constexpr const UInt8 PRALL_SEMITONE = 4;
+constexpr const UInt8 UPMORDENT = 5;
+constexpr const UInt8 PRALLUP = 6;
+constexpr const UInt8 DOWNMORDENT = 7;
+constexpr const UInt8 PRALLDOWN = 8;
+constexpr const UInt8 DOWNPRALL = 9;
+constexpr const UInt8 PRALLMORDENT = 10;
+constexpr const UInt8 MORDENTMORDENT = 11;
+constexpr const UInt8 PRALLPRALL = 12;
 
 /* Articulation
   accento,
@@ -53,8 +53,8 @@ const UInt8 PRALLPRALL = 12;
 */
 
 /* Values related to Legato */
-const UInt8 LEGATO_BEGIN = 1;
-const UInt8 LEGATO_END = 2;
+constexpr const UInt8 LEGATO_BEGIN = 1;
+constexpr const UInt8 LEGATO_END = 2;
 
 } // property_values
 } // namespace core
