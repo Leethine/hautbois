@@ -15,9 +15,10 @@ class BaseBar {
   mutable BaseDuration* _meter;
   mutable BaseVoice* _main_voice;
   std::vector<BaseVoice*> _temp_voices;
-
+  BaseNote * _tonality;
 
  protected:
+  //BaseBarProperty * _property;
   BaseDuration makeDefaultMeter() const;
 
  public:
@@ -28,12 +29,18 @@ class BaseBar {
   virtual void setMeter(BaseDuration* ivMeter);
   virtual void setMainVoice(BaseVoice* ivVoice);
   virtual void addTempVoice(BaseVoice* ivVoice);
+  virtual void setTonality(BaseNote* ivNote);
+  virtual void setTonality(std::string& ivName, std::string& ivAccidental);
+
   virtual BaseDuration getMeter() const;
-  virtual BaseDuration * getMeterPtr() const;
+  virtual BaseDuration* getMeterPtr() const;
   virtual BaseVoice getMainVoice() const;
   virtual BaseVoice getTempVoice(UInt8 ivNbrVoice) const;
-  virtual BaseVoice * getMainVoicePtr() const;
-  virtual BaseVoice * getTempVoicePtr(UInt8 ivNbrVoice) const;
+  virtual BaseVoice* getMainVoicePtr() const;
+  virtual BaseVoice* getTempVoicePtr(UInt8 ivNbrVoice) const;
+  virtual BaseNote getTonality() const;
+  virtual BaseNote* getTonalityPtr() const;
+
   virtual bool hasTempVoice() const;
 };
 

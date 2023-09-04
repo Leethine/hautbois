@@ -31,9 +31,8 @@ class BaseNote {
   std::vector<OctaveEnum> * _chordOctaveList;
   std::vector<UInt8> * _chordIndexList;
 
-  BaseNoteProperty * _property;
-
  protected:
+  BaseNoteProperty * _property;
   BaseNote();
 
   inline virtual void setNoteName(NoteNameEnum ivName) {

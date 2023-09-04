@@ -2,7 +2,8 @@
 
 hautbois::core::BaseBar::BaseBar() :
   _meter { nullptr },
-  _main_voice { nullptr }
+  _main_voice { nullptr },
+  _tonality { nullptr }
 {}
 
 hautbois::core::BaseBar::~BaseBar() {
@@ -12,6 +13,9 @@ hautbois::core::BaseBar::~BaseBar() {
   if (_main_voice != nullptr) {
     delete _main_voice;
   }
+  if (_tonality != nullptr) {
+    delete _tonality;
+  } 
 }
 
 hautbois::core::BaseDuration hautbois::core::BaseBar::makeDefaultMeter() const {
@@ -54,6 +58,22 @@ void hautbois::core::BaseBar::addTempVoice(BaseVoice* ivVoice) {
   if (ivVoice != nullptr) {
     _temp_voices.push_back(ivVoice);
   }
+}
+
+void hautbois::core::BaseBar::setTonality(BaseNote* ivNote) {
+  if (_tonality != nullptr) {
+    delete _tonality;
+  }
+  if (ivNote != nullptr) {
+    _tonality = ivNote;
+  }
+}
+
+void hautbois::core::BaseBar::setTonality(std::string& ivName, std::string& ivAccidental) {
+  if (_tonality != nullptr) {
+    delete _tonality;
+  }
+  _tonality = new BaseNote(ivName, ivAccidental, "0", UInt8(1), UInt8(1));
 }
 
 hautbois::core::BaseDuration hautbois::core::BaseBar::getMeter() const {
@@ -106,6 +126,17 @@ hautbois::core::BaseVoice * hautbois::core::BaseBar::getTempVoicePtr(UInt8 ivNbr
   else {
     return _temp_voices[ivNbrVoice];
   }
+}
+
+hautbois::core::BaseNote hautbois::core::BaseBar::getTonality() const {
+  if (_tonality == nullptr) {
+    return BaseNote("S", "", "", UInt8(1), UInt8(1));
+  }
+  return *_tonality;
+}
+
+hautbois::core::BaseNote* hautbois::core::BaseBar::getTonalityPtr() const {
+  return _tonality;
 }
 
 bool hautbois::core::BaseBar::hasTempVoice() const {
