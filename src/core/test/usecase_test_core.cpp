@@ -2,6 +2,7 @@
 #include "../base_note_property.hpp"
 #include "../base_note.hpp"
 #include "../base_voice.hpp"
+#include "../base_bar.hpp"
 #include <vector>
 #include <string>
 #include <iostream>

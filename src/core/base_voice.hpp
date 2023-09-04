@@ -35,7 +35,9 @@ class BaseVoice {
     virtual void insertNote(BaseNote* ivNote, UInt16 ivPosition);
     virtual BaseNote* getNote(UInt16 ivPosition) const;
     virtual BaseNote* getNoteNoRangeLimit(UInt16 ivPosition) const;
-    virtual UInt16 getTotalNotes() const;
+    virtual void deleteNote(UInt16 ivPosition);
+    virtual void deleteNoteNoRangeLimit(UInt16 ivPosition);
+    virtual UInt16 getNumberOfNotes() const;
 };
 
 } // namespace core

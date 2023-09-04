@@ -141,7 +141,9 @@ void hautbois::core::BaseVoice::trimBack(const BaseDuration& ivFullDuration) {
 }
 
 void hautbois::core::BaseVoice::appendNote(BaseNote* ivNote) {
-  _voice.push_back(ivNote);
+  if (ivNote != nullptr) {
+    _voice.push_back(ivNote);
+  }
 }
 
 void hautbois::core::BaseVoice::insertNote(BaseNote* ivNote, UInt16 ivPosition=0) {
@@ -149,11 +151,13 @@ void hautbois::core::BaseVoice::insertNote(BaseNote* ivNote, UInt16 ivPosition=0
     throw OutOfRangeException("<BaseVoice::insertNote> position: " + std::to_string(ivPosition) + " but the number of notes is " + std::to_string(_voice.size()));
   }
   else {
-    auto iter = _voice.begin();
-    for (int i=0; i < ivPosition; i++) {
-      iter++;
+    if (ivNote != nullptr) {
+      auto iter = _voice.begin();
+      for (int i=0; i < ivPosition; i++) {
+        iter++;
+      }
+      _voice.insert(iter, ivNote);
     }
-    _voice.insert(iter, ivNote);
   }
 }
 
@@ -176,6 +180,21 @@ hautbois::core::BaseNote* hautbois::core::BaseVoice::getNoteNoRangeLimit(UInt16 
   }
 }
 
+void hautbois::core::BaseVoice::deleteNote(UInt16 ivPosition) {
+  if (ivPosition >= _voice.size()) {
+    throw OutOfRangeException("<BaseVoice::insertNote> position: " + std::to_string(ivPosition) + " but the number of notes is " + std::to_string(_voice.size()));
+  }
+  else {
+    _voice.erase(_voice.begin() + int(ivPosition));
+  }
+}
+
+void hautbois::core::BaseVoice::deleteNoteNoRangeLimit(UInt16 ivPosition) {
+  if (ivPosition < _voice.size()) {
+    _voice.erase(_voice.begin() + int(ivPosition));
+  }
+}
+
 void hautbois::core::BaseVoice::autoPadding(const BaseDuration& ivFrontDuration, const BaseDuration& ivBackDuration, bool padWithSilence=true) {
   if (_voice.empty()) {
     return;
@@ -189,6 +208,6 @@ void hautbois::core::BaseVoice::autoPadding(const BaseDuration& ivFrontDuration,
   }
 }
 
-hautbois::UInt16 hautbois::core::BaseVoice::getTotalNotes() const {
+hautbois::UInt16 hautbois::core::BaseVoice::getNumberOfNotes() const {
   return _voice.size();
 }
