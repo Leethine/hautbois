@@ -1,5 +1,5 @@
 #include "base_note_property.hpp"
-
+#include <iostream>
 hautbois::core::BaseNoteProperty::BaseNoteProperty():
   _articulation { ArticulationEnum::UNKNOWN },
   _dynamics { DynamicsEnum::UNKNOWN },
@@ -7,6 +7,15 @@ hautbois::core::BaseNoteProperty::BaseNoteProperty():
   _articulationVal { property_values::UNKNOWN_VALUE },
   _dynamicsVal { property_values::UNKNOWN_VALUE },
   _ornamantVal { property_values::UNKNOWN_VALUE } {
+}
+
+hautbois::core::BaseNoteProperty::BaseNoteProperty(const BaseNoteProperty& ivRhP) {
+  _articulation = ivRhP.getArticulationEnum();
+  _dynamics = ivRhP.getDynamicsEnum();
+  _ornamant = ivRhP.getOrnamentEnum();
+  _articulationVal = ivRhP.getArticulationVal();
+  _dynamicsVal = ivRhP.getDynamicsVal();
+  _ornamantVal = ivRhP.getOrnamentVal();
 }
 
 hautbois::core::BaseNoteProperty::~BaseNoteProperty() {
@@ -85,28 +94,28 @@ void hautbois::core::BaseNoteProperty::set(const std::string& ivName) {
 
 bool hautbois::core::BaseNoteProperty::hasArticulation() const {
   if (this->_articulation == ArticulationEnum::UNKNOWN) {
-    return true;
+    return false;
   }
   else {
-    return false;
+    return true;
   }
 }
 
 bool hautbois::core::BaseNoteProperty::hasDynamics() const {
   if (this->_dynamics == DynamicsEnum::UNKNOWN) {
-    return true;
+    return false;
   }
   else {
-    return false;
+    return true;
   }
 }
 
 bool hautbois::core::BaseNoteProperty::hasOrnament() const {
   if (this->_ornamant == OrnamentEnum::UNKNOWN) {
-    return true;
+    return false;
   }
   else {
-    return false;
+    return true;
   }
 }
 
@@ -142,7 +151,7 @@ std::pair<std::string, hautbois::UInt8> hautbois::core::BaseNoteProperty::getArt
 }
 
 std::pair<std::string, hautbois::UInt8> hautbois::core::BaseNoteProperty::getDynamics() const {
-  if (this->hasArticulation()) {
+  if (this->hasDynamics()) {
     auto tvMap = &dynamics_str_enum_convert::DYNAMICS_ENUM_TO_STRING;
     return std::make_pair(tvMap->at((this->_dynamics)), this->_dynamicsVal);
   }
@@ -152,7 +161,7 @@ std::pair<std::string, hautbois::UInt8> hautbois::core::BaseNoteProperty::getDyn
 }
 
 std::pair<std::string, hautbois::UInt8> hautbois::core::BaseNoteProperty::getOrnament() const {
-  if (this->hasArticulation()) {
+  if (this->hasOrnament()) {
     auto tvMap = &ornament_str_enum_convert::ORNAMENT_ENUM_TO_STRING;
     return std::make_pair(tvMap->at((this->_ornamant)), this->_ornamantVal);
   }

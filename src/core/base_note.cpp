@@ -25,7 +25,7 @@ hautbois::core::BaseNote::BaseNote():
   _property {nullptr} {
 }
 
-hautbois::core::BaseNote::BaseNote(BaseNote& ivRhNote) {
+hautbois::core::BaseNote::BaseNote(const BaseNote& ivRhNote) {
   BaseNote();
   this->_name = ivRhNote._name;
   this->_accidental = ivRhNote._accidental;
@@ -470,4 +470,8 @@ hautbois::core::BaseNoteProperty hautbois::core::BaseNote::getProperty() const {
   else {
     return BaseNoteProperty(*_property);
   }
+}
+
+hautbois::core::BaseNoteProperty * hautbois::core::BaseNote::getPropertyPtr() const {
+  return _property;
 }

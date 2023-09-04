@@ -82,7 +82,7 @@ class BaseNote {
            UInt8 ivNumD, UInt8 ivDenomD);
   BaseNote(const std::vector<std::string>& ivListNoteV,
            const UInt8 ivNoteValueD, const std::string& ivDotsS);
-  BaseNote(BaseNote& ivRhNote);
+  BaseNote(const BaseNote& ivRhNote);
 
   ~BaseNote();
 
@@ -132,6 +132,7 @@ class BaseNote {
   using PropertyNameValuePair = std::pair<std::string, UInt8>;
   virtual std::map<std::string, PropertyNameValuePair> getPropertyAsMap() const;
   virtual BaseNoteProperty getProperty() const;
+  virtual BaseNoteProperty * getPropertyPtr() const;
 };
 
 } // namespace core

@@ -21,11 +21,51 @@ class BaseNoteProperty {
   UInt8 _articulationVal;
   UInt8 _dynamicsVal;
   UInt8 _ornamantVal;
+
  protected:
   virtual void warnInvalidPropertyName(const std::string& ivFunc) const;
 
+  inline virtual ArticulationEnum getArticulationEnum() const {
+    return _articulation;
+  }
+  inline virtual UInt8 getArticulationVal() const {
+    return _articulationVal;
+  }
+    inline virtual OrnamentEnum getOrnamentEnum() const {
+    return _ornamant;
+  }
+  inline virtual UInt8 getOrnamentVal() const {
+    return _ornamantVal;
+  }
+  inline virtual DynamicsEnum getDynamicsEnum() const {
+    return _dynamics;
+  }
+  inline virtual UInt8 getDynamicsVal() const {
+    return _dynamicsVal;
+  }
+
+  inline virtual void setArticulationEnum(ArticulationEnum ivArt) {
+    _articulation = ivArt;
+  }
+  inline virtual void setArticulationVal(const UInt8 ivVal) {
+    _articulationVal = ivVal;
+  }
+  inline virtual void setOrnamentEnum(OrnamentEnum ivOrn) {
+    _ornamant = ivOrn;
+  }
+  inline virtual void setOrnamentVal(const UInt8 ivVal) {
+    _ornamantVal = ivVal;
+  }
+  inline virtual void setDynamicsEnum(DynamicsEnum ivDyn) {
+    _dynamics = ivDyn;
+  }
+  inline virtual void setDynamicsVal(const UInt8 ivVal) {
+    _dynamicsVal = ivVal;
+  }
+
  public:
   BaseNoteProperty();
+  BaseNoteProperty(const BaseNoteProperty& ivRhP);
   virtual ~BaseNoteProperty();
 
   virtual void setArticulation(const std::string& ivName, UInt8 ivVal);

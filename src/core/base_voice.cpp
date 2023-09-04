@@ -2,6 +2,13 @@
 
 hautbois::core::BaseVoice::BaseVoice() {}
 
+hautbois::core::BaseVoice::BaseVoice(const BaseVoice& ivRhVoice) {
+  for (auto i = 0; i < ivRhVoice.getNumberOfNotes(); ++i) {
+    BaseNote * newnote = new BaseNote(*getNote(i));
+    _voice.push_back(newnote);
+  }
+}
+
 hautbois::core::BaseVoice::~BaseVoice() {
   for (auto it = _voice.begin(); it != _voice.end(); ++it) {
     delete (*it);

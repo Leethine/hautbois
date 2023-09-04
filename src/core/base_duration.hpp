@@ -30,7 +30,7 @@ class BaseDuration {
   BaseDuration(const UInt8 ivValueD);
   
   // Copy constructor
-  BaseDuration(const BaseDuration& d);
+  BaseDuration(const BaseDuration& ivRhD);
 
   virtual ~BaseDuration();
 

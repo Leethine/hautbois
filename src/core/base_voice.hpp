@@ -19,7 +19,9 @@ class BaseVoice {
 
   public:
     BaseVoice();
+    BaseVoice(const BaseVoice& ivRhVoice);
     virtual ~BaseVoice();
+    
     virtual BaseDuration countTotalDuration() const;
     virtual bool checkFull(const BaseDuration& ivFullDuration) const;
 

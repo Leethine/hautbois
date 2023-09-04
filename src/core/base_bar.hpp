@@ -23,6 +23,7 @@ class BaseBar {
 
  public:
   BaseBar();
+  BaseBar(const BaseBar& ivRhBar);
   virtual ~BaseBar();
   virtual void setMeter(const UInt8 ivNum, const UInt8 ivDenom);
   virtual void setMeter(const BaseDuration& ivMeter);

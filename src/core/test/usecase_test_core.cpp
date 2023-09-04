@@ -57,10 +57,11 @@ int main () {
 
   try {
     n1.addProperty("pp");
-    auto p = n1.getProperty();
+    hautbois::core::BaseNoteProperty p = n1.getProperty();
     std::cout << p.getDynamics().first << "\n";
   }
   catch(std::exception& e) {
+    std::cout << "Exception: ";
     std::cout << e.what() << "\n";
   }
   return 0;

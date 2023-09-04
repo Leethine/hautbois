@@ -82,9 +82,9 @@ hautbois::core::BaseDuration::BaseDuration(const UInt8 ivValueD):
   _denom{ivValueD} {
 }
 
-hautbois::core::BaseDuration::BaseDuration(const BaseDuration &d) {
-  this->_num = d.getNum();
-  this->_denom = d.getDenom();
+hautbois::core::BaseDuration::BaseDuration(const BaseDuration& ivRhD) {
+  this->_num = ivRhD.getNum();
+  this->_denom = ivRhD.getDenom();
 }
 
 hautbois::core::BaseDuration::~BaseDuration() {
