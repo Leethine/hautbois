@@ -33,13 +33,14 @@ class BaseBar {
   virtual void setTonality(BaseNote* ivNote);
   virtual void setTonality(std::string& ivName, std::string& ivAccidental);
 
-  virtual BaseDuration getMeter() const;
+  virtual BaseDuration getMeterCopy() const;
+  virtual BaseVoice getMainVoiceCopy() const;
+  virtual BaseVoice getTempVoiceCopy(UInt8 ivNbrVoice) const;
+  virtual BaseNote getTonalityCopy() const;
+
   virtual BaseDuration* getMeterPtr() const;
-  virtual BaseVoice getMainVoice() const;
-  virtual BaseVoice getTempVoice(UInt8 ivNbrVoice) const;
   virtual BaseVoice* getMainVoicePtr() const;
   virtual BaseVoice* getTempVoicePtr(UInt8 ivNbrVoice) const;
-  virtual BaseNote getTonality() const;
   virtual BaseNote* getTonalityPtr() const;
 
   virtual bool hasTempVoice() const;

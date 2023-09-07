@@ -44,8 +44,8 @@ int main () {
   std::cout << n5.getFullNoteNameAsString() << "\n";
   std::cout << n5.getDurationAsString() << "\n";
 
-  hautbois::core::BaseDuration d1 = n1.getDuration();
-  hautbois::core::BaseDuration d4 = n4.getDuration();
+  hautbois::core::BaseDuration d1 = n1.getDurationCopy();
+  hautbois::core::BaseDuration d4 = n4.getDurationCopy();
 
   hautbois::core::BaseDuration d14_1 = d1 + d4;
   hautbois::core::BaseDuration d14_2 = d4 - d1;
@@ -57,7 +57,7 @@ int main () {
 
   try {
     n1.addProperty("pp");
-    hautbois::core::BaseNoteProperty p = n1.getProperty();
+    hautbois::core::BaseNoteProperty p = n1.getPropertyCopy();
     std::cout << p.getDynamics().first << "\n";
   }
   catch(std::exception& e) {

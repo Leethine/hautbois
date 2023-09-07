@@ -360,7 +360,7 @@ hautbois::core::BaseNote::~BaseNote() {
   }
 }
 
-hautbois::core::BaseDuration hautbois::core::BaseNote::getDuration() const {
+hautbois::core::BaseDuration hautbois::core::BaseNote::getDurationCopy() const {
   if (_duration == nullptr) {
     return BaseDuration(1,1);
   }
@@ -463,7 +463,7 @@ std::map<std::string, hautbois::core::BaseNote::PropertyNameValuePair>
   }
 }
 
-hautbois::core::BaseNoteProperty hautbois::core::BaseNote::getProperty() const {
+hautbois::core::BaseNoteProperty hautbois::core::BaseNote::getPropertyCopy() const {
   if (_property == nullptr) {
     return BaseNoteProperty();
   }

@@ -22,7 +22,7 @@ hautbois::core::BaseDuration hautbois::core::BaseVoice::countTotalDuration() con
   }
   for (auto it = _voice.begin(); it != _voice.end(); it++) {
     BaseNote * curNotePtr = (*it);
-    totalDuration += curNotePtr->getDuration();
+    totalDuration += curNotePtr->getDurationCopy();
   }
   return totalDuration;
 }
@@ -96,8 +96,8 @@ void hautbois::core::BaseVoice::trimFront(const BaseDuration& ivFullDuration) {
     BaseDuration extraDuration = totalDuration - ivFullDuration;
     BaseDuration zeroDuration(0,4);
     while (extraDuration > zeroDuration) {
-      if (extraDuration >= _voice.front()->getDuration()) {
-        extraDuration = extraDuration - _voice.front()->getDuration();
+      if (extraDuration >= _voice.front()->getDurationCopy()) {
+        extraDuration = extraDuration - _voice.front()->getDurationCopy();
         BaseNote* frontNotePtr = _voice.front();
         _voice.erase(_voice.begin());
         delete frontNotePtr;
@@ -126,8 +126,8 @@ void hautbois::core::BaseVoice::trimBack(const BaseDuration& ivFullDuration) {
     BaseDuration extraDuration = totalDuration - ivFullDuration;
     BaseDuration zeroDuration(0,4);
     while (extraDuration > zeroDuration) {
-      if (extraDuration >= _voice.back()->getDuration()) {
-        extraDuration = extraDuration - _voice.back()->getDuration();
+      if (extraDuration >= _voice.back()->getDurationCopy()) {
+        extraDuration = extraDuration - _voice.back()->getDurationCopy();
         BaseNote* backNotePtr = _voice.back();
         _voice.pop_back();
         delete backNotePtr;

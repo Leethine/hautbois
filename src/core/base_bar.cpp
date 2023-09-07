@@ -94,11 +94,11 @@ void hautbois::core::BaseBar::setTonality(std::string& ivName, std::string& ivAc
   _tonality = new BaseNote(ivName, ivAccidental, "0", UInt8(1), UInt8(1));
 }
 
-hautbois::core::BaseDuration hautbois::core::BaseBar::getMeter() const {
+hautbois::core::BaseDuration hautbois::core::BaseBar::getMeterCopy() const {
   if (_meter == nullptr) {
     return makeDefaultMeter();
   }
-  return * _meter;
+  return BaseDuration(*_meter);
 }
 
 hautbois::core::BaseDuration * hautbois::core::BaseBar::getMeterPtr() const {
@@ -108,22 +108,22 @@ hautbois::core::BaseDuration * hautbois::core::BaseBar::getMeterPtr() const {
   return _meter;
 }
 
-hautbois::core::BaseVoice hautbois::core::BaseBar::getMainVoice() const {
+hautbois::core::BaseVoice hautbois::core::BaseBar::getMainVoiceCopy() const {
   if (_main_voice == nullptr) {
     _main_voice = new BaseVoice();
   }
-  return *_main_voice;
+  return BaseVoice(*_main_voice);
 }
 
-hautbois::core::BaseVoice hautbois::core::BaseBar::getTempVoice(UInt8 ivNbrVoice) const {
+hautbois::core::BaseVoice hautbois::core::BaseBar::getTempVoiceCopy(UInt8 ivNbrVoice) const {
   if (_temp_voices.empty()) {
     return BaseVoice();
   }
   else if (ivNbrVoice >= _temp_voices.size()) {
-    return *_temp_voices.back();
+    return BaseVoice(*_temp_voices.back());
   }
   else {
-    return *_temp_voices[ivNbrVoice];
+    return BaseVoice(*_temp_voices[ivNbrVoice]);
   }
 }
 
@@ -146,7 +146,7 @@ hautbois::core::BaseVoice * hautbois::core::BaseBar::getTempVoicePtr(UInt8 ivNbr
   }
 }
 
-hautbois::core::BaseNote hautbois::core::BaseBar::getTonality() const {
+hautbois::core::BaseNote hautbois::core::BaseBar::getTonalityCopy() const {
   if (_tonality == nullptr) {
     return BaseNote("S", "", "", UInt8(1), UInt8(1));
   }
@@ -164,4 +164,3 @@ bool hautbois::core::BaseBar::hasTempVoice() const {
 size_t hautbois::core::BaseBar::countTempVoice() const {
   return _temp_voices.size();
 }
-

@@ -124,14 +124,14 @@ class BaseNote {
     return (this->_property != nullptr);
   }
 
-  virtual BaseDuration getDuration() const;
+  virtual BaseDuration getDurationCopy() const;
   virtual std::string getFullNoteNameAsString() const;
   virtual std::string getDurationAsString() const;
   virtual void addProperty(const std::string& ivProperty);
   virtual void addProperty(const std::string& ivProperty, UInt8 ivValue);
   using PropertyNameValuePair = std::pair<std::string, UInt8>;
   virtual std::map<std::string, PropertyNameValuePair> getPropertyAsMap() const;
-  virtual BaseNoteProperty getProperty() const;
+  virtual BaseNoteProperty getPropertyCopy() const;
   virtual BaseNoteProperty * getPropertyPtr() const;
 };
 
