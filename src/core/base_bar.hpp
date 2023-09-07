@@ -43,6 +43,7 @@ class BaseBar {
   virtual BaseNote* getTonalityPtr() const;
 
   virtual bool hasTempVoice() const;
+  virtual size_t countTempVoice() const;
 };
 
 } // namespace core
