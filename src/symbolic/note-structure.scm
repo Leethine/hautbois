@@ -59,14 +59,39 @@
 ;; Example: c+e+g_8 => '(+ ((c) (e) (g _)) 8)
 ;;          g-c-e^2 => '(- ((g) (c) (e ^)) 8)
 (define (make-chord-or-xuplet-note-intermediate* sep li)
-  (cond
-    ((char-numeric? (car li)) (list (string->symbol (list->string li))))
-    ((char-alphabetic? (car li)) )
-    (else #f)
+  (define (make-note-leaf* li) ;; make a list (leaf) of one single note => list:symbol
+    (let (
+      (note-name-list (filter-list char-alphabetic? li))
+      (octave-list (filter-list (lambda (x) (or (eqv? x #\^) (eqv? x #\_))) li))
+      )
+      (cond
+      ((null? octave-list) (list (list-char->symbol note-name-list)))
+      (else (list (list-char->symbol note-name-list)
+                  (list-char->symbol octave-list)))
+      )
+    )
+  )
+  (define (process-notes-group* li sep) ;; process note group
+    (let ((note-group (split-list li sep)))
+      (map string->list (map list->string note-group))
+    )
+  )
+
+  (let* (
+    (isduration? (lambda (x) (or (char-numeric? x) (eqv? x #\.))))
+    (note-group-char-list (remove-list isduration? li))
+    (duration-char-list (filter-list isduration? li))
+    (separator-symbol (cond ((eqv? sep #\+) '+) ((eqv? sep #\-) '-) (else #f)))
+    (splitted-note-group-list (split-list note-group-char-list sep))
+    )
+    (list separator-symbol
+          (map make-note-leaf* splitted-note-group-list)
+          (list-char->symbol duration-char-list))
   )
 )
 
 
+;; TODO
 (define (filter-note note)
   (let
     (
@@ -109,6 +134,21 @@
 )
 (display
 (make-single-note-intermediate* (tokenize-any 'f^^^4.))
+)
+(display #\newline)
+(display #\newline)
+
+(display 'cf^+ex_+g8.)
+(display " ==> ")
+(display
+(make-chord-or-xuplet-note-intermediate* #\+ (tokenize-any 'cf^+ex_+g8.))
+)
+(display #\newline)
+
+(display 'cf^-ess^^-g__4)
+(display " ==> ")
+(display
+(make-chord-or-xuplet-note-intermediate* #\- (tokenize-any 'cf^-ess^^-g__4))
 )
 (display #\newline)
 
