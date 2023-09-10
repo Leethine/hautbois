@@ -90,66 +90,40 @@
   )
 )
 
-
-;; TODO
-(define (filter-note note)
-  (let
+;; Take any note symbol and convert to intermediate note representation
+;; (note-symbol->IR note-symbol)
+;; Ex:
+;;  (note-symbol->IR 'css^4) ==> '(css ^ 4)
+;;  (note-symbol->IR 'r8.) ==> (r 8.)
+;;  (note-symbol->IR 's2.) ==> (s 2.)
+;;  (note-symbol->IR 'cf^-ess^^-g__4) ==> (- ((cf ^) (ess ^^) (g __)) 4)
+;;  (note-symbol->IR 'css^+ex_+g__4.) ==> (+ ((css ^) (ex _) (g __)) 4.)
+(define (note-symbol->IR note)
+  (let*
     (
+      (tokenized-note (tokenize-any note))
       (maybe-chord-note? (lambda (n)
-        (cond ((memv #\+ (tokenize-any n)) #t) (else #f))))
+        (cond ((memv #\+ n) #t) (else #f))))
       (maybe-xuplet-note? (lambda (n)
-        (cond ((memv #\- (tokenize-any n)) #t) (else #f))))
-      (maybe-rest-note? (lambda (n)
+        (cond ((memv #\- n) #t) (else #f))))
+      (maybe-rest-or-silence-note? (lambda (n)
         (cond
-          ((memv #\r (tokenize-any n)) #t)
-          ((memv #\R (tokenize-any n)) #t)
+          ((eqv? #\r (car n)) #t)
+          ((eqv? #\R (car n)) #t)
+          ((eqv? #\s (car n)) #t)
+          ((eqv? #\S (car n)) #t)
           (else #f))))
-      (maybe-silence-note? (lambda (n)
-        (cond
-          ((memv #\S (tokenize-any n)) #t)
-          ((memv #\S (tokenize-any n)) #t)
-          (else #f))))
-      (filter-rest-note (lambda (li)
-        (list (string->symbol (string (car li))) (list->string (cdr li)))))
-      (filter-silence-note (lambda (li)
-        (list (string->symbol (string (car li))) (list->string (cdr li)))))
     )
-
     (cond
-      ((maybe-rest-note? note) (filter-rest-note (tokenize-any note)))
-      ((maybe-silence-note? note) (filter-silence-note (tokenize-any note)))
-      (else '())
+      ((maybe-rest-or-silence-note? tokenized-note)
+        (make-rest-or-silence-note-intermediate* tokenized-note))
+      ((maybe-chord-note? tokenized-note)
+        (make-chord-or-xuplet-note-intermediate* #\+ tokenized-note))
+      ((maybe-xuplet-note? tokenized-note)
+        (make-chord-or-xuplet-note-intermediate* #\- tokenized-note))
+      (else
+        (make-single-note-intermediate* tokenized-note)
+      )
     )
   )
-)
-
-;; Test
-(begin
-
-(display
-(make-single-note-intermediate* (tokenize-any 'c4.))
-)
-(display
-(make-single-note-intermediate* (tokenize-any 'c___4.))
-)
-(display
-(make-single-note-intermediate* (tokenize-any 'f^^^4.))
-)
-(display #\newline)
-(display #\newline)
-
-(display 'cf^+ex_+g8.)
-(display " ==> ")
-(display
-(make-chord-or-xuplet-note-intermediate* #\+ (tokenize-any 'cf^+ex_+g8.))
-)
-(display #\newline)
-
-(display 'cf^-ess^^-g__4)
-(display " ==> ")
-(display
-(make-chord-or-xuplet-note-intermediate* #\- (tokenize-any 'cf^-ess^^-g__4))
-)
-(display #\newline)
-
 )

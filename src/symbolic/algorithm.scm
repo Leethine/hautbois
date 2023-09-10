@@ -1,4 +1,6 @@
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Algorithms for hautbois symbolic module
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Filter the list so that all elements satisfy the predicate
 ;; (filter-list predicate list) ==> list
@@ -30,15 +32,6 @@
   )
 )
 
-;; Merge list of things into string, merge the elements satisfying the predicate
-;; (merge-list-element predicate? list_char) => list_string
-;; Example:
-;;  (merge-list-element char-numeric? '(#\0 #\1 #\2 #\a #\b)) => '("012" "a" "b")
-(define (merge-list-element pred? li)
-;; TODO
-'()
-)
-
 ;; Convert list of characters to symbol
 (define (list-char->symbol li)
   (string->symbol (list->string li))
@@ -49,22 +42,22 @@
 (define (list-last li) (car (reverse li)))
 
 ;; Split a list based on an atom provided
-;; (split-list list separator) => list
+;; (split-list list delimiter) => list
 ;; Ex: (split-list '(1 2 + 3 4) '+) => ((1 2) (3 4))
-(define (split-list li sep)
-  (define (split-first! li sep) ;; split at the first occurance of separator
+(define (split-list li delim)
+  (define (split-first! li delim) ;; split at the first occurance of delimiter
     (letrec (
       (split-first-reversed
-        (lambda (li sep)
+        (lambda (li delim)
           (cond
           ((null? li) '())
-          ((equal? (car li) sep) (list (cdr li)))
+          ((equal? (car li) delim) (list (cdr li)))
           (else
-            (cons (car li) (split-first-reversed (cdr li) sep)))
+            (cons (car li) (split-first-reversed (cdr li) delim)))
           )
         )
       ))
-      (let ((result (split-first-reversed li sep)))
+      (let ((result (split-first-reversed li delim)))
         (append
           (list (reverse (cdr (reverse result))))
           (list-last result)
@@ -72,28 +65,34 @@
       )
     )
   )
-  (define (split-first li sep) ;; check if separator exists
-    (if (eq? (member sep li) #f)
+  (define (split-first li delim) ;; check if delimiter exists
+    (if (eq? (member delim li) #f)
       (list li)
-      (split-first! li sep)
+      (split-first! li delim)
     )
   )
 
-  (define (split-list* res li sep) ;; iterative method
+  (define (split-list* res li delim) ;; iterative method
     (cond
       ((null? li) res)
-      ((list? (car li)) (split-list* (cons (car li) res) (cdr li) sep))
+      ((list? (car li)) (split-list* (cons (car li) res) (cdr li) delim))
       (else
-        (split-list* res (split-first li sep) sep)
+        (split-list* res (split-first li delim) delim)
       )
     )
   )
 
-  (if (equal? (car li) sep)
-  (reverse (split-list* '() (cdr li) sep))
-  (reverse (split-list* '() li sep))
+  (if (equal? (car li) delim)
+    (reverse (split-list* '() (cdr li) delim))
+    (reverse (split-list* '() li delim))
   )
 )
 
-
-;; Tests
+;; Merge list of things into string, merge the elements satisfying the predicate
+;; (merge-list-element predicate? list_char) => list_string
+;; Example:
+;;  (merge-list-element char-numeric? '(#\0 #\1 #\2 #\a #\b)) => '("012" "a" "b")
+(define (merge-list-element pred? li)
+;; TODO
+'()
+)

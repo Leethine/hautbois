@@ -5,11 +5,11 @@
 (load "note-structure.scm")
 (load "en-note-symbols.scm")
 
-;; define language here 
+;; Define language here 
 (define language)
 
 (define (set-lang! newlang)
-  (let ((available-lang '(en))) ;; can add more languages
+  (let ((available-lang '(en))) ;; can add more languages in the list
     (cond
       ((memq newlang available-lang) (set! language newlang))
       (else
@@ -87,7 +87,7 @@
   )
   (letrec*
     (
-      (tokenized-list (tokenize-any symbol)))
+      (tokenized-list (tokenize-any symbol))
       (first-char (car tokenized-list))
     )
     (cond
