@@ -3,7 +3,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (load "note-structure.scm")
-(load "en-note-symbols.scm")
+(load "note-symbols-en.scm")
 
 ;; Define language here 
 (define language)
