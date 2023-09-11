@@ -6,7 +6,7 @@
     cx dx ex fx gx ax bx
     cf df ef ff gf af bf
     cff dff eff fff gff aff bff
-    r, R, s, S
+    r R s S
   )
 )
 

@@ -6,7 +6,7 @@
     dox rex mix fax solx lax six
     dob reb mib fab solb lab sib
     dobb rebb mibb fabb solbb labb sibb
-    r, R, s, S
+    r R s S
   )
 )
 
