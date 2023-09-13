@@ -26,9 +26,27 @@
 
 (load "algorithm.scm")
 
+
+;; Convert number+dot notation of duration to rational notation
+;; (number+dot->rat duration-list) ==> rational number
+;;  Ex: (number+dot->rat '(#\4 #\.)) ==> 3/8
+(define (number+dot->rat duration-li)
+  (define (number+dot->rat* denom dots)
+    (if (null? dots)
+      (/ 1 denom)
+      (+ (/ 1 denom) (number+dot->rat* (* 2 denom) (cdr dots)))
+    )
+  )
+  (let
+    ((denom (string->number (list->string (remove-list (lambda (x) (eqv? x #\.)) duration-li))))
+    (dots (filter-list (lambda (x) (eqv? x #\.)) duration-li)))
+    (number+dot->rat* denom dots)
+  )
+)
+
 ;; (make-rest-or-silence-note-intermediate* list_char) => list symbol
 (define (make-rest-or-silence-note-intermediate* li)
-  (list (string->symbol (string (car li))) (list->string (cdr li))))
+  (list (string->symbol (string (car li))) (number+dot->rat (cdr li))))
 
 ;; (make-single-note-intermediate* list_char) => list symbol
 (define (make-single-note-intermediate* li)
@@ -41,14 +59,14 @@
       ((null? octave-sublist)
         (list
           (string->symbol (list->string notename-sublist))
-          (string->symbol (list->string duration-sublist))
+          (number+dot->rat duration-sublist)
         )
       )
       (else
         (list
           (string->symbol (list->string notename-sublist))
           (string->symbol (list->string octave-sublist))
-          (string->symbol (list->string duration-sublist))
+          (number+dot->rat duration-sublist)
         )
       )
     )
@@ -86,7 +104,7 @@
     )
     (list separator-symbol
           (map make-note-leaf* splitted-note-group-list)
-          (list-char->symbol duration-char-list))
+          (number+dot->rat duration-char-list))
   )
 )
 
