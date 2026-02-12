@@ -1,11 +1,9 @@
 # ignore raw drawings
-drawing.svg
-icon_old.svg
-drawing-horizontal.svg
-refs/
+icon.svg
 */a.out
-
+*/test
+*/*.o
+*/*.a
+*/*.so
 .vscode
 src/*/.vscode
-
-src/interp/old
