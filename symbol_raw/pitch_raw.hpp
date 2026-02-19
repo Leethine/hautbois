@@ -107,20 +107,6 @@ class PitchRaw final {
     _octave = r.getOctaveRaw();
   }
 
-  /*
-  inline virtual bool isValid() const {
-    if ((_name == 'S' || _name == 'R' || _name >= 'A' && _name <= 'G') &&
-        _octave >= (UINT8) 0 && _octave < (UINT8) 9 &&
-        (_acc == 'n' || _acc == 's' || _acc == 'x' ||
-         _acc == 'b' || _acc == 'd') ) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-  */
-
 };
 
 } // namespace hautbois
