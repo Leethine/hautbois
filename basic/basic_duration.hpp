@@ -54,6 +54,10 @@ class BasicDuration {
   inline BasicDuration(T&& iNum, T&& iDenom):
      _num { (UINT8) iNum }, _denom { (UINT8) iDenom } {}
 
+  template<typename T>
+  inline BasicDuration(T& iNum, T& iDenom):
+     _num { (UINT8) iNum }, _denom { (UINT8) iDenom } {}
+
   inline virtual ~BasicDuration() {}
 
   inline virtual int getNum() const {

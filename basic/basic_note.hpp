@@ -23,6 +23,8 @@ class NoteSimple {
 
   BasicDuration * _duration = nullptr;
 
+  bool _tied = false;
+
  protected:
 
   inline virtual void setPitch(BasicPitch * p) {
@@ -79,6 +81,14 @@ class NoteSimple {
       }
     }
     return true;
+  }
+
+  bool virtual setTied() {
+    _tied = true;
+  }
+
+  bool virtual setUntied() {
+    _tied = false;
   }
 
   inline virtual void toStream(const char* option, void* out) const {}

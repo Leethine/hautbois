@@ -24,7 +24,15 @@ class BasicPitch {
     _name = name;
   }
 
+  inline void setName(const char&& name) {
+    _name = name;
+  }
+
   inline void setAccidential(const char& acc) {
+    _acc = acc;
+  }
+
+  inline void setAccidential(const char&& acc) {
     _acc = acc;
   }
 
@@ -33,11 +41,16 @@ class BasicPitch {
     _octave = (UINT8) octave;
   }
 
+  template<typename T>
+  inline void setOctave(const T& octave) {
+    _octave = (UINT8) octave;
+  }
+
   inline virtual char getNameFast() const {
     return _name;
   }
 
-  inline virtual char getAccidentialFast() const {
+  inline virtual char getAccidentalFast() const {
     return _acc;
   }
 
@@ -48,7 +61,11 @@ class BasicPitch {
  public:
 
   template<typename T>
-  inline BasicPitch(const char& name, const char& acc, const T&& octave) :
+  inline BasicPitch(const char& name, const char& acc, const T& octave) :
+    _name { name }, _acc { acc }, _octave { (UINT8) octave } {}
+
+  template<typename T>
+  inline BasicPitch(const char&& name, const char&& acc, const T&& octave) :
     _name { name }, _acc { acc }, _octave { (UINT8) octave } {}
 
   inline BasicPitch() :
