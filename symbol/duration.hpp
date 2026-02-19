@@ -33,6 +33,8 @@ class Duration {
  
   virtual ~Duration();
 
+  Duration operator=(const Duration& d);
+
   virtual int getNum() const;
 
   virtual int getDenom() const;

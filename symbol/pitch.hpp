@@ -29,7 +29,13 @@ class Pitch {
 
   Pitch(const Pitch&& p);
 
+  Pitch(const PitchRaw& p);
+
+  Pitch(const PitchRaw&& p);
+
   virtual ~Pitch();
+
+  Pitch operator=(const Pitch& p);
 
   virtual std::string getName() const;
 

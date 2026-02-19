@@ -74,12 +74,17 @@ Duration::Duration(const Duration&& d) :
   Duration(d.getNum(), d.getDenom()) {}
 
 Duration::Duration(const DurationRaw& d) :
-  _raw (d) {}
+  Duration(d.getNum(), d.getDenom()) {}
 
 Duration::Duration(const DurationRaw&& d) :
-  _raw (d) {}
+  Duration(d.getNum(), d.getDenom()) {}
 
 Duration::~Duration() {}
+
+Duration Duration::operator=(const Duration& d) {
+  _raw.setNum(d.getNum());
+  _raw.setDenom(d.getDenom());
+}
 
 int Duration::getNum() const {
   return _raw.getNum();

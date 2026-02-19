@@ -88,7 +88,21 @@ Pitch::Pitch(const Pitch&& p) :
   Pitch(p.getName(), p.getAccidental(), p.getOctaveInt()) {
 }
 
+Pitch::Pitch(const PitchRaw& p) :
+  Pitch(p.getName(), p.getAccidental(), p.getOctave()) {
+}
+
+Pitch::Pitch(const PitchRaw&& p) :
+  Pitch(p.getName(), p.getAccidental(), p.getOctave()) {
+}
+
 Pitch::~Pitch() {
+}
+
+Pitch Pitch::operator=(const Pitch& p) {
+  _raw.setName(p.getName().front());
+  _raw.setAccidental(p.getAccidental().front());
+  _raw.setOctave(p.getOctaveInt());
 }
 
 std::string Pitch::getName() const {
