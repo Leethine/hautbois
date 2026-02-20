@@ -34,14 +34,14 @@ BOOST_AUTO_TEST_CASE(operator_eq) {
 
 BOOST_AUTO_TEST_CASE(serialization) {
   DurationRaw d1(7,16);
-  std::ofstream ofs("serial_object1");
+  std::ofstream ofs("cereal_object1");
   {
     boost::archive::text_oarchive oa(ofs);
     oa << d1;
   }
   DurationRaw d2;
   {
-    std::ifstream ifs("serial_object1");
+    std::ifstream ifs("cereal_object1");
     boost::archive::text_iarchive ia(ifs);
     ia >> d2;
   }
@@ -78,14 +78,14 @@ BOOST_AUTO_TEST_CASE(operator_eq) {
 
 BOOST_AUTO_TEST_CASE(serialization) {
   PitchRaw p1('G', 'x', 6);
-  std::ofstream ofs("serial_object2");
+  std::ofstream ofs("cereal_object2");
   {
     boost::archive::text_oarchive oa(ofs);
     oa << p1;
   }
   PitchRaw p2;
   {
-    std::ifstream ifs("serial_object2");
+    std::ifstream ifs("cereal_object2");
     boost::archive::text_iarchive ia(ifs);
     ia >> p2;
   }
@@ -124,14 +124,14 @@ BOOST_AUTO_TEST_CASE(serialization) {
   PropertyRaw p1;
   std::string s ("test string string");
   p1.set(s.c_str());
-  std::ofstream ofs("serial_object3");
+  std::ofstream ofs("cereal_object3");
   {
     boost::archive::text_oarchive oa(ofs);
     oa << p1;
   }
   PropertyRaw p2;
   {
-    std::ifstream ifs("serial_object3");
+    std::ifstream ifs("cereal_object3");
     boost::archive::text_iarchive ia(ifs);
     ia >> p2;
   }
