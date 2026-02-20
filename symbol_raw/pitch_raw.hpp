@@ -102,9 +102,11 @@ class PitchRaw final {
   }
 
   inline PitchRaw& operator=(const PitchRaw& r) {
-    _name   = r.getNameRaw();
-    _acc    = r.getAccidentalRaw();
-    _octave = r.getOctaveRaw();
+    if (this != &r) {
+      _name   = r.getNameRaw();
+      _acc    = r.getAccidentalRaw();
+      _octave = r.getOctaveRaw();
+    }
     return *this;
   }
 

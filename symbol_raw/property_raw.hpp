@@ -31,8 +31,7 @@ class PropertyRaw final {
     }
     else {
       ar << true;
-      std::string text (_text);
-      ar << text;
+      ar << getStr();
     }
   }
   

@@ -78,8 +78,10 @@ class DurationRaw final {
   }
 
   inline DurationRaw& operator=(const DurationRaw& r) {
-    _num = r.getNumRaw();
-    _denom = r.getDenomRaw();
+    if (this != &r) {
+      _num = r.getNumRaw();
+      _denom = r.getDenomRaw();
+    }
     return *this;
   }
 
