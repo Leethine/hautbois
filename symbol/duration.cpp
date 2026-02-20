@@ -1,5 +1,5 @@
 #include "duration.hpp"
-#include "core_types.hpp"
+#include "symbol_raw/core_types.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -8,7 +8,7 @@
 #if __cplusplus >= 201703L
 #define HB_GCD(X, Y) std::gcd((X),(Y))
 #else
-#define HB_GCD(X, Y)       \
+#define HB_GCD(X, Y)    \
 [&](int x_, int y_) {   \
   int a = std::abs(x_); \
   int b = std::abs(y_); \
@@ -30,7 +30,7 @@ Duration::Duration(const int& __num, const int& __denom) :
   std::vector<int> valid_num {1,3,5,2,4,6};
   std::vector<int> valid_denom {1,2,4,8,16,32,64,128};
   if (std::find(valid_num.begin(), valid_num.end(), __num) == valid_num.end() ||
-    std::find(valid_denom.begin(), valid_denom.end(), __num) == valid_denom.end()
+    std::find(valid_denom.begin(), valid_denom.end(), __denom) == valid_denom.end()
   ) {
     throw std::invalid_argument(std::to_string(__num) + "," + std::to_string(__denom));
   }
@@ -115,23 +115,23 @@ DurationRaw Duration::getRaw() const {
 }
 
 bool Duration::operator<(const Duration& d2) const {
-  return (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-       < (uint64_t) d2.getNum() * (uint64_t) this->getDenom();
+  return this->getNum() * d2.getDenom()
+        < d2.getNum() * this->getDenom();
 }
 
 bool Duration::operator>(const Duration& d2) const {
-  return (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-       > (uint64_t) d2.getNum() * (uint64_t) this->getDenom();
+  return this->getNum() * d2.getDenom()
+        > d2.getNum() * this->getDenom();
 }
 
 bool Duration::operator==(const Duration& d2) const {
-  return (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-      == (uint64_t) d2.getNum() * (uint64_t) this->getDenom();
+  return this->getNum() * d2.getDenom()
+        == d2.getNum() * this->getDenom();
 }
 
 bool Duration::operator!=(const Duration& d2) const {
-  return (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-      != (uint64_t) d2.getNum() * (uint64_t) this->getDenom();
+  return this->getNum() * d2.getDenom()
+        != d2.getNum() * this->getDenom();
 }
 
 bool Duration::operator>=(const Duration& d2) const {
@@ -142,30 +142,29 @@ bool Duration::operator<=(const Duration& d2) const {
   return (*this) < d2 || (*this) == d2;
 }
 
-
 Duration Duration::operator+ (const Duration& d2) const {
-  uint64_t tNum = (uint64_t)this->getNum() * (uint64_t)d2.getDenom()
-                 + (uint64_t)d2.getNum() * (uint64_t)this->getDenom();
-  uint64_t tDenom = (uint64_t)this->getDenom() * (uint64_t)d2.getDenom();
-  uint64_t tGcd = HB_GCD(tNum, tDenom);
-  return Duration((int)(tNum / tGcd), (int)(tDenom / tGcd));
+  int tNum = this->getNum() * d2.getDenom()
+           + d2.getNum() * this->getDenom();
+  int tDenom = this->getDenom() * d2.getDenom();
+  int tGcd   = HB_GCD(tNum, tDenom);
+  return Duration((tNum / tGcd), (tDenom / tGcd));
 }
 
 Duration Duration::operator- (const Duration& d2) const {
   if ((*this) == d2) {
-    throw std::logic_error("Two elems are equal");
+    throw std::logic_error("d1 == d2");
   }
   else {
-    uint64_t tNum = (uint64_t) this->getNum() * (uint64_t) d2.getDenom() >
-                    (uint64_t) d2.getNum() * (uint64_t) this->getDenom() ?
-                    (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-                  - (uint64_t) d2.getNum() * (uint64_t) this->getDenom()
-                  : (uint64_t) d2.getNum() * (uint64_t) this->getDenom()
-                  - (uint64_t) this->getNum() * (uint64_t) d2.getDenom();
+    int tNum = this->getNum() * d2.getDenom() >
+               d2.getNum() * this->getDenom() ?
+               this->getNum() * d2.getDenom()
+             - d2.getNum() * this->getDenom()
+             : d2.getNum() * this->getDenom()
+             - this->getNum() * d2.getDenom();
 
-    uint64_t tDenom = (uint64_t) this->getDenom() * (uint64_t) d2.getDenom();
-    uint64_t tGcd = HB_GCD(tNum,tDenom); 
-    return Duration((int)(tNum/tGcd), (int)(tDenom/tGcd));
+    int tDenom = this->getDenom() * d2.getDenom();
+    int tGcd   = HB_GCD(tNum,tDenom); 
+    return Duration((tNum/tGcd), (tDenom/tGcd));
   }
 }
 
@@ -174,46 +173,52 @@ Duration Duration::operator* (const int& __scale) const {
     throw std::invalid_argument(__scale + " < 0");
   }
   else {
-    uint64_t tNum = (uint64_t)this->getNum() * (uint64_t)__scale;
-    uint64_t tDenom = (uint64_t)this->getDenom();
-    uint64_t tGcd = HB_GCD(tNum,tDenom);
-    return Duration((int)(tNum / tGcd), (int)(tDenom / tGcd));
+    int tNum   = this->getNum() * __scale;
+    int tDenom = this->getDenom();
+    int tGcd   = HB_GCD(tNum,tDenom);
+    return Duration((tNum / tGcd), (tDenom / tGcd));
   }
 }
 
 Duration Duration::operator/ (const int& __scale) const {
   if (__scale <= 0) {
-    throw std::invalid_argument(__scale + " < 0");
+    throw std::invalid_argument(__scale + " <= 0");
   }
   else {
-    uint64_t tNum = (uint64_t)this->getNum();
-    uint64_t tDenom = (uint64_t)this->getDenom() * (uint64_t)__scale;
-    uint64_t tGcd = HB_GCD(tNum,tDenom);
-    return Duration((int)(tNum / tGcd), (int)(tDenom / tGcd));
+    int tNum   = this->getNum();
+    int tDenom = this->getDenom() * __scale;
+    int tGcd   = HB_GCD(tNum,tDenom);
+    return Duration((tNum / tGcd), (tDenom / tGcd));
   }
 }
 
 void Duration::operator+= (const Duration& d2) {
-  uint64_t tNum = (uint64_t) this->getNum() * (uint64_t) d2.getDenom()
-               + (uint64_t) d2.getNum() * (uint64_t) this->getDenom();
-  uint64_t tDenom = this->getDenom() * d2.getDenom();
-  int64_t tGcd = HB_GCD(tNum, tDenom);
-  _raw.setNum((int) (tNum/tGcd));
-  _raw.setDenom((int) (tDenom/tGcd));
+  int tNum = this->getNum() * d2.getDenom()
+            + d2.getNum() * this->getDenom();
+  int tDenom = this->getDenom() * d2.getDenom();
+  int tGcd = HB_GCD(tNum, tDenom);
+  _raw.setNum(tNum/tGcd);
+  _raw.setDenom(tDenom/tGcd);
 }
 
 void Duration::operator*= (const int& __scale) {
-  uint64_t tNum = getNum() * __scale;
-  int64_t tGcd = HB_GCD(tNum, getDenom());
-  _raw.setNum((int) (tNum/tGcd));
-  _raw.setDenom((int) (getDenom()/tGcd));
+  if (__scale <= 0) {
+    throw std::invalid_argument(__scale + " <= 0");
+  }
+  int tNum = getNum() * __scale;
+  int tGcd = HB_GCD(tNum, getDenom());
+  _raw.setNum(tNum/tGcd);
+  _raw.setDenom(getDenom()/tGcd);
 }
 
 void Duration::operator/= (const int& __scale) {
-  uint64_t tDenom = getDenom() * __scale;
-  int64_t tGcd = HB_GCD(getNum(), tDenom);
-  _raw.setNum((int) (getNum()/tGcd));
-  _raw.setDenom((int) (tDenom/tGcd));
+  if (__scale <= 0) {
+    throw std::invalid_argument(__scale + " <= 0");
+  }
+  int tDenom = getDenom() * __scale;
+  int tGcd = HB_GCD(getNum(), tDenom);
+  _raw.setNum(getNum()/tGcd);
+  _raw.setDenom(tDenom/tGcd);
 }
 
 } // namespace hautbois
