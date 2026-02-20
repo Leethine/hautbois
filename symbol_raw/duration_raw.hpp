@@ -77,12 +77,11 @@ class DurationRaw final {
     return (int) _denom;
   }
 
-  inline DurationRaw operator=(const DurationRaw& r) {
+  inline DurationRaw& operator=(const DurationRaw& r) {
     _num = r.getNumRaw();
     _denom = r.getDenomRaw();
+    return *this;
   }
-
-
 
 };
 

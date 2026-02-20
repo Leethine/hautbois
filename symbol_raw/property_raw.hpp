@@ -26,7 +26,7 @@ class PropertyRaw final {
 
   template<class Archive>
   inline void save(Archive & ar, const unsigned int version) const {
-    if (_text == nullptr) {
+    if (!_text) {
       ar << false;
     }
     else {
@@ -38,12 +38,12 @@ class PropertyRaw final {
   
   template<class Archive>
   inline void load(Archive & ar, const unsigned int version) {
-    bool was_empty;
-    ar >> was_empty;
-    if (!was_empty) {
+    bool has_value;
+    ar >> has_value;
+    if (has_value) {
       std::string text;
       ar >> text;
-      set(text.c_str());
+      set(text);
     }
   }
 
@@ -78,6 +78,17 @@ class PropertyRaw final {
     }
   }
 
+  inline void set(const std::string& text) noexcept {
+    if (!text.empty() && text.length() < PROPERTY_TEXT_MAX_LENGTH) {
+      char * temp_new_text = (char*) std::malloc((text.length()+1)*sizeof(char));
+      if (temp_new_text != NULL) {
+        std::free(_text);
+        std::strcpy(temp_new_text, text.c_str());
+        _text = temp_new_text;
+      }
+    }
+  }
+
   inline bool hasValue() const {
     if (_text) {
       return true;
@@ -94,8 +105,11 @@ class PropertyRaw final {
     return s;
   }
 
-  inline PropertyRaw operator=(const PropertyRaw& r) {
-    set(r.get());
+  inline PropertyRaw& operator=(const PropertyRaw& r) {
+    if (this != &r) {
+      set(r.get());
+    }
+    return *this;
   }
 
 };
