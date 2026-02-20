@@ -110,7 +110,6 @@ BOOST_AUTO_TEST_CASE(serialization) {
     boost::archive::text_iarchive ia(ifs);
     ia >> p2;
   }
-  std::cout << p2.getStr() << "\n";
   BOOST_ASSERT(p2.hasValue());
   BOOST_TEST(p2.getStr() == s);
 }
