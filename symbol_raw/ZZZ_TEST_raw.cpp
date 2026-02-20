@@ -25,6 +25,13 @@ BOOST_AUTO_TEST_CASE(set_get) {
   BOOST_TEST(d.getDenom() == 8);
 }
 
+BOOST_AUTO_TEST_CASE(operator_eq) {
+  DurationRaw d1(3,8);
+  DurationRaw d2 = d1;
+  BOOST_TEST(d2.getNum() == 3);
+  BOOST_TEST(d2.getDenom() == 8);
+}
+
 BOOST_AUTO_TEST_CASE(serialization) {
   DurationRaw d1(7,16);
   std::ofstream ofs("serial_object1");
@@ -61,6 +68,14 @@ BOOST_AUTO_TEST_CASE(set_get) {
   BOOST_TEST(p.getOctave() == 5);
 }
 
+BOOST_AUTO_TEST_CASE(operator_eq) {
+  PitchRaw p1('A', 'b', 5);
+  PitchRaw p2 = p1;
+  BOOST_TEST(p2.getName() == 'A');
+  BOOST_TEST(p2.getAccidental() == 'b');
+  BOOST_TEST(p2.getOctave() == 5);
+}
+
 BOOST_AUTO_TEST_CASE(serialization) {
   PitchRaw p1('G', 'x', 6);
   std::ofstream ofs("serial_object2");
@@ -93,6 +108,16 @@ BOOST_AUTO_TEST_CASE(set_get) {
   BOOST_ASSERT(p.hasValue());
   BOOST_TEST(p.getStr() == s);
   BOOST_TEST(std::strcmp(s.c_str(),p.get()) == 0);
+}
+
+BOOST_AUTO_TEST_CASE(operator_eq) {
+  PropertyRaw p1;
+  std::string s ("test string eq eq");
+  p1.set(s);
+  PropertyRaw p2 = p1;
+  BOOST_ASSERT(p2.hasValue());
+  BOOST_TEST(p2.getStr() == s);
+  BOOST_TEST(std::strcmp(s.c_str(),p2.get()) == 0);
 }
 
 BOOST_AUTO_TEST_CASE(serialization) {
