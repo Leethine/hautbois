@@ -27,9 +27,11 @@ Property::Property(const PropertyRaw&& p) : _raw (p) {
 
 Property::~Property() {}
 
-Property Property::operator=(const Property& p) {
-  Property op(p);
-  return op;
+Property& Property::operator=(const Property& p) {
+  if (this != &p) {
+    _raw.set(p.raw().get());
+  }
+  return *this;
 }
 
 void Property::modify(const char* context) {

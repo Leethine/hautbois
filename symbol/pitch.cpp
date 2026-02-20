@@ -99,10 +99,13 @@ Pitch::Pitch(const PitchRaw&& p) :
 Pitch::~Pitch() {
 }
 
-Pitch Pitch::operator=(const Pitch& p) {
-  _raw.setName(p.getName().front());
-  _raw.setAccidental(p.getAccidental().front());
-  _raw.setOctave(p.getOctaveInt());
+Pitch& Pitch::operator=(const Pitch& p) {
+  if (this != &p) {
+    _raw.setName(p.getName().front());
+    _raw.setAccidental(p.getAccidental().front());
+    _raw.setOctave(p.getOctaveInt());
+  }
+  return *this;
 }
 
 std::string Pitch::getName() const {
@@ -121,6 +124,15 @@ std::string Pitch::getOctave() const {
 
 int Pitch::getOctaveInt() const {
   return _raw.getOctave();
+}
+
+const PitchRaw& Pitch::raw() const {
+  return _raw;
+}
+
+PitchRaw Pitch::getRaw() const {
+  PitchRaw p (_raw);
+  return p;
 }
 
 std::string Pitch::toString() const {

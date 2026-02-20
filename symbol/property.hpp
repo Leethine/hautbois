@@ -30,7 +30,7 @@ class Property {
   
   virtual ~Property();
   
-  Property operator=(const Property& p);
+  Property& operator=(const Property& p);
 
   virtual void modify(const char* context);
 

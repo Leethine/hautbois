@@ -35,7 +35,7 @@ class Pitch {
 
   virtual ~Pitch();
 
-  Pitch operator=(const Pitch& p);
+  Pitch& operator=(const Pitch& p);
 
   virtual std::string getName() const;
 
@@ -45,9 +45,9 @@ class Pitch {
 
   virtual int getOctaveInt() const;
 
-  virtual const PitchRaw& getRaw() const;
+  virtual const PitchRaw& raw() const;
   
-  virtual PitchRaw getRawCopy() const;
+  virtual PitchRaw getRaw() const;
 
   virtual std::string toString() const;
 

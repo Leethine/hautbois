@@ -81,9 +81,12 @@ Duration::Duration(const DurationRaw&& d) :
 
 Duration::~Duration() {}
 
-Duration Duration::operator=(const Duration& d) {
-  _raw.setNum(d.getNum());
-  _raw.setDenom(d.getDenom());
+Duration& Duration::operator=(const Duration& d) {
+  if (this != &d) {
+    _raw.setNum(d.getNum());
+    _raw.setDenom(d.getDenom());
+  }
+  return *this;
 }
 
 int Duration::getNum() const {
@@ -102,11 +105,11 @@ void Duration::modify(const char * __context) {
   // Not supported in base class
 }
 
-const DurationRaw& Duration::getRaw() const {
+const DurationRaw& Duration::raw() const {
   return _raw;
 }
 
-DurationRaw Duration::getRawCopy() const {
+DurationRaw Duration::getRaw() const {
   DurationRaw r (_raw);
   return r;
 }

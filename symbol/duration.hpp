@@ -33,7 +33,7 @@ class Duration {
  
   virtual ~Duration();
 
-  Duration operator=(const Duration& d);
+  Duration& operator=(const Duration& d);
 
   virtual int getNum() const;
 
@@ -43,9 +43,9 @@ class Duration {
 
   virtual void modify(const char * __context);
 
-  virtual const DurationRaw& getRaw() const;
+  virtual const DurationRaw& raw() const;
 
-  virtual DurationRaw getRawCopy() const;
+  virtual DurationRaw getRaw() const;
 
   virtual bool operator<(const Duration& d2) const;
  
