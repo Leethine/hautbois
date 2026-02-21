@@ -30,8 +30,10 @@ void Note::setPitch(Pitch * __p) {
 }
 
 void Note::clearPitch() {
-  for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
-    delete (*it);
+  if (!_pitch.empty()) {
+    for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
+     delete (*it);
+    }
   }
 }
 
@@ -71,15 +73,15 @@ NoteType Note::guessNoteType(const std::string& __input) const {
   }
 }
 
-void Note::checkFormatThrowExp(const std::string& __pitch) const {
-  auto is_valid_input = [&] (const std::string& name,
+bool Note::checkFormatThrowExp(const std::string& __pitch) const {
+  auto is_valid_input = [&] (const std::string& nom,
                              const std::string& acc,
                              const std::string& oct) {
     std::string VALIDNAMES = "CDEFGABRS";
     std::string VALIDCTAVE = "0123456789";
     std::vector<std::string> VALIDACCIDENTALS = 
       {"", "n", "s", "ss", "x", "#", "d", "b", "bb"};
-    if (VALIDNAMES.find(name) == std::string::npos ||
+    if (VALIDNAMES.find(nom) == std::string::npos ||
         VALIDCTAVE.find(oct)  == std::string::npos) {
       return false;
     }
@@ -91,7 +93,7 @@ void Note::checkFormatThrowExp(const std::string& __pitch) const {
   };
 
   std::string name;
-  std::string accidental;
+  std::string accidental = "n";
   std::string octave = "4";
 
   if (__pitch.length() == 4) {
@@ -108,27 +110,34 @@ void Note::checkFormatThrowExp(const std::string& __pitch) const {
     name = __pitch.substr(0,1);
     octave = __pitch.substr(1,1);
   }
-  else if (__pitch.length() == 1) {
+  else if ( __pitch.length() == 1 && (__pitch == "R" || __pitch == "S") ) {
     name = __pitch;
   }
   else {
     throw std::invalid_argument("Cannot parse: " + __pitch);
+    return false;
   }
+
   if (!is_valid_input(name, accidental, octave)) {
     throw std::invalid_argument("Cannot parse: " + __pitch);
+    return false;
   }
+  return true;
 }
 
 std::tuple<std::string, std::string, std::string>
  Note::parseSingleNote(const std::string& __pitch) const {
-  checkFormatThrowExp(__pitch);
+  if (!checkFormatThrowExp(__pitch)) {
+    return { "S", "n", "4" };
+  }
 
   std::string name (1, __pitch.front());
   std::string octave (1, __pitch.back());
-  std::string accidental(__pitch);
-  accidental.pop_back();
-  std::reverse(accidental.begin(), accidental.end());
-  accidental.pop_back();
+  std::string accidental;
+  if (__pitch.length() > 2) {
+    accidental = __pitch.substr(1);
+    accidental.pop_back();
+  }
 
   if (accidental == "bb") {
     accidental = "d";
@@ -155,7 +164,6 @@ std::vector< std::tuple<std::string, std::string, std::string> >
     throw std::invalid_argument("Failed to parse \"" + __pitch + "\"");
   }
   for (auto it=tokens.begin(); it != tokens.end(); it++) {
-    checkFormatThrowExp(*it);
     auto res = parseSingleNote(*it);
     oResult.push_back(res);
   }

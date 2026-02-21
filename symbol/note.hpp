@@ -54,7 +54,7 @@ class Note {
 
   virtual NoteType guessNoteType(const std::string& __input) const;
 
-  virtual void checkFormatThrowExp(const std::string& __pitch) const;
+  virtual bool checkFormatThrowExp(const std::string& __pitch) const;
 
   virtual std::tuple<std::string, std::string, std::string> 
     parseSingleNote(const std::string& __pitch) const;
