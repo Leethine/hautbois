@@ -3,10 +3,9 @@
 #ifndef NOTE_H
 #define NOTE_H
 
-#include "basic/basic_note.hpp"
-
 #include <vector>
 #include <string>
+#include <tuple>
 
 namespace hautbois {
 namespace core {
@@ -14,46 +13,84 @@ namespace core {
 enum class NoteType {
   SingleNote =  0,
   Chord      =  1,
-  Xuplet     =  2,
+  Tuplet     =  2,
   Rest       = -1,
   Silence    = -2
 };
 
-class Note : public BasicNote {
+class Duration;
+
+class Pitch;
+
+class Property;
+
+class Note {
 
  private:
 
   NoteType _type;
 
-  virtual NoteType getNoteTypeFromInput(const std::string& iPitch) const;
+  Duration * _duration;
 
-  virtual bool checkPitchStrFormat(const std::string& iPitch) const;
+  std::vector<Pitch *> _pitch;
 
-  virtual void parseSingleNote(const std::string& iPitch);
+  Property * _property;
 
-  virtual void parseGroupNote(const std::string& iPitch, NoteType iType=NoteType::Chord);
+  bool _tied = false;
 
  protected:
 
-  virtual void setNoteType(NoteType iType);
+  virtual void setNoteType(NoteType __ntype);
 
-  virtual void processProperty(const std::string& style);
+  virtual void addPitch(Pitch * __p);
+
+  virtual void setPitch(Pitch * __p);
+
+  virtual void clearPitch();
+
+  virtual void setDuration(Duration * __d);
+
+  virtual void setProperty(Property * __p);
+
+  virtual NoteType guessNoteType(const std::string& __input) const;
+
+  virtual void checkFormatThrowExp(const std::string& __pitch) const;
+
+  virtual std::tuple<std::string, std::string, std::string> 
+    parseSingleNote(const std::string& __pitch) const;
+
+  virtual std::vector< std::tuple<std::string, std::string, std::string> >
+    parseGroupNote(const std::string& __pitch, NoteType __type=NoteType::Chord) const;
+
+  virtual std::string filterProperty(const std::string& __text) const;
 
  public:
 
-  Note(const int iNum, const int iDenom, const std::string& iPitch);
+  Note();
 
-  Note(const Note& iN);
+  Note(const int& __num, const int& __denom);
 
-  Note(const Note&& iN);
+  Note(const int& __num, const int& __denom, const std::string& __pitch);
+
+  Note(const Note& __n);
+
+  Note(const Note&& __n);
 
   virtual ~Note();
 
-  virtual void updateProperty(const std::string& iFreeTxt);
+  virtual Note& operator=(const Note& __n);
+
+  virtual void updateDuration(const std::string& __context);
+  
+  virtual void updatePitch(const std::string& __context);
+
+  virtual void updateProperty(const std::string& __context);
 
   virtual void clearProperty();
 
-  virtual bool hasProperty();
+  virtual bool hasProperty() const;
+
+  virtual int pitchSize() const;
 
   virtual NoteType getType() const;
 
@@ -75,19 +112,29 @@ class Note : public BasicNote {
 
   virtual bool isValid() const;
 
-  virtual const Duration getDuration() const;
+  virtual const Duration * getDuration() const;
 
-  virtual std::string getPitch() const;
+  virtual const Pitch * getPitch() const;
 
-  virtual std::vector<std::string> getChord() const;
+  virtual const Property * getProperty() const;
 
-  virtual std::vector<std::string> getTuplet() const;
+  virtual const std::vector<const Pitch *> getChord() const;
 
-  virtual std::string getProperty() const;
+  virtual const std::vector<const Pitch *> getTuplet() const;
+
+  virtual std::string getDurationStr() const;
+
+  virtual std::string getPitchStr() const;
+
+  virtual std::vector<std::string> getChordStr() const;
+
+  virtual std::vector<std::string> getTupletStr() const;
+
+  virtual std::string getPropertyStr() const;
 
   virtual std::string toString() const;
 
-  virtual void * toStream(const std::string& iStreamType) const;
+  virtual void * toStream(const std::string& __context, void * __ostream) const;
 
 };
 

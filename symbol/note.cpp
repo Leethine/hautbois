@@ -1,35 +1,69 @@
-#include "hb_macro.hpp"
 #include "note.hpp"
 #include "duration.hpp"
 #include "pitch.hpp"
+#include "property.hpp"
+
 #include <algorithm>
 #include <string>
 #include <stdexcept>
+#include <utility>
 #include <boost/algorithm/string.hpp>
 
 namespace hautbois {
 namespace core {
 
-void Note::setDurationPtr(Duration * d) {
-  _durationPtrLog.push_back(d);
-  _duration = d;
+void Note::setNoteType(NoteType __ntype) {
+  _type = __ntype;
 }
 
-NoteType Note::getNoteTypeFromInput(const std::string& iPitch) const {
-  if (iPitch == "S") {
+void Note::addPitch(Pitch * __p) {
+  if (__p) {
+    _pitch.push_back(__p);
+  }
+}
+
+void Note::setPitch(Pitch * __p) {
+  clearPitch();
+  if (__p) {
+    _pitch.push_back(__p);
+  }
+}
+
+void Note::clearPitch() {
+  for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
+    delete (*it);
+  }
+}
+
+void Note::setDuration(Duration * __d) {
+  if (_duration && __d) {
+    delete _duration;
+  }
+  _duration = __d;
+}
+
+void Note::setProperty(Property * __p) {
+  if (_property && __p) {
+    delete _property;
+  }
+  _property = __p;
+}
+
+NoteType Note::guessNoteType(const std::string& __input) const {
+  if (__input == "S") {
     return NoteType::Silence;
   }
-  else if (iPitch == "R") {
+  else if (__input == "R") {
     return NoteType::Rest;
   }
   else {
-    size_t pos_plus  = iPitch.find("+");
-    size_t pos_dash = iPitch.find("-");
+    size_t pos_plus  = __input.find("+");
+    size_t pos_dash = __input.find("-");
     if (pos_plus != std::string::npos) {
       return NoteType::Chord;
     }
     else if (pos_dash != std::string::npos) {
-      return NoteType::Xuplet;
+      return NoteType::Tuplet;
     }
     else {
       return NoteType::SingleNote;
@@ -37,374 +71,216 @@ NoteType Note::getNoteTypeFromInput(const std::string& iPitch) const {
   }
 }
 
-bool Note::checkPitchStrFormat(const std::string& iPitch) const {
-  auto keyword_finder = [&] (const std::string& n,
-                             const std::string& o,
-                             const std::string& a) {
-    std::string ALLNAMES = "CDEFGAB";
-    std::string ALLOCTAVES = "012345678";
-    std::vector<std::string> ALLACCIDENTALS = 
+void Note::checkFormatThrowExp(const std::string& __pitch) const {
+  auto is_valid_input = [&] (const std::string& name,
+                             const std::string& acc,
+                             const std::string& oct) {
+    std::string VALIDNAMES = "CDEFGABRS";
+    std::string VALIDCTAVE = "0123456789";
+    std::vector<std::string> VALIDACCIDENTALS = 
       {"", "n", "s", "ss", "x", "#", "d", "b", "bb"};
-    if (ALLNAMES.find(n) == std::string::npos ||
-        ALLOCTAVES.find(o) == std::string::npos) {
+    if (VALIDNAMES.find(name) == std::string::npos ||
+        VALIDCTAVE.find(oct)  == std::string::npos) {
       return false;
     }
-    if (std::find(ALLACCIDENTALS.begin(), ALLACCIDENTALS.end(), a) 
-          == ALLACCIDENTALS.end()) {
+    if (std::find(VALIDACCIDENTALS.begin(), VALIDACCIDENTALS.end(), acc) 
+         == VALIDACCIDENTALS.end()) {
       return false;
     }
     return true;
   };
 
-  if (iPitch.length() == 4) {
-    std::string name = iPitch.substr(0,1);
-    std::string octave = iPitch.substr(3,1);
-    std::string accidental = iPitch.substr(1,2);
-    return keyword_finder(name, octave, accidental);
+  std::string name;
+  std::string accidental;
+  std::string octave = "4";
+
+  if (__pitch.length() == 4) {
+    name       = __pitch.substr(0,1);
+    accidental = __pitch.substr(1,2);
+    octave     = __pitch.substr(3,1);
   }
-  else if (iPitch.length() == 3) {
-    std::string name = iPitch.substr(0,1);
-    std::string octave = iPitch.substr(2,1);
-    std::string accidental = iPitch.substr(1,1);
-    return keyword_finder(name, octave, accidental);
+  else if (__pitch.length() == 3) {
+    name = __pitch.substr(0,1);
+    accidental = __pitch.substr(1,1);
+    octave = __pitch.substr(2,1);
   }
-  else if (iPitch.length() == 2) {
-    std::string name = iPitch.substr(0,1);
-    std::string octave = iPitch.substr(1,1);
-    std::string accidental = "";
-    return keyword_finder(name, octave, accidental);
+  else if (__pitch.length() == 2) {
+    name = __pitch.substr(0,1);
+    octave = __pitch.substr(1,1);
+  }
+  else if (__pitch.length() == 1) {
+    name = __pitch;
   }
   else {
-    return false;
+    throw std::invalid_argument("Cannot parse: " + __pitch);
   }
-  return true;
+  if (!is_valid_input(name, accidental, octave)) {
+    throw std::invalid_argument("Cannot parse: " + __pitch);
+  }
 }
 
-void Note::parseSingleNote(const std::string& iPitch) {
-  if (!checkPitchStrFormat(iPitch)) {
-    HB_THROW(std::invalid_argument, "Failed to parse \"" + iPitch + "\"");
-    return ;
-  }
-  std::string name (1, iPitch.front());
-  std::string octave (1, iPitch.back());
-  std::string accidental(iPitch);
+std::tuple<std::string, std::string, std::string>
+ Note::parseSingleNote(const std::string& __pitch) const {
+  checkFormatThrowExp(__pitch);
+
+  std::string name (1, __pitch.front());
+  std::string octave (1, __pitch.back());
+  std::string accidental(__pitch);
   accidental.pop_back();
   std::reverse(accidental.begin(), accidental.end());
   accidental.pop_back();
-  addPitchPtr(new Pitch(name, accidental, octave));
+
+  return { name, accidental, octave };
 }
 
-void Note::parseGroupNote(const std::string& iPitch, NoteType iType) {
+std::vector< std::tuple<std::string, std::string, std::string> >
+ Note::parseGroupNote(const std::string& __pitch, NoteType __type) const {
+  std::vector< std::tuple<std::string, std::string, std::string> > oResult;
+
   std::string sep;
-  (iType == NoteType::Chord) ? sep = "+" : sep = "-";
+  (__type == NoteType::Chord) ? sep = "+" : sep = "-";
   std::vector<std::string> tokens;
-  boost::split(tokens, iPitch, boost::is_any_of(sep), boost::token_compress_on);
+  boost::split(tokens, __pitch, boost::is_any_of(sep), boost::token_compress_on);
   if (tokens.empty()) {
-    HB_THROW(std::invalid_argument, "Failed to parse \"" + iPitch + "\"");
-    return ;
+    throw std::invalid_argument("Failed to parse \"" + __pitch + "\"");
   }
   for (auto it=tokens.begin(); it != tokens.end(); it++) {
-    if (!checkPitchStrFormat((*it))) {
-      HB_THROW(std::invalid_argument, "Failed to parse \"" + iPitch + "\"");
-      return ;
-    }
-    parseSingleNote(*it);
+    checkFormatThrowExp(*it);
+    auto res = parseSingleNote(*it);
+    oResult.push_back(res);
   }
+
+  return oResult;
 }
 
-void Note::clearPitch() {
-  _pitch.clear();
-}
-
-void Note::setNoteType(NoteType iType) {
-  _type = iType;
-}
-
-void Note::setDuration(const Duration& iDuration) {
-  setDurationPtr(new Duration(iDuration));
-}
-
-void Note::addPitch(const Pitch * const iPitch) {
-  Pitch * p = new Pitch(*iPitch);
-  _pitchPtrLog.push_back(p);
-  _pitch.push_back(p);
-}
-
-void Note::addPitchPtr(Pitch * iPitch) {
-  _pitchPtrLog.push_back(iPitch);
-  _pitch.push_back(iPitch);
-}
-
-std::vector<Pitch *> Note::getPitchPtr() const {
-  return _pitch;
-}
-
-void Note::filterProperties() {
-  return ;
-}
-
-Note::Note(const Note& iRhs) {
-  _type = iRhs.getType();
-  setDurationPtr(new Duration(iRhs.getDuration()));
-  if (_type == NoteType::SingleNote) {
-    parseSingleNote(iRhs.getPitch());
-  }
-  else if (_type == NoteType::Chord || _type == NoteType::Xuplet) {
-    std::vector<std::string> notegroup = iRhs.getChord();
-    for (auto it=notegroup.begin(); it != notegroup.end(); it++) {
-      parseSingleNote((*it));
-    }
-  }
-  _noteProperties = iRhs.getProperties();
+std::string Note::filterProperty(const std::string& __text) const {
+  std::string s = __text;
+  return s;
 }
 
 Note::Note() : _type     ( NoteType::Silence),
-               _duration ( nullptr ),
-               _pitch    ( {} ),
-               _pitchPtrLog    ( {} ),
-               _noteProperties ( {} ),
-               _tied           ( false )
+               _duration ( new Duration(1,1) ),
+               _pitch    ( { new Pitch('S', 'n', 4) } ),
+               _property ( nullptr ),
+               _tied     ( false )
 {}
 
-Note::Note(const int iNum, const int iDenom, const std::string& iPitch) {
-  setDurationPtr(new Duration(iNum, iDenom));
-  _type = getNoteTypeFromInput(iPitch);
+Note::Note(const int& __num, const int& __denom) :
+  _type     ( NoteType::Silence),
+  _duration ( new Duration(__num, __denom) ),
+  _pitch    ( { new Pitch('S', 'n', 4) } ),
+  _property ( nullptr ),
+  _tied     ( false )
+{}
+
+Note::Note(const int& __num, const int& __denom, const std::string& __pitch) :
+  _type     ( NoteType::SingleNote),
+  _duration ( nullptr ),
+  _pitch    ( {} ),
+  _property ( nullptr ),
+  _tied     ( false )
+{
+  _type = guessNoteType(__pitch);
   if (_type == NoteType::SingleNote) {
-    parseSingleNote(iPitch);
+    std::string name, acc, oct;
+    std::tie(name, acc, oct) = parseSingleNote(__pitch);
+    setPitch(new Pitch(name, acc, oct));
   }
-  else if (_type == NoteType::Chord || _type == NoteType::Xuplet) {
-    parseGroupNote(iPitch, _type);
+  else if (_type == NoteType::Rest) {
+    setPitch(new Pitch('R', 'n', 4));
   }
+  else if (_type == NoteType::Silence) {
+    setPitch(new Pitch('S', 'n', 4));
+  }
+  else if (_type == NoteType::Chord || _type == NoteType::Tuplet) {
+    auto args = parseGroupNote(__pitch, _type);
+    for (auto it=args.begin(); it != args.end(); it++) {
+      std::string name, acc, oct;
+      std::tie(name, acc, oct) = (*it);
+      addPitch(new Pitch(name, acc, oct));
+    }
+  }
+  _duration = new Duration(__num, __denom);
+}
+
+
+Note::Note(const Note& __n) {
+  _type = __n.getType();
+  setDuration(new Duration(* __n.getDuration()));
+
+  if (_type == NoteType::SingleNote) {
+    setPitch(new Pitch(* __n.getPitch()));
+  }
+  else if (_type == NoteType::Chord) {
+    auto chord = __n.getChord();
+    for (auto it=chord.begin(); it != chord.end(); it++) {
+      addPitch(new Pitch(*(*it)));
+    }
+  }
+  else if (_type == NoteType::Tuplet) {
+    auto group = __n.getTuplet();
+    for (auto it=group.begin(); it != group.end(); it++) {
+      addPitch(new Pitch(*(*it)));
+    }
+  }
+  setProperty(new Property(* __n.getProperty()));
+}
+
+Note::Note(const Note&& __n) {
+  _type = __n.getType();
+  setDuration(new Duration(* __n.getDuration()));
+
+  if (_type == NoteType::SingleNote) {
+    setPitch(new Pitch(* __n.getPitch()));
+  }
+  else if (_type == NoteType::Chord) {
+    auto chord = __n.getChord();
+    for (auto it=chord.begin(); it != chord.end(); it++) {
+      addPitch(new Pitch(*(*it)));
+    }
+  }
+  else if (_type == NoteType::Tuplet) {
+    auto group = __n.getTuplet();
+    for (auto it=group.begin(); it != group.end(); it++) {
+      addPitch(new Pitch(*(*it)));
+    }
+  }
+  setProperty(new Property(* __n.getProperty()));
 }
 
 Note::~Note() {
-  for (auto it = _pitchPtrLog.begin(); it != _pitchPtrLog.end(); ++it) {
-    HB_DELETE (*it);
+  clearPitch();
+  if (_duration) {
+    delete _duration;
   }
-  for (auto it = _durationPtrLog.begin(); it != _durationPtrLog.end(); ++it) {
-    HB_DELETE (*it);
+  if (_property) {
+    delete _property;
   }
 }
 
-void Note::setTied() {
-  _tied = true;
-}
+Note& Note::operator=(const Note& __n) {
+  if (this != &__n) {
+    _type = __n.getType();
+    setDuration(new Duration(* __n.getDuration()));
 
-void Note::setUntied() {
-  _tied = false;
-}
-
-void Note::addProperty(const std::string& iFreeTxt) {
-  _noteProperties.push_back(iFreeTxt);
-}
-
-void Note::deleteProperty(const std::string& iFreeTxt) {
-  std::vector<std::string> new_property;
-  for (auto it = _noteProperties.begin();
-            it != _noteProperties.end(); ++it) {
-    if ((*it) != iFreeTxt) {
-      new_property.push_back((*it));
+    if (_type == NoteType::SingleNote) {
+      setPitch(new Pitch(* __n.getPitch()));
     }
-  }
-  _noteProperties = new_property;
-}
-
-void Note::clearProperty() {
-  _noteProperties.clear();
-}
-
-bool Note::hasProperty() {
-  return _noteProperties.empty();
-}
-
-NoteType Note::getType() const {
-  return _type;
-}
-
-char Note::getTypeChar() const {
-  if (_type == NoteType::SingleNote) {
-    return 'N';
-  }
-  else if (_type == NoteType::Chord) {
-    return 'C';
-  }
-  else if (_type == NoteType::Xuplet) {
-    return 'X';
-  }
-  else if (_type == NoteType::Rest) {
-    return 'R';
-  }
-  else if (_type == NoteType::Silence) {
-    return 'S';
-  }
-  else {
-    return '0';
-  }
-}
-
-std::string Note::getTypeStr() const {
-  if (_type == NoteType::SingleNote) {
-    return "N";
-  }
-  else if (_type == NoteType::Chord) {
-    return "C";
-  }
-  else if (_type == NoteType::Xuplet) {
-    return "X";
-  }
-  else if (_type == NoteType::Rest) {
-    return "R";
-  }
-  else if (_type == NoteType::Silence) {
-    return "S";
-  }
-  else {
-    return "0";
-  }
-}
-
-bool Note::isType(NoteType iType) const {
-  if (iType == _type) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-bool Note::isSingle() const {
-  return isType(NoteType::SingleNote);
-}
-
-bool Note::isChord() const {
-  return isType(NoteType::Chord);
-}
-
-bool Note::isRest() const {
-  return isType(NoteType::Rest);
-}
-
-bool Note::isSilent() const {
-  return isType(NoteType::Silence);
-}
-
-bool Note::isTuplet() const {
-  return isType(NoteType::Xuplet);
-}
-
-bool Note::isValid() const {
-  if (!_pitch.empty()) {
-    for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
-      if ((*it) == nullptr) {
-        return false;
+    else if (_type == NoteType::Chord) {
+      auto chord = __n.getChord();
+      for (auto it=chord.begin(); it != chord.end(); it++) {
+        addPitch(new Pitch(*(*it)));
       }
     }
-  }
-  if ((_type == NoteType::Silence || _type == NoteType::Rest)
-            && _pitch.empty()) {
-    return true;
-  }
-  if (_type == NoteType::SingleNote && _pitch.size() == 1) {
-    return true;
-  }
-  if ((_type == NoteType::Chord || _type == NoteType::Xuplet)
-           && _pitch.size() > 1) {
-    return true;
-  }
-  return false;
-}
-
-const Duration Note::getDuration() const {
-  const Duration d (*_duration);
-  return d;
-}
-
-std::string Note::getPitch() const {
-  if (_type == NoteType::Rest) {
-    return "R";
-  }
-  else if (_type == NoteType::Silence) {
-    return "S";
-  }
-  else {
-    if (_pitch.empty()) {
-      HB_THROW(std::runtime_error, "Pitch list is empty!");
-      return "";
-    }
-    return _pitch.front()->toString();
-  }
-}
-
-std::vector<std::string> Note::getChord() const {
-  if (_type == NoteType::Rest || _type == NoteType::Silence) {
-    return { };
-  }
-  else {
-    if (_pitch.empty()) {
-      HB_THROW(std::runtime_error, "Pitch list is empty!");
-      return { };
-    }
-    std::vector<std::string> ret;
-    for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
-      ret.push_back((*it)->toString());
-    }
-    return ret;
-  }
-}
-
-std::vector<std::string> Note::getTuplet() const {
-  return getChord();
-}
-
-std::vector<std::string> Note::getProperties() const {
-  std::vector<std::string> ret(_noteProperties);
-  return ret;
-}
-
-void Note::updateNote(void * iGenericPtr) {
-  return ;
-}
-
-std::string Note::toString() const {
-  std::string oString = "(";
-  if (isValid()) {
-    if (isRest()) {
-      oString.append("R ");
-    }
-    else if (isSilent()) {
-      oString.append("S ");
-    }
-    else if (isSingle()) {
-      oString.append(_pitch.front()->toString());
-      oString.append(" ");
-    }
-    else if (isChord()) {
-      for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
-        oString.append((*it)->toString());
-        oString.append("+");
+    else if (_type == NoteType::Tuplet) {
+      auto group = __n.getTuplet();
+      for (auto it=group.begin(); it != group.end(); it++) {
+        addPitch(new Pitch(*(*it)));
       }
-      oString.pop_back();
-      oString.append(" ");
     }
-    else if (isTuplet()) {
-      for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
-        oString.append((*it)->toString());
-        oString.append("-");
-      }
-      oString.pop_back();
-      oString.append(" ");
-    }
-    oString.append(_duration->toString());
-    oString.append(")");
+    setProperty(new Property(* __n.getProperty()));    
   }
-  else {
-    oString = "(Invalid)";
-  }
-  return oString;
-}
-
-void * Note::toStream(const std::string& iStreamType) const {
-  return NULL;
+  return *this;
 }
 
 } // namespace core
