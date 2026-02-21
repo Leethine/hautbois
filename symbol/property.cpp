@@ -40,6 +40,7 @@ void Property::modify(const char* context) {
 
 void * Property::convert(const char* context) {
   // not supported
+  return nullptr;
 }
 
 bool Property::hasValue() const {
@@ -54,6 +55,10 @@ std::string Property::toString() const {
     std::string s;
     return s;
   }
+}
+
+bool Property::operator==(const std::string& s) const {
+  return toString() == s;
 }
 
 const PropertyRaw& Property::raw() const {

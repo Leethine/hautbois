@@ -40,6 +40,8 @@ class Property {
 
   virtual std::string toString() const;
 
+  virtual bool operator==(const std::string& s) const;
+
   virtual const PropertyRaw& raw() const;
 
   virtual PropertyRaw getRaw() const;
