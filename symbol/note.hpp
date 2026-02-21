@@ -86,7 +86,9 @@ class Note {
 
   virtual void updateProperty(const std::string& __context);
 
-  virtual void clearProperty();
+  virtual void setTied();
+
+  virtual void setUntied();
 
   virtual bool hasProperty() const;
 
@@ -112,23 +114,21 @@ class Note {
 
   virtual bool isValid() const;
 
+  virtual bool isTied() const;
+
   virtual const Duration * getDuration() const;
 
   virtual const Pitch * getPitch() const;
 
   virtual const Property * getProperty() const;
 
-  virtual const std::vector<const Pitch *> getChord() const;
-
-  virtual const std::vector<const Pitch *> getTuplet() const;
+  virtual const std::vector<const Pitch *> getPitchGroup() const;
 
   virtual std::string getDurationStr() const;
 
   virtual std::string getPitchStr() const;
 
-  virtual std::vector<std::string> getChordStr() const;
-
-  virtual std::vector<std::string> getTupletStr() const;
+  virtual std::vector<std::string> getPitchGroupStr() const;
 
   virtual std::string getPropertyStr() const;
 

@@ -211,14 +211,8 @@ Note::Note(const Note& __n) {
   if (_type == NoteType::SingleNote) {
     setPitch(new Pitch(* __n.getPitch()));
   }
-  else if (_type == NoteType::Chord) {
-    auto chord = __n.getChord();
-    for (auto it=chord.begin(); it != chord.end(); it++) {
-      addPitch(new Pitch(*(*it)));
-    }
-  }
-  else if (_type == NoteType::Tuplet) {
-    auto group = __n.getTuplet();
+  else if (_type == NoteType::Chord || _type == NoteType::Tuplet) {
+    auto group = __n.getPitchGroup();
     for (auto it=group.begin(); it != group.end(); it++) {
       addPitch(new Pitch(*(*it)));
     }
@@ -233,14 +227,8 @@ Note::Note(const Note&& __n) {
   if (_type == NoteType::SingleNote) {
     setPitch(new Pitch(* __n.getPitch()));
   }
-  else if (_type == NoteType::Chord) {
-    auto chord = __n.getChord();
-    for (auto it=chord.begin(); it != chord.end(); it++) {
-      addPitch(new Pitch(*(*it)));
-    }
-  }
-  else if (_type == NoteType::Tuplet) {
-    auto group = __n.getTuplet();
+  else if (_type == NoteType::Chord || _type == NoteType::Tuplet) {
+    auto group = __n.getPitchGroup();
     for (auto it=group.begin(); it != group.end(); it++) {
       addPitch(new Pitch(*(*it)));
     }
@@ -266,14 +254,8 @@ Note& Note::operator=(const Note& __n) {
     if (_type == NoteType::SingleNote) {
       setPitch(new Pitch(* __n.getPitch()));
     }
-    else if (_type == NoteType::Chord) {
-      auto chord = __n.getChord();
-      for (auto it=chord.begin(); it != chord.end(); it++) {
-        addPitch(new Pitch(*(*it)));
-      }
-    }
-    else if (_type == NoteType::Tuplet) {
-      auto group = __n.getTuplet();
+    else if (_type == NoteType::Chord || _type == NoteType::Tuplet) {
+      auto group = __n.getPitchGroup();
       for (auto it=group.begin(); it != group.end(); it++) {
         addPitch(new Pitch(*(*it)));
       }
@@ -281,6 +263,269 @@ Note& Note::operator=(const Note& __n) {
     setProperty(new Property(* __n.getProperty()));    
   }
   return *this;
+}
+
+void Note::updateDuration(const std::string& __context) {
+  // not supported
+}
+  
+void Note::updatePitch(const std::string& __context) {
+  // not supported
+}
+
+void Note::updateProperty(const std::string& __context) {
+  // not supported
+}
+
+void Note::setTied() {
+  _tied = true;
+}
+
+void Note::setUntied() {
+  _tied = false;
+}
+
+bool Note::hasProperty() const {
+  if (_property) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+int Note::pitchSize() const {
+  int s = (int) _pitch.size();
+  return s;
+}
+
+NoteType Note::getType() const {
+  return _type;
+}
+
+char Note::getTypeChar() const {
+  if (_type == NoteType::SingleNote) {
+    return 'N';
+  }
+  else if (_type == NoteType::Chord) {
+    return 'C';
+  }
+  else if (_type == NoteType::Tuplet) {
+    return 'X';
+  }
+  else if (_type == NoteType::Rest) {
+    return 'R';
+  }
+  else if (_type == NoteType::Silence) {
+    return 'S';
+  }
+  else {
+    return '0';
+  }
+}
+
+std::string Note::getTypeStr() const {
+  if (_type == NoteType::SingleNote) {
+    return "N";
+  }
+  else if (_type == NoteType::Chord) {
+    return "C";
+  }
+  else if (_type == NoteType::Tuplet) {
+    return "T";
+  }
+  else if (_type == NoteType::Rest) {
+    return "R";
+  }
+  else if (_type == NoteType::Silence) {
+    return "S";
+  }
+  else {
+    return "0";
+  }
+}
+
+bool Note::isType(NoteType iType) const {
+  if (iType == _type) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool Note::isSingle() const {
+  return isType(NoteType::SingleNote);
+}
+
+bool Note::isChord() const {
+  return isType(NoteType::Chord);
+}
+
+bool Note::isRest() const {
+  return isType(NoteType::Rest);
+}
+
+bool Note::isSilent() const {
+  return isType(NoteType::Silence);
+}
+
+bool Note::isTuplet() const {
+  return isType(NoteType::Tuplet);
+}
+
+bool Note::isValid() const {
+  if (_duration == nullptr) {
+    return false;
+  }
+
+  if (!_pitch.empty()) {
+    for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
+      if ((*it) == nullptr) {
+        return false;
+      }
+    }
+  }
+  if ( (_type == NoteType::Silence || _type == NoteType::Rest)
+        && (_pitch.empty() || _pitch.size() == 1) ) {
+    return true;
+  }
+  if (_type == NoteType::SingleNote && _pitch.size() == 1) {
+    return true;
+  }
+  if ((_type == NoteType::Chord || _type == NoteType::Tuplet)
+           && _pitch.size() > 1) {
+    return true;
+  }
+  return false;
+}
+
+bool Note::isTied() const {
+  return _tied;
+}
+
+const Duration * Note::getDuration() const {
+  if (_duration) {
+    return _duration;
+  }
+  else {
+    return nullptr;
+  }
+}
+
+const Pitch * Note::getPitch() const {
+  if (_pitch.size() > 1 && _pitch[0]) {
+    return _pitch[0];
+  }
+  else {
+    return nullptr;
+  }
+}
+
+const Property * Note::getProperty() const {
+  if (_property) {
+    return _property;
+  }
+  else {
+    return nullptr;
+  }
+}
+
+const std::vector<const Pitch *> Note::getPitchGroup() const {
+  std::vector<const Pitch *> const_pitch;
+  for (auto it=_pitch.begin(); it != _pitch.end(); it++) {
+    const Pitch * p = (*it);
+    const_pitch.push_back(p);
+  }
+  return const_pitch;
+}
+
+std::string Note::getDurationStr() const {
+  return _duration->toString();
+}
+
+std::string Note::getPitchStr() const {
+  if (isRest()) {
+    return "R";
+  }
+  else if (isSilent()) {
+    return "S";
+  }
+  else {
+    if (_pitch.size() >= 1) {
+      _pitch[0]->toString();
+    }
+    else {
+      throw std::runtime_error("_pitch.size() < 1");
+    }
+  }
+}
+
+std::vector<std::string> Note::getPitchGroupStr() const {
+  std::vector<std::string> res;
+  if (isChord() || isTuplet()) {
+    if (_pitch.size() < 2) {
+      throw std::runtime_error("_pitch.size() < 2");
+    }
+    for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
+      res.push_back((*it)->toString());
+    }
+  }
+  else {
+    res.push_back(getPitchStr());
+  }
+  return res;
+}
+
+std::string Note::getPropertyStr() const {
+  std::string s;
+  if (hasProperty() && _property) {
+    s = _property->toString();
+  }
+  return s;
+}
+
+std::string Note::toString() const {
+  std::string oString = "(";
+  if (isValid()) {
+    if (isRest()) {
+      oString.append("R ");
+    }
+    else if (isSilent()) {
+      oString.append("S ");
+    }
+    else if (isSingle()) {
+      oString.append(_pitch.front()->toString());
+      oString.append(" ");
+    }
+    else if (isChord()) {
+      for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
+        oString.append((*it)->toString());
+        oString.append("+");
+      }
+      oString.pop_back();
+      oString.append(" ");
+    }
+    else if (isTuplet()) {
+      for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
+        oString.append((*it)->toString());
+        oString.append("-");
+      }
+      oString.pop_back();
+      oString.append(" ");
+    }
+    oString.append(_duration->toString());
+    oString.append(")");
+  }
+  else {
+    oString = "(Invalid)";
+  }
+  return oString;
+}
+
+void * Note::toStream(const std::string& __context, void * __ostream) const {
+  // not supported
+  return nullptr;
 }
 
 } // namespace core
