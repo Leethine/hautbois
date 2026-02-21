@@ -16,11 +16,14 @@ test : libHbCore.a
 clean :
 	rm unittest_* *.o *.a
 
-libHbCore.a : duration.o pitch.o
-	ar cr libHbCore.a duration.o pitch.o
+libHbCore.a : duration.o pitch.o property.o
+	ar cr libHbCore.a duration.o pitch.o property.o
 
 duration.o : duration.cpp duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
 
 pitch.o : pitch.cpp pitch.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) pitch.cpp
+
+property.o : property.cpp property.hpp
+	$(CC) $(CCFLAG) -c $(INC_LIBRARY) property.cpp
