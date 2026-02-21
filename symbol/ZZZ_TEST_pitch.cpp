@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE DurationSymbolTest
+#define BOOST_TEST_MODULE PitchSymbolTest
 #include <boost/test/included/unit_test.hpp>
 #include <string>
 
@@ -6,7 +6,7 @@
 using namespace hautbois;
 using namespace core;
 
-BOOST_AUTO_TEST_SUITE(DurationTestSuite)
+BOOST_AUTO_TEST_SUITE(PitchTestSuite)
 
 BOOST_AUTO_TEST_CASE(test_constructor) {
   Pitch p1('D', 's', 4);
