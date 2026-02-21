@@ -130,6 +130,16 @@ std::tuple<std::string, std::string, std::string>
   std::reverse(accidental.begin(), accidental.end());
   accidental.pop_back();
 
+  if (accidental == "bb") {
+    accidental = "d";
+  }
+  else if (accidental == "ss") {
+    accidental = "x";
+  }
+  else if (accidental == "#") {
+    accidental = "s";
+  }
+
   return { name, accidental, octave };
 }
 
@@ -203,7 +213,6 @@ Note::Note(const int& __num, const int& __denom, const std::string& __pitch) :
   _duration = new Duration(__num, __denom);
 }
 
-
 Note::Note(const Note& __n) {
   _type = __n.getType();
   setDuration(new Duration(* __n.getDuration()));
@@ -274,7 +283,11 @@ void Note::updatePitch(const std::string& __context) {
 }
 
 void Note::updateProperty(const std::string& __context) {
-  // not supported
+  delete _property;
+  _property = nullptr;
+  if (!__context.empty()) {
+    _property = new Property(__context);
+  }
 }
 
 void Note::setTied() {
@@ -453,7 +466,7 @@ std::string Note::getPitchStr() const {
   }
   else {
     if (_pitch.size() >= 1) {
-      _pitch[0]->toString();
+      return _pitch[0]->toString();
     }
     else {
       throw std::runtime_error("_pitch.size() < 1");

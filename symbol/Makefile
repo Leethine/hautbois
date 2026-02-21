@@ -5,7 +5,6 @@ LINK_LIBRARY = -lboost_unit_test_framework -lboost_serialization
 INC_LIBRARY  = -I ..
 
 all : libHbCore.a
-	rm *.o
 
 test : libHbCore.a
 	$(CC) $(CCFLAG) ZZZ_TEST_duration.cpp libHbCore.a $(LINK_LIBRARY) $(INC_LIBRARY) -o unittest_duration
@@ -16,8 +15,8 @@ test : libHbCore.a
 clean :
 	rm unittest_* *.o *.a
 
-libHbCore.a : duration.o pitch.o property.o
-	ar cr libHbCore.a duration.o pitch.o property.o
+libHbCore.a : duration.o pitch.o property.o note.o
+	ar cr libHbCore.a duration.o pitch.o property.o note.o
 
 duration.o : duration.cpp duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
@@ -27,3 +26,6 @@ pitch.o : pitch.cpp pitch.hpp
 
 property.o : property.cpp property.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) property.cpp
+
+note.o : note.cpp note.hpp
+	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note.cpp
