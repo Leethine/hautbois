@@ -194,6 +194,10 @@ bool Pitch::operator==(const Pitch& p) const {
       p.getOctaveInt() == getOctaveInt()) {
     return true;
   }
+  else if (p.getName() == getName() && 
+           (getName() == "R" || getName() == "S") ) {
+    return true;
+  }
   else {
     return false;
   }
