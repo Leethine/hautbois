@@ -3,7 +3,6 @@
 #ifndef VOICE_H
 #define VOICE_H
 
-#include <list>
 #include <vector>
 #include <string>
 
@@ -14,54 +13,89 @@ class Duration;
 class Note;
 
 struct TemporaryVoice {
-  int _startAtBar;
-  std::list<Note *> _noteList;
+
+  int _bar;
+
+  std::vector<Note *> _noteList;
+
 };
 
 class Voice {
- private:
-  std::list<Duration *> _meterList;
-  std::list<Note *> _noteList;
-  std::vector<TemporaryVoice> _temporaryVoiceList;
-  Duration * _meter;
-  std::vector<Duration *> _durationPtrLog;
-  std::list<Note *> _notePtrLog;
-  size_t _currentTempVoice = 0;
 
  protected:
-  virtual const Duration * getMeter() const;
-  virtual const std::list<Duration *> getMeterList() const;
-  virtual const Duration * getMeterAtBar(size_t barIndex) const;
-  virtual const std::list<Note *> getNoteList() const;
-  virtual const std::vector<TemporaryVoice> getTVList() const;
-  virtual void setMeter(int iNum, int iDenom);
-  virtual void setMeterAtBar(int iNum, int iDenom, size_t barIndex);
-  virtual void resetNthNote(size_t noteIndex, Note * iNote);
-  virtual void resetNthNoteAtTempVoice(size_t noteIndex, Note * iNote);
-  virtual size_t getCurrentTempVoice() const;
-  virtual void setCurrentTempVoice(const size_t iCurrVoice);
-  virtual bool barCheckMainVoice() const;
-  virtual bool barCheckTempVoice() const;
+
+  Duration * _meter;
+
+  int _currentBar = 0;
+
+  int _currentTV = 0;
+
+  std::vector<Duration *> _meterList;
+
+  std::vector<Note *> _noteList;
+
+  std::vector<TemporaryVoice> _temporaryVoiceList;
+
+  std::vector<Duration *> _durationPtrLog;
+
+  std::vector<Note *> _notePtrLog;
+
+  Voice(const Voice&)=delete;
+
+  Voice(const Voice&&)=delete;
+
+  Voice& operator=(const Voice&)=delete;
+
+  Voice& operator=(const Voice&&)=delete;
 
  public:
+
   Voice();
+
   Voice(int iNum, int iDenom);
-  Voice(const Voice&)=delete;
+
   virtual ~Voice();
 
-  virtual void newBar(int iNum, int iDenom);
-  virtual void newBar();
-  virtual void addNote(const int iNum, const int iDenom,
-                       const std::string& iPitch);
-  virtual void addNotePtr(Note * iNotePtr);
-  virtual void newTempVoice(size_t startIndex);
-  virtual void addNoteAtTempVoice(const int iNum, const int iDenom,
-                                  const std::string& iPitch);
-  virtual void addNotePtrAtTempVoice(Note * iNotePtr);
+  virtual const Duration * getMeter() const;
+
+  virtual const Duration * getMeterAtBar(const int& __bar) const;
+
+  virtual const Note * getNote(const int& __bar, const int& __nth) const;
+
+  virtual const Note * getNoteTV(const int& __bar, const int& __nth, int __voice=0) const;
+
+  virtual void barHasTempVoice(const int& __bar) const;
+
+  virtual int getNbrOfTempVoice(const int& __bar) const;
+
+  virtual bool barCheckMainVoiceThrowExp() const;
+
+  virtual bool barCheckTempVoiceThrowExp() const;
+
   virtual bool barCheck() const;
 
-  const Note * const at(size_t barIndex, size_t noteIndex) const;
-  const Note * const at(size_t noteIndex) const;
+  virtual void copyTo(Voice * __ivoice) const;
+
+  virtual void resetNthNote(const int& __bar, const int& __nth, Note * __note);
+
+  virtual void resetNthNoteTV(const int& __bar, const int& __nth, const int& __voice, Note * __note);
+
+  virtual void newBar(int __num, int __denom);
+
+  virtual void newBar();
+
+  virtual void addNote(const int& __num, const int& __denom,
+                       const std::string& __pitch);
+
+  virtual void addNote(Note * __note);
+
+  virtual void newTempVoice(const int& __bar);
+
+  virtual void addNoteTV(const int& __num, const int& __denom,
+                         const std::string& __pitch);
+
+  virtual void addNoteTV(Note * __note);
+
 };
 
 } // namespace core
