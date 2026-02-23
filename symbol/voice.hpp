@@ -117,6 +117,13 @@ class Voice {
 
   virtual void addNoteTV(Note * __note);
 
+  virtual void deleteBar(const int& __bar);
+
+  virtual void deleteBar();
+
+  virtual void deleteBarTV(const int& __bar, const int& __voice);
+
+  virtual void deleteBarTV();
 };
 
 } // namespace core
