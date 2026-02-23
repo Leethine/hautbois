@@ -55,7 +55,7 @@ class Pitch {
 
   virtual int toIndex() const;
 
-  virtual double toFrequency(const std::string& iTemperament) const;
+  virtual double toFrequency(const std::string& __temperament) const;
 
   virtual void modify(const char * __context);
 

@@ -179,7 +179,7 @@ int Pitch::toIndex() const {
   return idx;
 }
 
-double Pitch::toFrequency(const std::string& iTemperament) const {
+double Pitch::toFrequency(const std::string& __temperament) const {
   // not supported
   return 0.0;
 }
