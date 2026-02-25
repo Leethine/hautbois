@@ -15,8 +15,8 @@ test : libHbCore.a
 clean :
 	rm unittest_* *.o *.a
 
-libHbCore.a : duration.o pitch.o property.o note.o
-	ar cr libHbCore.a duration.o pitch.o property.o note.o
+libHbCore.a : duration.o pitch.o property.o note.o voice.o
+	ar cr libHbCore.a duration.o pitch.o property.o note.o voice.o
 
 duration.o : duration.cpp duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
@@ -29,3 +29,6 @@ property.o : property.cpp property.hpp
 
 note.o : note.cpp note.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note.cpp
+
+voice.o : voice.cpp voice.hpp
+	$(CC) $(CCFLAG) -c $(INC_LIBRARY) voice.cpp

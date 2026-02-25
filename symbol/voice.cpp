@@ -127,7 +127,69 @@ int Voice::getNbrOfTempVoice(const int& __bar) const {
 }
 
 bool Voice::barCheckMainVoiceThrowExp() const {
-  //TODO
+  // Precheck size
+  if (_meterList.size() != _newBarPos.size() && ! _newBarPos.empty()) {
+    throw std::runtime_error("_meterlist,_newBarPos : size mismatch or empty");
+    return false;
+  }
+  else {
+    int last = _newBarPos.back();
+    if (last >= _noteList.size()) {
+      std::out_of_range("Last pos exceed _noteList size (was "
+                        + std::to_string(_noteList.size()) + ")");
+      return false;
+    }
+  }
+  // Precheck nullptr
+  if (_meter == nullptr) {
+    throw std::runtime_error("_meter is nullptr");
+  }
+  
+  // Pointers to be cleaned
+  // d_acc : accumulated duration, d_cmp : duration to be compared with
+  Duration * d_acc = nullptr;
+  Duration * d_cmp = nullptr;
+
+  // Check each meter
+  for (int bar = 0; bar < _newBarPos.size() - 1; bar++) {
+    int pos1 = _newBarPos[bar];
+    int pos2 = _newBarPos[bar+1];
+    int bar_notes = pos2 - pos1;
+    const Duration * meter = _meterList[bar] ? _meterList[bar] : _meter;
+    d_acc = new Duration(1,1);
+    d_cmp = new Duration(1,1);
+    *d_cmp += *meter;
+    for (int n = 0 ; n < bar_notes; n++) {
+      const Duration * d = getNote(bar, n)->getDuration();
+      *d_acc += *d;
+    }
+    if (*d_acc != *d_cmp) {
+      throw std::logic_error("Bar check failed at bar: " + std::to_string(bar));
+      return false;
+    }
+  }
+
+  // check last bar
+  int lastbar    = _newBarPos.size()-1;
+  int lastbarpos = _newBarPos[lastbar];
+  int bar_notes = (_noteList.size() - 1) - lastbarpos;
+  const Duration * meter = _meterList[lastbar] ? _meterList[lastbar] : _meter;
+  d_acc = new Duration(1,1);
+  d_cmp = new Duration(1,1);
+  *d_cmp += *meter;
+  for (int n = 0 ; n < bar_notes; n++) {
+    const Duration * d = getNote(lastbar, n)->getDuration();
+    *d_acc += *d;
+  }
+  if (*d_acc != *d_cmp) {
+    throw std::logic_error("Bar check failed at bar: " + std::to_string(lastbar));
+    return false;
+  }
+
+  // Release resouces
+  delete d_acc;
+  delete d_cmp;
+
   return true;
 }
 
@@ -329,6 +391,10 @@ void Voice::deleteBarTV(const int& __bar, const int& __voice) {
       _temporaryVoiceList.erase(it_rm);
     }
   }
+}
+
+void Voice::deleteBarTV() {
+  deleteBarTV(_currentBar, _currentTV);
 }
 
 void Voice::deleteBarTV(const int& __bar) {
