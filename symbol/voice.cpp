@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
+// #include <utility>
 #include <stdexcept>
 
 namespace hautbois {
@@ -286,6 +288,65 @@ void Voice::addNoteTV(Note * __note) {
     }
   }
   throw std::out_of_range("Missing temporary voice");
+}
+
+void Voice::deleteBar(const int& __bar) {
+  if (__bar < _newBarPos.size() && (__bar + 1) < _newBarPos.size()) {
+    int pos1 = _newBarPos[__bar];
+    int pos2 = _newBarPos[__bar+1];
+    std::vector<Note *> sliced (_noteList.begin(), _noteList.begin() + pos1);
+    std::vector<Note *> sliced_end (_noteList.begin() + pos2, _noteList.end());
+    sliced.insert(sliced.end(), sliced_end.begin(), sliced_end.end());
+    _noteList = sliced;
+  }
+  else if (__bar < _newBarPos.size()) {
+    int pos = _newBarPos[__bar];
+    std::vector<Note *> sliced (_noteList.begin(), _noteList.begin() + pos);
+    _noteList = sliced;
+  }
+  else {
+    throw std::out_of_range("Bar no. " + std::to_string(__bar));
+  }
+
+  deleteBarTV(__bar);
+}
+
+void Voice::deleteBar() {
+  deleteBar(_currentBar);
+}
+
+void Voice::deleteBarTV(const int& __bar, const int& __voice) {
+  if (barHasTempVoice(__bar) && __voice < getNbrOfTempVoice(__bar)) {
+    std::vector<TemporaryVoice>::iterator it_rm = _temporaryVoiceList.end();
+    for (auto it = _temporaryVoiceList.begin();
+              it != _temporaryVoiceList.end(); it++) {
+      if (it->_bar == __bar && it->_voice == __voice) {
+        it_rm = it;
+        break;
+      }
+    }
+    if (it_rm != _temporaryVoiceList.end()) {
+      _temporaryVoiceList.erase(it_rm);
+    }
+  }
+}
+
+void Voice::deleteBarTV(const int& __bar) {
+  if (barHasTempVoice(__bar)) {
+    for (int i = 0; i < getNbrOfTempVoice(__bar); i++) {
+      std::vector<TemporaryVoice>::iterator it_rm = _temporaryVoiceList.end();
+      for (auto it = _temporaryVoiceList.begin();
+                it != _temporaryVoiceList.end(); it++) {
+        if (it->_bar == __bar) {
+          it_rm = it;
+          break;
+        }
+      }
+      if (it_rm != _temporaryVoiceList.end()) {
+        _temporaryVoiceList.erase(it_rm);
+      }
+    }
+  }
 }
 
 } // namespace core
