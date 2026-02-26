@@ -63,9 +63,6 @@ class Voice {
   //! The meter of this voice
   Duration * _meter;
 
-  //! 4/4 meter
-  Duration * _meterDefault;
-
   //! The meter of each bar within the voice
   std::vector<Duration *> _meterList;
 

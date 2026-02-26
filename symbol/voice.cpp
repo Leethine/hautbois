@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-// #include <utility>
 #include <stdexcept>
 
 namespace hautbois {
@@ -24,22 +23,19 @@ void Voice::logNotePtr(Note * __note) {
 }
 
 Voice::Voice() : 
-_currentBar (0), _currentTV (0), _newBarPos ({0}),
-_meter (nullptr), _meterDefault (nullptr),
-_meterList ({}), _noteList ({}), _durationPtrLog ({}),
+_currentBar (0), _currentTV (0), _newBarPos ({0}), _meter (nullptr),
+_meterList ({ nullptr }), _noteList ({}), _durationPtrLog ({}),
 _notePtrLog ({}), _temporaryVoiceList ({})
 {
   Duration * d = new Duration(4,4);
   logDurationPtr(d);
   _meter = d;
-  _meterDefault = d;
 }
 
 Voice::Voice(const int& __num, const int& __denom): Voice() {
   Duration * d = new Duration(__num, __denom);
   logDurationPtr(d);
   _meter = d;
-  _meterDefault = d;
 }
 
 Voice::~Voice() {
@@ -56,34 +52,57 @@ const Duration * Voice::getMeter() const {
     return _meter;
   }
   else {
-    return _meterDefault;
+    throw std::runtime_error("_meter is nullptr");
+    return nullptr;
   }
 }
 
 const Duration * Voice::getMeter(const int& __bar) const {
   if (_meterList.empty()) {
-    return _meterDefault;
+    throw std::runtime_error("_meterList was empty");
+    return nullptr;
   }
-  else if (__bar < _meterList.size()) {
-    return _meterList[__bar];
+  if (_meter == nullptr) {
+    throw std::runtime_error("_meter is nullptr");
+    return nullptr;
+  }
+
+  // Get the meter at given bar number
+  if (__bar < _meterList.size()) {
+    if (_meterList[__bar]) {
+      return _meterList[__bar];
+    }
   }
   else {
     return _meterList.back();
+    if (_meterList.back()) {
+      return _meterList.back();
+    }
   }
+
+  return _meter;
 }
 
 const Note * Voice::getNote(const int& __bar, const int& __nth) const {
   if (__bar < _newBarPos.size()) {
     int idx = _newBarPos[__bar] + __nth;
-    if (idx < _noteList.size()) {
+    if (idx < _noteList.size() && 
+        // Check if Note exceeds current Bar
+        ( __bar + 1 < _newBarPos.size() && idx < _newBarPos[__bar + 1] 
+        || __bar + 1 == _newBarPos.size() ) ) {
       return _noteList[idx];
     }
     else {
-      throw std::out_of_range(" Note no. " + std::to_string(__nth));
+      std::string total_system = "?";
+      if (__bar + 1 < _newBarPos.size()) {
+        total_system = std::to_string(_newBarPos[__bar + 1] - _newBarPos[__bar]);
+      }
+      throw std::out_of_range("Bar no. " + std::to_string(__bar) + " Note no. " +
+                              std::to_string(__nth) + " (bar size " + total_system + ")");
     }
   }
   else {
-    throw std::out_of_range("Bar no. "  + std::to_string(__bar));
+    throw std::out_of_range("Bar no. " + std::to_string(__bar));
   }
 }
 
@@ -155,7 +174,7 @@ bool Voice::barCheckMainVoiceThrowExp() const {
     int pos1 = _newBarPos[bar];
     int pos2 = _newBarPos[bar+1];
     int bar_notes = pos2 - pos1;
-    const Duration * meter = _meterList[bar] ? _meterList[bar] : _meter;
+    const Duration * meter = getMeter(bar);
     d_acc = new Duration(1,1);
     d_cmp = new Duration(1,1);
     *d_cmp += *meter;
@@ -164,7 +183,7 @@ bool Voice::barCheckMainVoiceThrowExp() const {
       *d_acc += *d;
     }
     if (*d_acc != *d_cmp) {
-      throw std::logic_error("Bar check failed at bar: " + std::to_string(bar));
+      throw std::logic_error("Bar check failed at bar no. : " + std::to_string(bar));
       return false;
     }
   }
@@ -172,8 +191,8 @@ bool Voice::barCheckMainVoiceThrowExp() const {
   // check last bar
   int lastbar    = _newBarPos.size()-1;
   int lastbarpos = _newBarPos[lastbar];
-  int bar_notes = (_noteList.size() - 1) - lastbarpos;
-  const Duration * meter = _meterList[lastbar] ? _meterList[lastbar] : _meter;
+  int bar_notes = _noteList.size() - lastbarpos;
+  const Duration * meter = getMeter(lastbar);
   d_acc = new Duration(1,1);
   d_cmp = new Duration(1,1);
   *d_cmp += *meter;
@@ -182,7 +201,7 @@ bool Voice::barCheckMainVoiceThrowExp() const {
     *d_acc += *d;
   }
   if (*d_acc != *d_cmp) {
-    throw std::logic_error("Bar check failed at bar: " + std::to_string(lastbar));
+    throw std::logic_error("Bar check failed at bar no. : " + std::to_string(lastbar));
     return false;
   }
 
@@ -217,7 +236,7 @@ bool Voice::barCheckTempVoiceThrowExp() const {
     if (tv._bar < _meterList.size()) {
       Duration * d_acc = new Duration(1,1);
       Duration * d_cmp = new Duration(1,1);
-      const Duration * meter = _meterList[tv._bar] ? _meterList[tv._bar] : _meter;
+      const Duration * meter = getMeter(tv._bar);
       * d_cmp += * _meter;
       for (const Note * n : _noteList) {
         const Duration * d = n->getDuration();
@@ -261,7 +280,7 @@ void Voice::copyTo(Voice * __ivoice) const {
         Note * new_note = new Note(* _noteList[i]);
         __ivoice->addNote(new_note);
       }
-      const Duration * meter = _meterList[bar] ? _meterList[bar] : _meter;
+      const Duration * meter = getMeter(bar);
       __ivoice->newBar(meter->getNum(), meter->getDenom());
     }
     // Add temp voice
@@ -357,14 +376,14 @@ void Voice::newBar(const int& __num, const int& __denom) {
   }
   _currentBar++;
   _currentTV = 0;
-  _newBarPos.push_back(_noteList.size()+1);
+  _newBarPos.push_back(_noteList.size());
 }
 
 void Voice::newBar() {
   _meterList.push_back(_meter);
   _currentBar++;
   _currentTV = 0;
-  _newBarPos.push_back(_noteList.size()+1);
+  _newBarPos.push_back(_noteList.size());
 }
 
 void Voice::newTempVoice(const int& __bar) {
@@ -442,7 +461,7 @@ void Voice::deleteBar(const int& __bar) {
 }
 
 void Voice::deleteBar() {
-  deleteBar(_currentBar);
+  deleteBar(_currentBar--);
 }
 
 void Voice::deleteBarTV(const int& __bar, const int& __voice) {
@@ -462,7 +481,7 @@ void Voice::deleteBarTV(const int& __bar, const int& __voice) {
 }
 
 void Voice::deleteBarTV() {
-  deleteBarTV(_currentBar, _currentTV);
+  deleteBarTV(_currentBar);
 }
 
 void Voice::deleteBarTV(const int& __bar) {
