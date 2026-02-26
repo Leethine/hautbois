@@ -194,7 +194,51 @@ bool Voice::barCheckMainVoiceThrowExp() const {
 }
 
 bool Voice::barCheckTempVoiceThrowExp() const {
-  //TODO
+  // Precheck size
+  if (_meterList.size() != _newBarPos.size() && ! _newBarPos.empty()) {
+    throw std::runtime_error("_meterlist,_newBarPos : size mismatch or empty");
+    return false;
+  }
+  else {
+    int last = _newBarPos.back();
+    if (last >= _noteList.size()) {
+      std::out_of_range("Last pos exceeds _noteList size (was "
+                        + std::to_string(_noteList.size()) + ")");
+      return false;
+    }
+  }
+  // Precheck nullptr
+  if (_meter == nullptr) {
+    throw std::runtime_error("_meter is nullptr");
+  }
+
+  // Check the voices
+  for (const TemporaryVoice& tv: _temporaryVoiceList) {
+    if (tv._bar < _meterList.size()) {
+      Duration * d_acc = new Duration(1,1);
+      Duration * d_cmp = new Duration(1,1);
+      const Duration * meter = _meterList[tv._bar] ? _meterList[tv._bar] : _meter;
+      * d_cmp += * _meter;
+      for (const Note * n : _noteList) {
+        const Duration * d = n->getDuration();
+        * d_acc += * d;
+      }
+      if (* d_cmp != * d_acc) {
+        throw std::logic_error("Bar check failed at bar no : " + std::to_string(tv._bar) +
+                               " temp voice no. " + std::to_string(tv._voice));
+        return false;
+      }
+      delete d_acc;
+      delete d_cmp;
+    }
+    else {
+      std::out_of_range("Bar no. + " + std::to_string(tv._bar) +
+                        "TempVoice no. " + std::to_string(tv._voice) +
+                        " exceed _meterList");
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -204,7 +248,31 @@ bool Voice::barCheck() const {
 }
 
 void Voice::copyTo(Voice * __ivoice) const {
-  //TODO
+  if (__ivoice) {
+    delete __ivoice;
+  }
+  
+  if (barCheck()) {
+    __ivoice = new Voice(_meter->getNum(), _meter->getDenom());
+    // Add notes from main voice
+    for (int bar=0; bar<_newBarPos.size(); bar++) {
+      int pos = _newBarPos[bar];
+      for (int i = 0; i < pos; i++) {
+        Note * new_note = new Note(* _noteList[i]);
+        __ivoice->addNote(new_note);
+      }
+      const Duration * meter = _meterList[bar] ? _meterList[bar] : _meter;
+      __ivoice->newBar(meter->getNum(), meter->getDenom());
+    }
+    // Add temp voice
+    for (const TemporaryVoice& tv : _temporaryVoiceList) {
+      __ivoice->newTempVoice(tv._bar);
+      for (const Note * n : _noteList) {
+        Note * new_note = new Note(* n);
+        __ivoice->addNoteTV(new_note);
+      }
+    }
+  }
 }
 
 int Voice::getCurrentBar() const {
