@@ -13,7 +13,7 @@ test : libHbCore.a
 	$(CC) $(CCFLAG) ZZZ_TEST_note.cpp     libHbCore.a $(LINK_LIBRARY) $(INC_LIBRARY) -o unittest_note
 
 clean :
-	rm unittest_* *.o *.a
+	rm -f unittest_* *.o *.a
 
 libHbCore.a : duration.o pitch.o property.o note.o voice.o
 	ar cr libHbCore.a duration.o pitch.o property.o note.o voice.o
