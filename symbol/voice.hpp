@@ -1,3 +1,15 @@
+/* 
+  class Voice
+  Usage:
+    Voice v();
+    // Important! Always add new bar before working. 
+    v.newBar();
+    v.addNote() ...
+    v.newTempVoice();
+    v.addNoteTV() ...
+ */
+
+
 #pragma once
 
 #ifndef VOICE_H
@@ -118,6 +130,15 @@ class Voice {
 
   //! Get meter of the N-th bar (starting from 0)
   virtual const Duration * getMeter(const int& __bar) const;
+
+  //! Get total number of bars
+  virtual int getTotalBars() const;
+
+  //! Get the size (number of notes) of the Bar
+  virtual int getBarSize(const int& __bar) const;
+
+  //! Get the size (number of notes) of the Bar and Voice
+  virtual int getBarSize(const int& __bar, const int& __voice) const;
 
   //! Get the note at the N-th bar and N-th system (both starting from 0)
   virtual const Note * getNote(const int& __bar, const int& __nth) const;

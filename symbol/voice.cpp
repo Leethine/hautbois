@@ -77,25 +77,42 @@ const Duration * Voice::getMeter(const int& __bar) const {
   }
 }
 
+int Voice::getTotalBars() const {
+  return _newBarPos.size();
+}
+
+int Voice::getBarSize(const int& __bar) const {
+  if (__bar < _newBarPos.size() && __bar + 1 < _newBarPos.size()) {
+    return _newBarPos[__bar+1] - _newBarPos[__bar];
+  }
+  else if (__bar < _newBarPos.size()) {
+    return _newBarPos.size() - _newBarPos[__bar];
+  }
+  else {
+    std::out_of_range("Bar no. " + std::to_string(__bar));
+  }
+}
+
+int Voice::getBarSize(const int& __bar, const int& __voice) const {
+  for (const TemporaryVoice& tv : _temporaryVoiceList) {
+    if (tv._bar == __bar && tv._voice == __voice) {
+      return tv._noteList.size();
+    }
+  }
+  throw std::out_of_range("Bar no. " + std::to_string(__bar) +
+                          " Voice no. " + std::to_string(__voice));
+}
+
 const Note * Voice::getNote(const int& __bar, const int& __nth) const {
   if (__bar < _newBarPos.size()) {
     int idx = _newBarPos[__bar] + __nth;
-    if (idx < _noteList.size() && 
-        // Check if Note index exceeds the number of notes in the Bar
-        (  __bar + 1 < _newBarPos.size() && idx < _newBarPos[__bar + 1] 
-        || __bar + 1 == _newBarPos.size() && idx < _noteList.size()) ) {
+    if (idx < _noteList.size() && __nth < getBarSize(__bar)) {
       return _noteList[idx];
     }
     else {
-      std::string nbr_notes = "?";
-      if (__bar + 1 < _newBarPos.size()) {
-        nbr_notes = std::to_string(_newBarPos[__bar + 1] - _newBarPos[__bar]);
-      }
-      else {
-        nbr_notes = std::to_string(_noteList.size() - _newBarPos[__bar]);
-      }
       throw std::out_of_range("Bar no. " + std::to_string(__bar) + " Note no. " +
-                              std::to_string(__nth) + " (bar size " + nbr_notes + ")");
+                              std::to_string(__nth) + " (bar size " + 
+                              std::to_string(getBarSize(__bar)) + ")");
     }
   }
   else {
@@ -163,41 +180,19 @@ bool Voice::barCheck() const {
   }
 
   // Check each meter
-  for (int bar = 0; bar < _newBarPos.size() - 1; bar++) {
-    int pos1 = _newBarPos[bar];
-    int pos2 = _newBarPos[bar+1];
-    int bar_notes = pos2 - pos1;
+  for (int bar = 0; bar < _newBarPos.size(); bar++) {
     const Duration * meter = getMeter(bar);
     // d_acc : accumulated duration, d_cmp : duration to be compared with
     Duration d_acc (1,1);
     Duration d_cmp (1,1);
     d_cmp += * meter;
+    const int bar_notes = getBarSize(bar);
     for (int n = 0 ; n < bar_notes; n++) {
       const Duration * d = getNote(bar, n)->getDuration();
       d_acc += *d ;
     }
     if (d_acc != d_cmp) {
-      throw std::logic_error("Bar check failed at bar no. : " + std::to_string(bar));
-      return false;
-    }
-  }
-
-  // check last bar
-  {
-    int lastbar    = _newBarPos.size()-1;
-    int lastbarpos = _newBarPos[lastbar];
-    int bar_notes = _noteList.size() - lastbarpos;
-    const Duration * meter = getMeter(lastbar);
-    Duration d_acc (1,1);
-    Duration d_cmp (1,1);
-    d_cmp += * meter;
-    for (int n = 0 ; n < bar_notes; n++) {
-      const Duration * d = getNote(lastbar, n)->getDuration();
-      d_acc += * d;
-    }
-    if (d_acc != d_cmp) {
-      throw std::logic_error("Bar check failed at bar no. : " +
-                              std::to_string(lastbar));
+      throw std::logic_error("Bar check failed at Bar no. : " + std::to_string(bar));
       return false;
     }
   }
@@ -239,11 +234,10 @@ void Voice::copyTo(Voice * __ivoice) const {
     __ivoice = new Voice(_meter->getNum(), _meter->getDenom());
 
     // Copy notes from main voice
-    //TODO to be completed
-    // Copy temp voice
-    for (const TemporaryVoice& tv : _temporaryVoiceList) {
       //TODO to be completed
-    }
+
+    // Copy temp voice
+      //TODO to be completed
   }
 }
 
@@ -272,7 +266,8 @@ void Voice::resetNthNote(const int& __bar, const int& __nth, Note * __note) {
       }
     }
     else {
-      throw std::out_of_range(" Note no. " + std::to_string(__nth));
+      throw std::out_of_range("Bar no. "  + std::to_string(__bar) +
+                              " Note no. " + std::to_string(__nth));
     }
   }
   else {
@@ -387,18 +382,13 @@ void Voice::addNoteTV(Note * __note) {
 }
 
 void Voice::deleteBar(const int& __bar) {
-  if (__bar < _newBarPos.size() && (__bar + 1) < _newBarPos.size()) {
-    int pos1 = _newBarPos[__bar];
-    int pos2 = _newBarPos[__bar+1];
-    std::vector<Note *> sliced (_noteList.begin(), _noteList.begin() + pos1);
-    std::vector<Note *> sliced_end (_noteList.begin() + pos2, _noteList.end());
-    sliced.insert(sliced.end(), sliced_end.begin(), sliced_end.end());
-    _noteList = sliced;
-  }
-  else if (__bar < _newBarPos.size()) {
-    int pos = _newBarPos[__bar];
-    std::vector<Note *> sliced (_noteList.begin(), _noteList.begin() + pos);
-    _noteList = sliced;
+  if (__bar < _newBarPos.size()) {
+    const int start_pos = _newBarPos[__bar];
+    const int n_of_notes = getBarSize(__bar);
+    std::vector<Note *> sliced_head (_noteList.begin(), _noteList.begin() + start_pos);
+    std::vector<Note *> sliced_tail (_noteList.begin() + start_pos + n_of_notes, _noteList.end());
+    _noteList = sliced_head;
+    _noteList.insert(_noteList.end(), sliced_tail.begin(), sliced_tail.end());
   }
   else {
     throw std::out_of_range("Bar no. " + std::to_string(__bar));
