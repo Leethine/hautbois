@@ -142,16 +142,6 @@ class Voice {
    */
   virtual int getNbrOfTempVoice(const int& __bar) const;
 
-  //! barCheckMainVoiceThrowExp
-  /*! Run bar check on main voice, throw std::logic_error exception
-   */
-  virtual bool barCheckMainVoiceThrowExp() const;
-
-  //! barCheckTempVoiceThrowExp
-  /*! Run bar check on temporary voices, throw std::logic_error exception
-   */
-  virtual bool barCheckTempVoiceThrowExp() const;
-
   //! barCheck
   /*! Run bar check on both main and temporary voices
    */
