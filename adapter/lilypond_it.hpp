@@ -1,6 +1,4 @@
 #include <string>
-// #include <vector>
-// #include <map>
 
 #include "symbol/duration.hpp"
 #include "symbol/pitch.hpp"
@@ -14,17 +12,29 @@ class LyNote_it : public core::Note {
 
  protected:
 
-  virtual void setNoteType(core::NoteType __ntype);
+  inline virtual void setNoteType(core::NoteType __ntype) {
+    Note::setNoteType(__ntype);
+  }
 
-  virtual void addPitch(core::Pitch * __p);
+  inline virtual void addPitch(core::Pitch * __p) {
+    Note::addPitch(__p);
+  }
 
-  virtual void setPitch(core::Pitch * __p);
+  inline virtual void setPitch(core::Pitch * __p) {
+    Note::setPitch(__p);
+  }
 
-  virtual void clearPitch();
+  inline virtual void clearPitch() {
+    Note::clearPitch();
+  }
 
-  virtual void setDuration(core::Duration * __d);
+  inline virtual void setDuration(core::Duration * __d) {
+    Note::setDuration(__d);
+  }
 
-  virtual void setProperty(core::Property * __p);
+  inline virtual void setProperty(core::Property * __p) {
+    Note::setProperty(__p);
+  }
 
   virtual core::NoteType guessNoteType(const std::string& __input) const;
 
@@ -46,7 +56,9 @@ class LyNote_it : public core::Note {
 
   LyNote_it(const LyNote_it&& __n);
 
-  virtual ~LyNote_it();
+  inline virtual ~LyNote_it() {
+    Note::~Note();
+  } 
 
   virtual LyNote_it& operator=(const LyNote_it& __n);
 
@@ -56,43 +68,81 @@ class LyNote_it : public core::Note {
 
   virtual void updateProperty(const std::string& __context);
 
-  virtual void setTied();
+  inline virtual void setTied() {
+    Note::setTied();
+  }
 
-  virtual void setUntied();
+  inline virtual void setUntied() {
+    Note::setUntied();
+  }
 
-  virtual bool hasProperty() const;
+  inline virtual bool hasProperty() const {
+    return Note::hasProperty();
+  }
 
-  virtual int pitchSize() const;
+  inline virtual int pitchSize() const {
+    return Note::pitchSize();
+  }
 
-  virtual core::NoteType getType() const;
+  inline virtual core::NoteType getType() const {
+    return Note::getType();
+  }
 
-  virtual char getTypeChar() const;
+  inline virtual char getTypeChar() const {
+    return Note::getTypeChar();
+  }
 
-  virtual std::string getTypeStr() const;
+  inline virtual std::string getTypeStr() const {
+    return Note::getTypeStr();
+  }
 
-  virtual bool isType(core::NoteType iType) const;
+  inline virtual bool isType(core::NoteType iType) const {
+    return Note::isType(iType);
+  }
 
-  virtual bool isSingle() const;
+  inline virtual bool isSingle() const {
+    return Note::isSingle();
+  }
 
-  virtual bool isChord() const;
+  inline virtual bool isChord() const {
+    return Note::isChord();
+  }
 
-  virtual bool isRest() const;
+  inline virtual bool isRest() const {
+    return Note::isRest();
+  }
 
-  virtual bool isSilent() const;
+  inline virtual bool isSilent() const {
+    return Note::isSilent();
+  }
 
-  virtual bool isTuplet() const;
+  inline virtual bool isTuplet() const {
+    return Note::isTuplet();
+  }
 
-  virtual bool isValid() const;
+  inline virtual bool isValid() const {
+    return Note::isValid();
+  }
 
-  virtual bool isTied() const;
+  inline virtual bool isTied() const {
+    return Note::isTied();
+  }
 
-  virtual const core::Duration * getDuration() const;
+  inline virtual const core::Duration * getDuration() const {
+    return Note::getDuration();
+  }
 
-  virtual const core::Pitch * getPitch() const;
+  inline virtual const core::Pitch * getPitch() const {
+    return Note::getPitch();
+  }
 
-  virtual const core::Property * getProperty() const;
+  inline virtual const core::Property * getProperty() const {
+    return Note::getProperty();
+  }
 
-  virtual const std::vector<const core::Pitch *> getPitchGroup() const;
+  inline virtual const std::vector<const core::Pitch *> getPitchGroup() const {
+    return Note::getPitchGroup();
+  }
 
   virtual std::string getDurationStr() const;
 
