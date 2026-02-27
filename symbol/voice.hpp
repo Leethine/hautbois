@@ -153,6 +153,14 @@ class Voice {
    */
   virtual void * toStream(const std::string& __instr, void * __ostream) const;
 
+
+  //! From stream
+  /*! Read from istream and complete voice
+   * \param __instr instruction
+   * \param __istream the istream pointer (needs pointer casting)
+   */
+  virtual void * fromStream(const std::string& __instr, void * __istream);
+
   //! barHasTempVoice
   /*! Check if the bar has temporary voice
    */

@@ -140,6 +140,11 @@ void * Voice::toStream(const std::string& __instr, void * __ostream) const {
   return nullptr;
 }
 
+void * Voice::fromStream(const std::string& __instr, void * __istream) {
+  // not supported
+  return nullptr;
+}
+
 bool Voice::barHasTempVoice(const int& __bar) const {
   for (const TemporaryVoice& tv : _temporaryVoiceList) {
     if (__bar == tv._bar) {
