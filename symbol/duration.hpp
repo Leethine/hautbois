@@ -17,6 +17,8 @@ class Duration {
 
  public:
 
+  Duration(); 
+
   Duration(const int& __num, const int& __denom);
  
   Duration(const int& __value, const std::string& __dots);

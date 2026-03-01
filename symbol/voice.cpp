@@ -90,6 +90,7 @@ int Voice::getBarSize(const int& __bar) const {
   }
   else {
     std::out_of_range("Bar no. " + std::to_string(__bar));
+    return 0;
   }
 }
 

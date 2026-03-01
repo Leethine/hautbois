@@ -25,6 +25,8 @@
 namespace hautbois {
 namespace core {
 
+Duration::Duration() : _raw (1, 1) {}
+
 Duration::Duration(const int& __num, const int& __denom) :
   _raw (__num, __denom) {
   std::vector<int> valid_num {1,3,5,2,4,6};

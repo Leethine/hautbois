@@ -19,6 +19,8 @@ class Pitch {
 
  public:
 
+  Pitch();
+
   Pitch(const char& __name, const char& __acc, const int& __oct);
 
   Pitch(const std::string& __name, const std::string& __acc, const int& __oct);

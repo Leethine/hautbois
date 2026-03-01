@@ -9,6 +9,8 @@
 namespace hautbois {
 namespace core {
 
+Pitch::Pitch() : _raw ('S', 'n', 4) {}
+
 Pitch::Pitch(const char& __name, const char& __acc, const int& __oct) :
   _raw (__name, __acc, __oct) {
   // check note name
