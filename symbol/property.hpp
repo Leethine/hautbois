@@ -11,7 +11,8 @@ namespace core {
 
 class Property {
 
- private:
+ protected:
+
   PropertyRaw _raw;
 
  public:
@@ -30,7 +31,7 @@ class Property {
   
   virtual ~Property();
   
-  Property& operator=(const Property& p);
+  virtual Property& operator=(const Property& p);
 
   virtual void modify(const char* context);
 
