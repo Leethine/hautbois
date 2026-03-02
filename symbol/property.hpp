@@ -48,7 +48,7 @@ class Property {
 
 };
 
-} // namespace hautbois
 } // namespace core
+} // namespace hautbois
 
 #endif
