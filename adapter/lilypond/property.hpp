@@ -11,7 +11,7 @@ namespace ly {
 class LyProperty : core::Property {
 
  public:
-  
+
   LyProperty();
   
   LyProperty(const std::string& text);
@@ -26,7 +26,7 @@ class LyProperty : core::Property {
   
   virtual ~LyProperty();
   
-  LyProperty& operator=(const LyProperty& p);
+  virtual LyProperty& operator=(const LyProperty& p);
 
   virtual void modify(const char* context);
 
