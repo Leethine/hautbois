@@ -32,12 +32,16 @@ LyProperty& LyProperty::operator=(const LyProperty& p) {
 }
 
 void LyProperty::modify(const char* context) {
+  std::string option (context);
+  if (option == "filter") {
+    //TODO
+  }
   _raw.set(context);
 }
 
 void * LyProperty::convert(const char* context) {
+  // TODO
   return nullptr;
-  // not supported
 }
 
 bool LyProperty::hasValue() const {
