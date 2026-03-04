@@ -1,9 +1,13 @@
 #include "symbol/pitch.hpp"
+#include "pitch.hpp"
 #include <string>
 #include <map>
 #include <iostream>
 
-std::map<std::string, char> NOTENAME_MAP {
+namespace hautbois {
+namespace ly {
+
+const static std::map<std::string, char> NOTENAME_MAP {
   {"do", 'C'},
   {"re", 'D'},
   {"mi", 'E'},
@@ -13,7 +17,7 @@ std::map<std::string, char> NOTENAME_MAP {
   {"si", 'B'}
 };
 
-std::map<char, std::string> NOTENAME_MAP_REV {
+const static std::map<char, std::string> NOTENAME_MAP_REV {
   {'C', "do"},
   {'D', "re"},
   {'E', "mi"},
@@ -23,140 +27,163 @@ std::map<char, std::string> NOTENAME_MAP_REV {
   {'B', "si"}
 };
 
-using namespace hautbois;
-using namespace core;
+const static std::map<std::string, char> ACCIDENTAL_MAP {
+  {"",   'n'},
+  {"ss", 'x'},
+  {"x",  'x'},
+  {"bb", 'd'},
+  {"b",  'b'}
+};
 
-class LyPitchIt : public Pitch {
-
- public:
-
-  LyPitchIt() : Pitch('S', 'n', 4) {
-  }
-
-  LyPitchIt(const std::string& __token) : LyPitchIt() {
-    if (NOTENAME_MAP.find(__token) != NOTENAME_MAP.end()) {
-      char name = NOTENAME_MAP[__token];
-      _raw.setName(name);
-    }
-  }
-
-  LyPitchIt(const LyPitchIt& p) : LyPitchIt() {
-    _raw.setName(p.getRaw().getName());
-    _raw.setAccidental(p.getRaw().getAccidental());
-    _raw.setOctave(p.getRaw().getOctave());
-  }
-
-  LyPitchIt(const LyPitchIt&& p) : LyPitchIt() {
-    _raw.setName(p.getRaw().getName());
-    _raw.setAccidental(p.getRaw().getAccidental());
-    _raw.setOctave(p.getRaw().getOctave());
-  }
-
-  LyPitchIt(const Pitch& p) : LyPitchIt() {
-    _raw.setName(p.getRaw().getName());
-    _raw.setAccidental(p.getRaw().getAccidental());
-    _raw.setOctave(p.getRaw().getOctave());
-  }
-
-  LyPitchIt(const Pitch&& p) : LyPitchIt() {
-    _raw.setName(p.getRaw().getName());
-    _raw.setAccidental(p.getRaw().getAccidental());
-    _raw.setOctave(p.getRaw().getOctave());
-  }
-
-  virtual ~LyPitchIt() {
-    Pitch::~Pitch();
-  }
-
-  LyPitchIt& operator=(const LyPitchIt& p) {
-    if (this != &p) {
-      _raw.setName(p.getName().front());
-      _raw.setAccidental(p.getAccidental().front());
-      _raw.setOctave(p.getOctaveInt());
-  }
-    return *this;
-  }
-
-  virtual std::string getName() const {
-    return Pitch::getName();
-  }
-
-  virtual std::string getAccidental() const {
-    return Pitch::getAccidental();
-  }
-  
-  virtual std::string getOctave() const {
-    return Pitch::getOctave();
-  }
-
-  virtual int getOctaveInt() const {
-    return Pitch::getOctaveInt();
-  }
-
-  virtual const PitchRaw& raw() const {
-    return Pitch::raw();
-  }
-  
-  virtual PitchRaw getRaw() const {
-    return Pitch::getRaw();
-  }
-
-  virtual std::string toString() const {
-    return NOTENAME_MAP_REV[raw().getNameRaw()];
-  }
-
-  virtual int toIndex() const {
-    return 0;
-  }
-
-  virtual double toFrequency(const std::string& __temperament) const {
-    return 0.0;
-  }
-
-  virtual void modify(const char * __context) {}
-
-  virtual bool operator==(const LyPitchIt& p) const {
-    return Pitch::operator==(p);
-  }
-
-  virtual bool operator!=(const LyPitchIt& p) const {
-    return Pitch::operator!=(p);
-  }
-
-  virtual bool operator>(const LyPitchIt& p) const {
-    return Pitch::operator>(p);
-  }
-
-  virtual bool operator<(const LyPitchIt& p) const {
-    return Pitch::operator<(p);
-  }
-
-  virtual bool operator>=(const LyPitchIt& p) const {
-    return Pitch::operator>=(p);
-  }
-
-  virtual bool operator<=(const LyPitchIt& p) const {
-    return Pitch::operator<=(p);
-  }
-
+const static std::map<char, std::string> ACCIDENTAL_MAP_REV {
+  {'n', ""},
+  {'x', "ss"},
+  {'x', "x"},
+  {'d', "bb"},
+  {'b', "b"}
 };
 
 
-int main() {
-  //LyPitchIt ut ("do");
-  //Pitch * p = &ut;
-  Pitch * p = new LyPitchIt("re");
-  Pitch * p2 = new LyPitchIt("mi");
+LyPitchIt::LyPitchIt() : core::Pitch() { }
 
-  LyPitchIt * p3 = new LyPitchIt("re");
-  LyPitchIt * p4 = new LyPitchIt("mi");
-  
-  std::cout <<
-    dynamic_cast<LyPitchIt *>(p)->LyPitchIt::toString()
-  << "\n";
-
-  std::cout <<
-    std::to_string(* p3 > * p4)
-  << "\n";
-  return 0;
+LyPitchIt::LyPitchIt(const std::string& __pitch) : 
+  core::Pitch() {
 }
+
+LyPitchIt::LyPitchIt(const Pitch& p) : Pitch (p) {
+}
+
+LyPitchIt::LyPitchIt(const Pitch&& p) : Pitch (p) {
+}
+
+LyPitchIt::LyPitchIt(const LyPitchIt& p) : Pitch() {
+  _raw.setName(p.raw().getNameRaw());
+  _raw.setAccidental(p.raw().getAccidentalRaw());
+  _raw.setOctave(p.raw().getOctaveRaw());
+}
+
+LyPitchIt::LyPitchIt(const LyPitchIt&& p) : Pitch() {
+  _raw.setName(p.raw().getNameRaw());
+  _raw.setAccidental(p.raw().getAccidentalRaw());
+  _raw.setOctave(p.raw().getOctaveRaw());
+}
+
+LyPitchIt::~LyPitchIt() {
+  core::Pitch::~Pitch();
+}
+
+LyPitchIt& LyPitchIt::operator=(const LyPitchIt& p) {
+  if (this != &p) {
+    _raw.setName(p.raw().getNameRaw());
+    _raw.setAccidental(p.raw().getAccidentalRaw());
+    _raw.setOctave(p.raw().getOctaveRaw());
+  }
+  return *this;
+}
+
+std::string LyPitchIt::getName() const {
+  std::string name;
+  if (NOTENAME_MAP_REV.find(_raw.getNameRaw()) != NOTENAME_MAP_REV.cend()) {
+    name = NOTENAME_MAP_REV.at(_raw.getNameRaw());
+  }
+  else {
+    throw std::runtime_error("'" + std::string(_raw.getNameRaw(), 1) + "'" +
+                             "not in the map index");
+  }
+  return name;
+}
+
+std::string LyPitchIt::getAccidental() const {
+  std::string acc;
+  if (ACCIDENTAL_MAP_REV.find(_raw.getAccidentalRaw())
+      != ACCIDENTAL_MAP_REV.cend()) {
+    acc = ACCIDENTAL_MAP_REV.at(_raw.getAccidentalRaw());
+  }
+  else {
+    throw std::runtime_error(
+      "'" + std::string(_raw.getAccidentalRaw(), 1) + "'" +
+      "not in the map index");
+  }
+  return acc;
+}
+  
+std::string LyPitchIt::getOctave() const {
+  int oct = getOctaveInt();
+  std::string oct_str;
+  if (oct > 4) {
+    oct_str = std::string('\'', oct - 4);
+  }
+  else if (oct < 4) {
+    oct_str = std::string('\'', 4 - oct);
+  }
+  else {
+    oct_str = "";
+  }
+  return oct_str;
+}
+
+int LyPitchIt::getOctaveInt() const {
+  return _raw.getOctave();
+}
+
+const core::PitchRaw& LyPitchIt::raw() const {
+  return core::Pitch::raw();
+}
+
+core::PitchRaw LyPitchIt::getRaw() const {
+  return core::Pitch::getRaw();
+}
+
+std::string LyPitchIt::toString() const {
+  return getName() + getAccidental() + getOctave();
+}
+
+int LyPitchIt::toIndex() const {
+  return core::Pitch::toIndex();
+}
+
+double LyPitchIt::toFrequency(const std::string& __temperament) const {
+  return core::Pitch::toFrequency(__temperament);
+}
+
+void LyPitchIt::modify(const char * __context) {
+  //TODO
+}
+
+bool LyPitchIt::operator==(const LyPitchIt& p) const {
+  if (getName() == p.getName() && 
+      getAccidental() == p.getAccidental() &&
+      getOctaveInt() == p.getOctaveInt()) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool LyPitchIt::operator!=(const LyPitchIt& p) const {
+  return !(*this == p);
+}
+
+bool LyPitchIt::operator>(const LyPitchIt& p) const {
+  if (toIndex() > p.toIndex()) {
+    return true;
+  }
+  return false;
+}
+
+bool LyPitchIt::operator<(const LyPitchIt& p) const {
+  return !(*this >= p);
+}
+
+bool LyPitchIt::operator>=(const LyPitchIt& p) const {
+  return (*this > p || *this == p);
+}
+
+bool LyPitchIt::operator<=(const LyPitchIt& p) const {
+  return !(*this > p);
+}
+
+} // ly
+} // hautbois
+
