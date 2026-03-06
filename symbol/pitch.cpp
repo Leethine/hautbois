@@ -94,11 +94,11 @@ Pitch::Pitch(const std::string& __name) : Pitch ('R', 'n', 4) {
 }
 
 Pitch::Pitch(const Pitch& p) :
-  Pitch(p.getName(), p.getAccidental(), p.getOctaveInt()) {
+  Pitch(p.raw().getName(), p.raw().getAccidental(), p.raw().getOctave()) {
 }
 
 Pitch::Pitch(const Pitch&& p) :
-  Pitch(p.getName(), p.getAccidental(), p.getOctaveInt()) {
+  Pitch(p.raw().getName(), p.raw().getAccidental(), p.raw().getOctave()) {
 }
 
 Pitch::Pitch(const PitchRaw& p) :
@@ -150,10 +150,10 @@ PitchRaw Pitch::getRaw() const {
 
 std::string Pitch::toString() const {
   std::string s;
-  s.append(getName());
-  if (getName() != "R" && getName() != "S") {
-    s.append(getAccidental());
-    s.append(getOctave());
+  s.push_back(_raw.getName());
+  if (_raw.getName() != 'R' && _raw.getName() != 'S') {
+    s.push_back(_raw.getAccidental());
+    s.push_back(_raw.getOctave() + '0');
   }
   return s;
 }
