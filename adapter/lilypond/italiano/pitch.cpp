@@ -2,7 +2,6 @@
 #include "pitch.hpp"
 #include <string>
 #include <map>
-#include <iostream>
 
 namespace hautbois {
 namespace ly {
@@ -14,7 +13,9 @@ const static std::map<std::string, char> NOTENAME_MAP {
   {"fa", 'F'},
   {"sol",'G'},
   {"la", 'A'},
-  {"si", 'B'}
+  {"si", 'B'},
+  {"r",  'R'},
+  {"s",  'S'}
 };
 
 const static std::map<char, std::string> NOTENAME_MAP_REV {
@@ -24,37 +25,88 @@ const static std::map<char, std::string> NOTENAME_MAP_REV {
   {'F', "fa"},
   {'G', "sol"},
   {'A', "la"},
-  {'B', "si"}
+  {'B', "si"},
+  {'R', "r"},
+  {'S', "s"}
 };
 
 const static std::map<std::string, char> ACCIDENTAL_MAP {
   {"",   'n'},
-  {"ss", 'x'},
-  {"x",  'x'},
+  {"d",  's'},
+  {"dd", 'x'},
   {"bb", 'd'},
   {"b",  'b'}
 };
 
 const static std::map<char, std::string> ACCIDENTAL_MAP_REV {
   {'n', ""},
-  {'x', "ss"},
-  {'x', "x"},
+  {'s', "d"},
+  {'x', "dd"},
   {'d', "bb"},
   {'b', "b"}
 };
 
-
 LyPitchIt::LyPitchIt() : core::Pitch() { }
 
-LyPitchIt::LyPitchIt(const std::string& __pitch) : 
-  core::Pitch() {
+LyPitchIt::LyPitchIt(const std::string& __pitch) : core::Pitch() {
+  if (__pitch == "r") {
+    _raw.setName('R');
+    _raw.setAccidental('n');
+    _raw.setOctave(4);
+  }
+  else if (__pitch == "s") {
+    _raw.setName('S');
+    _raw.setAccidental('n');
+    _raw.setOctave(4);
+  }
+  else {
+    std::string name;
+    std::string others;
+    if (__pitch.size() >= 3 && __pitch.substr(0,3) == "sol") {
+      name = __pitch.substr(0,3);
+      others = __pitch.substr(3);
+    }
+    else if (__pitch.size() >= 2) {
+      name = __pitch.substr(0,2);
+      others = __pitch.substr(2);
+    }
+    else {
+      throw std::invalid_argument(__pitch);
+    }
+    // set pitch name
+    if (NOTENAME_MAP.find(name) != NOTENAME_MAP.cend()) {
+      _raw.setName(NOTENAME_MAP.at(name));
+    }
+    else {
+      throw std::invalid_argument(__pitch);
+    }
+    // set octave
+    int oct = 4;
+    while (!others.empty() && 
+            (others.back() == ',' || others.back() == '\'')) {
+      if (others.back() == ',') {
+        oct--;
+        others.pop_back();
+      }
+      else if (others.back() == '\'') {
+        oct++;
+        others.pop_back();
+      }
+    }
+    _raw.setOctave(oct);
+    // set accidental
+    if (ACCIDENTAL_MAP.find(others) != ACCIDENTAL_MAP.cend()) {
+      _raw.setAccidental(ACCIDENTAL_MAP.at(others));
+    }
+    else {
+      throw std::invalid_argument(__pitch);
+    }
+  }
 }
 
-LyPitchIt::LyPitchIt(const Pitch& p) : Pitch (p) {
-}
+LyPitchIt::LyPitchIt(const Pitch& p) : Pitch (p) { }
 
-LyPitchIt::LyPitchIt(const Pitch&& p) : Pitch (p) {
-}
+LyPitchIt::LyPitchIt(const Pitch&& p) : Pitch (p) { }
 
 LyPitchIt::LyPitchIt(const LyPitchIt& p) : Pitch() {
   _raw.setName(p.raw().getNameRaw());
@@ -111,10 +163,10 @@ std::string LyPitchIt::getOctave() const {
   int oct = getOctaveInt();
   std::string oct_str;
   if (oct > 4) {
-    oct_str = std::string('\'', oct - 4);
+    oct_str = std::string(oct - 4, '\'');
   }
   else if (oct < 4) {
-    oct_str = std::string('\'', 4 - oct);
+    oct_str = std::string(4 - oct, ',');
   }
   else {
     oct_str = "";
