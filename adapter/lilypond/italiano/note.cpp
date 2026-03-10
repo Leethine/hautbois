@@ -1,18 +1,7 @@
 #include "note.hpp"
-#include <regex>
 
 namespace hautbois {
 namespace ly {
-
-
-const static std::regex SINGLE_NOTE_REGEX
-  ("^[do|re|mi|fa|sol|la|si]{1}[\'|,]*[1|2|4|8|16|32|64|128]{1}(.)*$");
-
-const static std::regex CHORD_REGEX
-  ("^<([do|re|mi|fa|sol|la|si][\'|,]*[::blank::]?)+>[1|2|4|8|16|32|64|128]{1}(.)*$");
-
-const static std::regex TUPLE_REGEX ("TODO");
-//TODO
 
 void LyNoteIt::setNoteType(core::NoteType __ntype) {
   core::Note::setNoteType(__ntype);
@@ -40,17 +29,14 @@ void LyNoteIt::setProperty(core::Property * __p) {
 
 
 core::NoteType LyNoteIt::guessNoteType(const std::string& __input) const {
-  if (__input == "r" || __input == "R") {
+  if (__input.size() > 0 && (__input[0] == 'r' || __input[0] == 'R')) {
     return core::NoteType::Rest;
   }
-  else if (__input == "s" || __input == "S") {
-    return core::NoteType::Rest;
-  }
-  else if (__input.size() > 5 && __input.substr(__input.size() - 5) == "\\rest") {
-    return core::NoteType::Rest;
+  else if (__input.size() > 0 && (__input[0] == 's' || __input[0] == 'S')) {
+    return core::NoteType::Silence;
   }
   else if (__input.find('<') != std::string::npos &&
-      __input.find('>') != std::string::npos) {
+           __input.find('>') != std::string::npos) {
     return core::NoteType::Chord;
   }
   else if (__input.find('{') != std::string::npos &&
@@ -65,6 +51,15 @@ core::NoteType LyNoteIt::guessNoteType(const std::string& __input) const {
 bool LyNoteIt::checkFormatThrowExp(const std::string& __pitch) const {
   if (getType() == core::NoteType::SingleNote) {
     // TODO
+  }
+  else if (getType() == core::NoteType::Chord) {
+    // TODO
+  }
+  else if (getType() == core::NoteType::Tuplet) {
+    // TODO
+  }
+  else {
+    return true;
   }
   // TODO
 }

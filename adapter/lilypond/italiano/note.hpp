@@ -42,6 +42,8 @@ class LyNoteIt : public core::Note {
 
   LyNoteIt(const std::string& __token);
 
+  LyNoteIt(const std::string& __token, bool flag_singlenote = false);
+
   LyNoteIt(const LyNoteIt& __n);
 
   LyNoteIt(const LyNoteIt&& __n);
