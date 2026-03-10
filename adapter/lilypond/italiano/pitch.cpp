@@ -1,10 +1,53 @@
 #include "symbol/pitch.hpp"
 #include "pitch.hpp"
 #include <string>
+#include <utility>
 #include <map>
 
 namespace hautbois {
 namespace ly {
+
+const static std::map<std::string, std::pair<char,char>> NOTENAME_MAP_QUICK {
+  {"do", { 'C', 'n' } },
+  {"re", { 'D', 'n' } },
+  {"mi", { 'E', 'n' } },
+  {"fa", { 'F', 'n' } },
+  {"sol",{ 'G', 'n' } },
+  {"la", { 'A', 'n' } },
+  {"si", { 'B', 'n' } },
+  {"dod", { 'C', 's' } },
+  {"red", { 'D', 's' } },
+  {"mid", { 'E', 's' } },
+  {"fad", { 'F', 's' } },
+  {"sold",{ 'G', 's' } },
+  {"lad", { 'A', 's' } },
+  {"sid", { 'B', 's' } },
+  {"dob", { 'C', 'b' } },
+  {"reb", { 'D', 'b' } },
+  {"mib", { 'E', 'b' } },
+  {"fab", { 'F', 'b' } },
+  {"solb",{ 'G', 'b' } },
+  {"lab", { 'A', 'b' } },
+  {"sib", { 'B', 'b' } },
+  {"dodd", { 'C', 'x' } },
+  {"redd", { 'D', 'x' } },
+  {"midd", { 'E', 'x' } },
+  {"fadd", { 'F', 'x' } },
+  {"soldd",{ 'G', 'x' } },
+  {"ladd", { 'A', 'x' } },
+  {"sidd", { 'B', 'x' } },
+  {"dobb", { 'C', 'd' } },
+  {"rebb", { 'D', 'd' } },
+  {"mibb", { 'E', 'd' } },
+  {"fabb", { 'F', 'd' } },
+  {"solbb",{ 'G', 'd' } },
+  {"labb", { 'A', 'd' } },
+  {"sibb", { 'B', 'd' } },
+  {"r",  { 'R', 'n' } },
+  {"s",  { 'S', 'n' } },
+  {"R",  { 'R', 'n' } },
+  {"S",  { 'S', 'n' } }
+};
 
 const static std::map<std::string, char> NOTENAME_MAP {
   {"do", 'C'},
@@ -102,6 +145,24 @@ LyPitchIt::LyPitchIt(const std::string& __pitch) : core::Pitch() {
       throw std::invalid_argument(__pitch);
     }
   }
+}
+
+LyPitchIt::LyPitchIt(const std::string& __name, const int& __octave) {
+    // set pitch name
+    if (NOTENAME_MAP_QUICK.find(__name) != NOTENAME_MAP_QUICK.cend()) {
+      _raw.setName(NOTENAME_MAP_QUICK.at(__name).first);
+      _raw.setAccidental(NOTENAME_MAP_QUICK.at(__name).second);
+    }
+    else {
+      throw std::invalid_argument(__name);
+    }
+    // set octave
+    if (__octave >= 0 && __octave < 9) {
+      _raw.setOctave(__octave);
+    }
+    else {
+      throw std::invalid_argument(std::to_string(__octave));
+    }
 }
 
 LyPitchIt::LyPitchIt(const Pitch& p) : Pitch (p) { }

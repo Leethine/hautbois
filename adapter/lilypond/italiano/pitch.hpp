@@ -19,6 +19,8 @@ class LyPitchIt : public core::Pitch {
 
   LyPitchIt(const std::string& __pitch);
 
+  LyPitchIt(const std::string& __name, const int& __octave);
+
   LyPitchIt(const Pitch& p);
 
   LyPitchIt(const Pitch&& p);
