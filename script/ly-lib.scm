@@ -1,5 +1,5 @@
 ;; Lilypond library
-;; Tested with TinyScheme
+;; Tested with TinyScheme, CHICKEN, ChezScheme
 ;; @ Hautbois Project
 
 
