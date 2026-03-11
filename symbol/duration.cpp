@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <numeric>
+#include <array>
 
 #if __cplusplus >= 201703L
 #define HB_GCD(X, Y) std::gcd((X),(Y))
@@ -29,9 +30,8 @@ Duration::Duration() : _raw (1, 1) {}
 
 Duration::Duration(const int& __num, const int& __denom) :
   _raw (__num, __denom) {
-  std::vector<int> valid_num {1,3,5,2,4,6};
-  std::vector<int> valid_denom {1,2,4,8,16,32,64,128};
-  if (std::find(valid_num.begin(), valid_num.end(), __num) == valid_num.end() ||
+  std::array<int,8> valid_denom {1,2,4,8,16,32,64,128};
+  if ( __num < 1 || __num > 128 ||
     std::find(valid_denom.begin(), valid_denom.end(), __denom) == valid_denom.end()
   ) {
     throw std::invalid_argument(std::to_string(__num) + "," + std::to_string(__denom));
@@ -42,11 +42,11 @@ Duration::Duration(const int& __value, const std::string& __dots) :
   _raw (1, 1) {
   size_t n_dots = std::count(__dots.begin(), __dots.end(), '.');
   if (n_dots != __dots.length()) {
-    throw std::invalid_argument(std::to_string(__value) + __dots);
+    throw std::invalid_argument(__dots);
   }
-  std::vector<int> valid_denom {1,2,4,8,16,32,64,128};
+  std::array<int,8> valid_denom {1,2,4,8,16,32,64,128};
   if (std::find(valid_denom.begin(), valid_denom.end(), __value) == valid_denom.end()) {
-    throw std::invalid_argument(std::to_string(__value) + __dots);
+    throw std::invalid_argument(std::to_string(__value));
   }
 
   if (__dots.empty()) {
@@ -62,12 +62,11 @@ Duration::Duration(const int& __value, const std::string& __dots) :
     _raw.setDenom(__value * 4);
   }
   else {
-    throw std::invalid_argument(std::to_string(__value) + __dots);
+    throw std::invalid_argument(__dots);
   }
 }
 
-Duration::Duration(const int& __denom) :
-  _raw (1, __denom) {}
+Duration::Duration(const int& __denom) : Duration(__denom, "") { }
 
 Duration::Duration(const Duration& d) :
   Duration(d.getNum(), d.getDenom()) {}
