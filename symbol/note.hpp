@@ -34,7 +34,9 @@ class Note {
 
  protected:
 
-  virtual void setNoteType(NoteType __ntype) = 0;
+  inline virtual void setNoteType(NoteType __ntype) {
+    _type = __ntype;
+  }
 
   virtual void addPitch(Pitch * __p) = 0;
 
@@ -66,7 +68,7 @@ class Note {
 
   inline Note() : _type ( NoteType::Silence ) {}
 
-  inline Note(NoteType __itype) : _type ( __itype ) {}
+  inline Note(NoteType __ntype) : _type ( __ntype ) {}
 
   Note(Note&) = delete;
   
@@ -77,10 +79,16 @@ class Note {
   virtual ~Note() = 0;
 
   virtual void updateDuration(const std::string& __context) = 0;
+
+  virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
   
   virtual void updatePitch(const std::string& __context) = 0;
 
+  virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
+
   virtual void updateProperty(const std::string& __context) = 0;
+
+  virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
 
   virtual void setTied() = 0;
 
@@ -98,17 +106,41 @@ class Note {
 
   virtual std::string getTypeStr() const = 0;
 
-  virtual bool isType(NoteType iType) const = 0;
+  inline virtual bool isType(NoteType __ntype) const {
+    return _type == __ntype;
+  }
 
-  virtual bool isSingle() const = 0;
+  inline virtual bool isSingle() const {
+    return _type == NoteType::SingleNote;
+  }
 
-  virtual bool isChord() const = 0;
+  inline virtual bool isRest() const {
+    return _type == NoteType::Rest;
+  }
 
-  virtual bool isRest() const = 0;
+  inline virtual bool isSilent() const {
+    return _type == NoteType::Silence;
+  }
 
-  virtual bool isSilent() const = 0;
+  inline virtual bool isChord() const {
+    return _type == NoteType::Chord;
+  }
 
-  virtual bool isTuplet() const = 0;
+  inline virtual bool isTuplet() const {
+    return _type == NoteType::Tuplet;
+  }
+
+  inline virtual bool isGrace() const {
+    return _type == NoteType::Grace;
+  }
+
+  inline virtual bool isAppoggiatura() const {
+    return _type == NoteType::Appoggiatura;
+  }
+
+  inline virtual bool isAcciaccatura() const {
+    return _type == NoteType::Acciaccatura;
+  }
 
   virtual bool isValid() const = 0;
 
