@@ -35,7 +35,7 @@ class Property {
 
   virtual void modify(const char* context);
 
-  virtual void * convert(const char* context);
+  virtual void * convert(const char* context) const;
 
   virtual bool hasValue() const;
 

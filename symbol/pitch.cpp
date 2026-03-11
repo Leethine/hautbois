@@ -1,97 +1,37 @@
 #include "pitch.hpp"
+#include "utility/hbexcept.hpp"
 
-#include <set>
-#include <map>
+#include <unordered_map>
 #include <stdexcept>
-#include <cctype>
-#include <cmath>
+#include <algorithm>
+// #include <cctype>
+// #include <cmath>
 
 namespace hautbois {
 namespace core {
 
-Pitch::Pitch() : _raw ('S', 'n', 4) {}
+Pitch::Pitch() : _raw (CHAR_PITCHNAME_SILENCE, CHAR_ACCIDENTAL_NATURAL, 4) {}
 
 Pitch::Pitch(const char& __name, const char& __acc, const int& __oct) :
   _raw (__name, __acc, __oct) {
-  // check note name
-  if (__name >= 'A' && __name <= 'G' || __name == 'S' || __name == 'R') {
-    _raw.setName(__name);
-  }
-  else {
-    throw std::invalid_argument("Name: '" + std::string(1,__name) + "'");
-  }
-  // check accidental
-  if (__acc == 'b' || __acc == 'd' || __acc == 's' || __acc == 'x' || __acc == 'n') {
-    _raw.setAccidental(__acc);
-  }
-  else {
-    throw std::invalid_argument("Accidental: " + std::string(1,__acc));
-  }
-  // check octave
-  if (__oct >= 0 && __oct <= 9) {
-    _raw.setOctave(__oct);
-  }
-  else {
-    throw std::invalid_argument("Octave: " + std::to_string(__oct));
+  // Check arguments
+  auto it1 = std::find(VALID_PITCH_NAME.begin(),VALID_PITCH_NAME.end(), __name);
+  auto it2 = std::find(VALID_PITCH_ACCIDENTAL.begin(),VALID_PITCH_ACCIDENTAL.end(), __acc);
+
+
+  if (! (it1 != VALID_PITCH_NAME.end() && it2 != VALID_PITCH_ACCIDENTAL.end() && 
+         __oct >= 0 && __oct <= 8) ) {
+    std::string msg = "Failed to create Pitch with: " + std::string(1,__name)
+                    + "," + std::string(1,__acc) + "," + std::to_string(__oct);
+    HB_THROW_MSG(std::invalid_argument, msg);
   }
 }
 
-Pitch::Pitch(const std::string& __name, const std::string& __acc,
-             const int& __oct) : Pitch ('C','n',4) {
-  // set pitch name
-  std::string valid_chars = "ABCDEFGSR";
-  if (__name.length() == 1 && valid_chars.find(__name[0]) != std::string::npos) {
-    _raw.setName(__name[0]);
-  }
-  else {
-    throw std::invalid_argument("Name: " + __name);
-  }
-  // set accidental
-  valid_chars = "nsdbx";
-  if (__acc.empty()) {
-    _raw.setAccidental('n');
-  }
-  else if (__acc.length() == 1 && valid_chars.find(__acc[0]) != std::string::npos) {
-    _raw.setAccidental(__acc[0]);
-  }
-  else if (__acc.length() == 1 && __acc == "#") {
-    _raw.setAccidental('s');
-  }
-  else if (__acc.length() == 2 && __acc == "ss") {
-    _raw.setAccidental('x');
-  }
-  else if (__acc.length() == 2 && __acc == "bb") {
-    _raw.setAccidental('d');
-  }
-  else {
-    throw std::invalid_argument("Accidental: " + __acc);
-  }
-  if (__oct >= 0 && __oct <= 9) {
-    _raw.setOctave(__oct);
-  }
-  else {
-    throw std::invalid_argument("Octave: " + std::to_string(__oct));
-  }
-}
+Pitch::Pitch(const char& __name, const int& __oct) :
+  Pitch(__name, 'n', __oct) {}
 
-Pitch::Pitch(const std::string& __name, const std::string& __acc,
-             const std::string& __oct) : Pitch (__name, __acc, 9) {
-  // check and set octave
-  std::string valid_chars = "0123456789";
-  if (__oct.length() == 1 && valid_chars.find(__oct) != std::string::npos) {
-    _raw.setOctave(std::stoi(__oct));
-  }
-  else {
-    throw std::invalid_argument("Octave: " + __oct);
-  }
-}
-
-Pitch::Pitch(const std::string& __name) : Pitch ('R', 'n', 4) {
-  if (__name != "R" && __name != "S") {
-    throw std::invalid_argument("Only 'R' or 'S' allowed!");
-  }
-  _raw.setName(__name[0]);
-}
+Pitch::Pitch(const char& __name) :
+  Pitch(__name, 'n', 4) {}
 
 Pitch::Pitch(const Pitch& p) :
   Pitch(p.raw().getName(), p.raw().getAccidental(), p.raw().getOctave()) {
@@ -162,19 +102,23 @@ int Pitch::toIndex() const {
   if (_raw.getName() == 'R' || _raw.getName() == 'S') {
     return 0;
   }
-  std::map<char,int> nameMap {
-    {'C', 4}, {'D', 6}, {'E', 8}, {'F', 9},
-    {'G', 11}, {'A', 13}, {'B', 15}
+  std::unordered_map<char,int> nameMap {
+    {CHAR_PITCHNAME_C, 4}, {CHAR_PITCHNAME_D, 6},
+    {CHAR_PITCHNAME_E, 8}, {CHAR_PITCHNAME_F, 9},
+    {CHAR_PITCHNAME_G, 11}, {CHAR_PITCHNAME_A, 13},
+    {CHAR_PITCHNAME_B, 15}
   };
-  std::map<char,int> accMap {
-    {'n', 0}, {'s', 1}, {'b', -1}, {'x', 2}, {'d', -2}
+  std::unordered_map<char,int> accMap {
+    {CHAR_ACCIDENTAL_NATURAL, 0}, {CHAR_ACCIDENTAL_SHARP, 1},
+    {CHAR_ACCIDENTAL_FLAT, -1}, {CHAR_ACCIDENTAL_DOUBLESHARP, 2},
+    {CHAR_ACCIDENTAL_DOUBLEFLAT, -2}
   };
-  std::map<char,int>::iterator it1 = nameMap.find(_raw.getName());
-  std::map<char,int>::iterator it2 = accMap.find(_raw.getAccidental());
+  auto it1 = nameMap.find(_raw.getName());
+  auto it2 = accMap.find(_raw.getAccidental());
   if (it1 == nameMap.end() || it2 == accMap.end()) {
-    throw std::runtime_error("Invalid pitch: "
-                              + _raw.getName()
-                              + _raw.getAccidental());
+    std::string msg = "Invalid pitch: " + Pitch::getName() + Pitch::getAccidental();
+    HB_THROW_MSG(std::runtime_error, msg);
+    return 0;
   }
   int idx = nameMap[_raw.getName()] + accMap[_raw.getAccidental()]
           + 12 * (_raw.getOctave() - 1);
@@ -191,13 +135,13 @@ void Pitch::modify(const char * __context) {
 }
 
 bool Pitch::operator==(const Pitch& p) const {
-  if (p.getName() == getName() &&
-      p.getAccidental() == getAccidental() &&
-      p.getOctaveInt() == getOctaveInt()) {
+  if (p.getName() == Pitch::getName() &&
+      p.getAccidental() == Pitch::getAccidental() &&
+      p.getOctaveInt() == Pitch::getOctaveInt()) {
     return true;
   }
-  else if (p.getName() == getName() && 
-           (getName() == "R" || getName() == "S") ) {
+  else if (p.getName() == Pitch::getName() && 
+           (Pitch::getName() == "R" || Pitch::getName() == "S") ) {
     return true;
   }
   else {
@@ -206,18 +150,22 @@ bool Pitch::operator==(const Pitch& p) const {
 }
 
 bool Pitch::operator!=(const Pitch& p) const {
-  if (p.getName() == getName() &&
-      p.getAccidental() == getAccidental() &&
-      p.getOctaveInt() == getOctaveInt()) {
+  if (p.getName() == Pitch::getName() && 
+      (Pitch::getName() == "R" || Pitch::getName() == "S") ) {
     return false;
   }
-  else {
+  else if (p.getName() != Pitch::getName() ||
+           p.getAccidental() != Pitch::getAccidental() ||
+           p.getOctaveInt() != Pitch::getOctaveInt()) {
     return true;
+  }
+  else {
+    return false;
   }
 }
 
 bool Pitch::operator>(const Pitch& p) const {
-  if (toIndex() > p.toIndex()) {
+  if (Pitch::toIndex() > p.toIndex()) {
     return true;
   }
   else {
@@ -226,7 +174,7 @@ bool Pitch::operator>(const Pitch& p) const {
 }
 
 bool Pitch::operator<(const Pitch& p) const {
-  if (toIndex() < p.toIndex()) {
+  if (Pitch::toIndex() < p.toIndex()) {
     return true;
   }
   else {
@@ -235,10 +183,10 @@ bool Pitch::operator<(const Pitch& p) const {
 }
 
 bool Pitch::operator<=(const Pitch& p) const {
-  if (toIndex() < p.toIndex() || (
-      p.getName() == getName() &&
-      p.getAccidental() == getAccidental() &&
-      p.getOctaveInt() == getOctaveInt())) {
+  if (Pitch::toIndex() < p.toIndex() || (
+      p.getName() == Pitch::getName() &&
+      p.getAccidental() == Pitch::getAccidental() &&
+      p.getOctaveInt() == Pitch::getOctaveInt())) {
     return true;
   }
   else {
@@ -247,10 +195,10 @@ bool Pitch::operator<=(const Pitch& p) const {
 }
 
 bool Pitch::operator>=(const Pitch& p) const {
-  if (toIndex() > p.toIndex() || (
-      p.getName() == getName() &&
-      p.getAccidental() == getAccidental() &&
-      p.getOctaveInt() == getOctaveInt())) {
+  if (Pitch::toIndex() > p.toIndex() || (
+      p.getName() == Pitch::getName() &&
+      p.getAccidental() == Pitch::getAccidental() &&
+      p.getOctaveInt() == Pitch::getOctaveInt())) {
     return true;
   }
   else {

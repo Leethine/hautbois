@@ -38,7 +38,7 @@ void Property::modify(const char* context) {
   // not supported
 }
 
-void * Property::convert(const char* context) {
+void * Property::convert(const char* context) const {
   // not supported
   return nullptr;
 }

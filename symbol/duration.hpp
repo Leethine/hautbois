@@ -15,9 +15,9 @@ class Duration {
 
   DurationRaw _raw;
 
- public:
+  Duration();
 
-  Duration(); 
+ public:
 
   Duration(const int& __num, const int& __denom);
  
