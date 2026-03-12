@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <initializer_list>
 
 #include "note.hpp"
 
@@ -43,37 +44,47 @@ class Chord : public Note {
 
   virtual void clearProperty();
 
-  virtual NoteType guessNoteType(const std::string& __input) const;
-
-  virtual bool checkFormatThrowExp(const std::string& __pitch) const;
-
-  virtual std::vector<std::string> parseInput(const std::string& __input) const;
-
   virtual std::string filterProperty(const std::string& __text) const;
-
- public:
 
   Chord();
 
+  Chord(const std::vector<std::string>& __pitches);
+
+  Chord(const std::initializer_list<const char *> __pitches);
+
+ public:
+ 
+  Chord(const std::vector<std::string>& __pitches,
+        const int& num, const int& denom);
+
+  Chord(const std::vector<std::string>& __pitches,
+        const int& denom, const std::string& dots);
+
+  Chord(const std::initializer_list<const char *> __pitches, 
+        const int& num, const int& denom);
+
+  Chord(const std::initializer_list<const char *> __pitches,
+        const int& denom, const std::string& dots);
+
   Chord(Chord& __note);
-  
+
   Chord(Chord&& __note);
 
   virtual Chord& operator=(const Chord& __n);
 
   virtual ~Chord();
 
-  virtual void updateDuration(const std::string& __context) = 0;
+  virtual void updateDuration(const std::string& __context);
 
-  virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
+  virtual void updateDuration(const std::string& __context, size_t __pos);
   
-  virtual void updatePitch(const std::string& __context) = 0;
+  virtual void updatePitch(const std::string& __context);
 
-  virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
+  virtual void updatePitch(const std::string& __context, size_t __pos);
 
-  virtual void updateProperty(const std::string& __context) = 0;
+  virtual void updateProperty(const std::string& __context);
 
-  virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
+  virtual void updateProperty(const std::string& __context, size_t __pos);
 
   virtual void setTied();
 
@@ -109,6 +120,10 @@ class Chord : public Note {
 
   virtual const Property * getProperty(size_t __pos) const;
 
+  virtual std::string getPropertyStr() const;
+
+  virtual std::string getPropertyStr(size_t __pos) const;
+
   virtual int getPitchSize() const;
 
   virtual int getDurationSize() const;
@@ -116,10 +131,6 @@ class Chord : public Note {
   virtual int getPropertySize() const;
 
   virtual void modify(const std::string& __context);
-
-  virtual void updateProperty(const std::string& __property);
-
-  virtual void updateProperty(const std::string& __property, size_t __pos);
 
   virtual std::string toString() const;
 
