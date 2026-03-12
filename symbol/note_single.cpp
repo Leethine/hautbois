@@ -101,17 +101,23 @@ SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
     std::string msg ("Failed to create SingleNote with " + __pitch);
     HB_THROW_MSG(std::invalid_argument, msg);
   }
-  _pitch = new Pitch(name, acc, oct - '0');
+  HB_NESTED_THROW(std::invalid_argument,
+    _pitch = new Pitch(name, acc, oct - '0') ; 
+  )
 }
 
 SingleNote::SingleNote(const std::string& __pitch, 
                        const int& __num, const int& __denom) : SingleNote(__pitch) {
-  _duration = new Duration(__num, __denom);
+  HB_NESTED_THROW(std::invalid_argument,
+    _duration = new Duration(__num, __denom) ;
+  )
 }
 
 SingleNote::SingleNote(const std::string& __pitch,
                        const int& __denom, const std::string& __dots) : SingleNote(__pitch) {
-  _duration = new Duration(__denom, __dots);
+  HB_NESTED_THROW(std::invalid_argument,
+    _duration = new Duration(__denom, __dots) ;
+  )
 }
 
 SingleNote::SingleNote(SingleNote& __note) : Note(__note.getType()) {

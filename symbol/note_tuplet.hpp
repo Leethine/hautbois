@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <string>
+#include <initializer_list>
 
 #include "note.hpp"
 
@@ -15,7 +16,7 @@ class Tuplet : public Note {
 
  private:
 
-  Duration * _value_global;
+  Duration * _noteValue;
 
   std::vector<Duration *> _duration;
 
@@ -25,7 +26,11 @@ class Tuplet : public Note {
 
   std::vector<bool> _tied;
 
-  int nbr_of_notes;
+  const int nbr_of_notes;
+
+  bool cmpNoteValue() const;
+
+  bool cmpNoteNumber() const;
 
  protected:
 
@@ -47,17 +52,27 @@ class Tuplet : public Note {
 
   virtual void clearProperty();
 
-  virtual NoteType guessNoteType(const std::string& __input) const;
-
-  virtual bool checkFormatThrowExp(const std::string& __pitch) const;
-
-  virtual std::vector<std::string> parseInput(const std::string& __input) const;
-
   virtual std::string filterProperty(const std::string& __text) const;
+
+  Tuplet();
+
+  Tuplet(const std::initializer_list<std::string> __group);
+
+  Tuplet(const std::vector<std::string>& __group);
 
  public:
 
-  Tuplet();
+  Tuplet(const std::initializer_list<std::string> __group,
+         const int& num, const int& denom);
+
+  Tuplet(const std::vector<std::string>& __group,
+         const int& num, const int& denom);
+
+  Tuplet(const std::initializer_list<std::string> __group,
+         const int& denom, const std::string& dots);
+
+  Tuplet(const std::vector<std::string>& __group,
+         const int& denom, const std::string& dots);
 
   Tuplet(Tuplet& __note);
   
@@ -67,17 +82,17 @@ class Tuplet : public Note {
 
   virtual ~Tuplet();
 
-  virtual void updateDuration(const std::string& __context) = 0;
+  virtual void updateDuration(const std::string& __context);
 
-  virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
+  virtual void updateDuration(const std::string& __context, size_t __pos);
   
-  virtual void updatePitch(const std::string& __context) = 0;
+  virtual void updatePitch(const std::string& __context);
 
-  virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
+  virtual void updatePitch(const std::string& __context, size_t __pos);
 
-  virtual void updateProperty(const std::string& __context) = 0;
+  virtual void updateProperty(const std::string& __context);
 
-  virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
+  virtual void updateProperty(const std::string& __context, size_t __pos);
 
   virtual void setTied();
 
@@ -95,11 +110,17 @@ class Tuplet : public Note {
 
   virtual bool isTied(size_t __pos) const;
 
-  virtual const bool hasDuration() const;
+  virtual bool hasDuration() const;
   
-  virtual const bool hasPitch() const;
+  virtual bool hasPitch() const;
 
-  virtual const bool hasProperty() const;
+  virtual bool hasProperty() const;
+
+  virtual bool hasDuration(size_t __pos) const;
+  
+  virtual bool hasPitch(size_t __pos) const;
+
+  virtual bool hasProperty(size_t __pos) const;
 
   virtual const Duration * getDuration() const;
 
@@ -113,6 +134,10 @@ class Tuplet : public Note {
 
   virtual const Property * getProperty(size_t __pos) const;
 
+  virtual std::string getPropertyStr() const;
+
+  virtual std::string getPropertyStr(size_t __pos) const;
+
   virtual int getPitchSize() const;
 
   virtual int getDurationSize() const;
@@ -120,10 +145,6 @@ class Tuplet : public Note {
   virtual int getPropertySize() const;
 
   virtual void modify(const std::string& __context);
-
-  virtual void updateProperty(const std::string& __property);
-
-  virtual void updateProperty(const std::string& __property, size_t __pos);
 
   virtual std::string toString() const;
 

@@ -77,44 +77,53 @@ Chord::Chord() : Note(NoteType::Chord),
 
 Chord::Chord(const std::vector<std::string>& __pitches) : Chord() {
   for (auto it=__pitches.cbegin(); it != __pitches.cend(); it++) {
-    try {
-      SingleNote n(*it, 1,4);
-      Pitch * p = new Pitch(*n.getPitch());
-      Chord::addPitch(p);
-    }
-    catch (const std::invalid_argument& e) {
-      std::string msg ("Failed to create Chord with invalid token: " + *it);
-      HB_THROW_MSG(std::invalid_argument, msg);
-    }
+    std::string token(*it);
+    Pitch * p = nullptr;
+    HB_NESTED_THROW_MSG(std::invalid_argument,
+      std::string ("Failed to create Chord with invalid token: " + token),
+      SingleNote n(token, 1,4);
+      HB_NESTED_THROW_MSG(std::runtime_error,
+        std::string ("Runtime error occurred while processing token: " + token),
+        p = new Pitch(*n.getPitch());
+      )
+    )
+    Chord::addPitch(p);
   }
 }
 
 Chord::Chord(const std::initializer_list<const char *> __pitches) : Chord() {
   for (auto& pitch : __pitches) {
     std::string token(pitch);
-    try {
+    Pitch * p = nullptr;
+    HB_NESTED_THROW_MSG(std::invalid_argument,
+      std::string ("Failed to create Chord with invalid token: " + token),
       SingleNote n(token, 1,4);
-      Pitch * p = new Pitch(*n.getPitch());
-      Chord::addPitch(p);
-    }
-    catch (const std::invalid_argument& e) {
-      std::string msg ("Failed to create Chord with invalid token: " + token);
-      HB_THROW_MSG(std::invalid_argument, msg);
-    }
+      HB_NESTED_THROW_MSG(std::runtime_error,
+        std::string ("Runtime error occurred while processing token: " + token),
+        p = new Pitch(*n.getPitch());
+      )
+    )
+    Chord::addPitch(p);
   }
 }
 
 Chord::Chord(const std::vector<std::string>& __pitches,
              const int& num, const int& denom) :
   Chord(__pitches) {
-  Duration * d = new Duration(num, denom);
+  Duration * d = nullptr;
+  HB_NESTED_THROW(std::invalid_argument,
+    d = new Duration(num, denom);
+  )
   Chord::setDuration(d);
 }
 
 Chord::Chord(const std::vector<std::string>& __pitches,
             const int& denom, const std::string& dots) :
   Chord(__pitches) {
-  Duration * d = new Duration(denom, dots);
+  Duration * d = nullptr;
+  HB_NESTED_THROW(std::invalid_argument,
+    d = new Duration(denom, dots);
+  )
   Chord::setDuration(d);
 }
 
