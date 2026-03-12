@@ -3,7 +3,6 @@
 #ifndef NOTE_SINGLE_H
 #define NOTE_SINGLE_H
 
-#include <vector>
 #include <string>
 
 #include "note.hpp"
@@ -43,17 +42,17 @@ class SingleNote : public Note {
 
   virtual void clearProperty();
 
-  virtual NoteType guessNoteType(const std::string& __input) const;
-
-  virtual bool checkFormatThrowExp(const std::string& __pitch) const;
-
-  virtual std::vector<std::string> parseInput(const std::string& __input) const;
-
   virtual std::string filterProperty(const std::string& __text) const;
+
+  SingleNote();
+
+  SingleNote(const std::string& __pitch);
 
  public:
 
-  SingleNote();
+  SingleNote(const std::string& __pitch, const int& __num, const int& __denom);
+
+  SingleNote(const std::string& __pitch, const int& __denom, const std::string& __dots);
 
   SingleNote(SingleNote& __note);
   
@@ -63,17 +62,17 @@ class SingleNote : public Note {
 
   virtual ~SingleNote();
 
-  virtual void updateDuration(const std::string& __context) = 0;
+  virtual void updateDuration(const std::string& __context);
 
-  virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
+  virtual void updateDuration(const std::string& __context, size_t __pos);
   
-  virtual void updatePitch(const std::string& __context) = 0;
+  virtual void updatePitch(const std::string& __context);
 
-  virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
+  virtual void updatePitch(const std::string& __context, size_t __pos);
 
-  virtual void updateProperty(const std::string& __context) = 0;
+  virtual void updateProperty(const std::string& __context);
 
-  virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
+  virtual void updateProperty(const std::string& __context, size_t __pos);
 
   virtual void setTied();
 
@@ -109,6 +108,10 @@ class SingleNote : public Note {
 
   virtual const Property * getProperty(size_t __pos) const;
 
+  virtual std::string getPropertyStr() const;
+
+  virtual std::string getPropertyStr(size_t __pos) const;
+
   virtual int getPitchSize() const;
 
   virtual int getDurationSize() const;
@@ -116,10 +119,6 @@ class SingleNote : public Note {
   virtual int getPropertySize() const;
 
   virtual void modify(const std::string& __context);
-
-  virtual void updateProperty(const std::string& __property);
-
-  virtual void updateProperty(const std::string& __property, size_t __pos);
 
   virtual std::string toString() const;
 

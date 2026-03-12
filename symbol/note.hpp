@@ -3,8 +3,8 @@
 #ifndef NOTE_H
 #define NOTE_H
 
-#include <vector>
 #include <string>
+#include "symbol_raw/core_types.hpp"
 
 namespace hautbois {
 namespace core {
@@ -56,19 +56,13 @@ class Note {
 
   virtual void clearProperty() = 0;
 
-  virtual NoteType guessNoteType(const std::string& __input) const = 0;
-
-  virtual bool checkFormatThrowExp(const std::string& __pitch) const = 0;
-
-  virtual std::vector<std::string> parseInput(const std::string& __input) const = 0;
-
   virtual std::string filterProperty(const std::string& __text) const = 0;
 
  public:
 
-  inline Note() : _type ( NoteType::Silence ) {}
+  inline Note() : _type ( NoteType::Silence ) { }
 
-  inline Note(NoteType __ntype) : _type ( __ntype ) {}
+  inline Note(NoteType __ntype) : _type ( __ntype ) { }
 
   Note(Note&) = delete;
   
@@ -76,7 +70,7 @@ class Note {
 
   virtual Note& operator=(const Note& __n) = delete;
 
-  virtual ~Note() = 0;
+  inline virtual ~Note() { };
 
   virtual void updateDuration(const std::string& __context) = 0;
 
@@ -100,11 +94,55 @@ class Note {
 
   virtual int getSize() const = 0;
 
-  virtual NoteType getType() const = 0;
+  inline virtual NoteType getType() const {
+    return _type;
+  };
 
-  virtual char getTypeChar() const = 0;
+  inline virtual char getTypeChar() const {
+    switch (_type) {
+      case NoteType::Silence :
+        return CHAR_SILENCENOTE_TYPE;
+      case NoteType::Rest :
+        return CHAR_RESTNOTE_TYPE;
+      case NoteType::SingleNote :
+        return CHAR_SINGLENOTE_TYPE;
+      case NoteType::Chord :
+        return CHAR_CHORD_TYPE;
+      case NoteType::Tuplet :
+        return CHAR_TUPLET_TYPE;
+      case NoteType::Grace :
+        return CHAR_GRACENOTE_TYPE;
+      case NoteType::Acciaccatura :
+        return CHAR_ACCIACCATURA_TYPE;
+      case NoteType::Appoggiatura :
+        return CHAR_APPOGGIATURA_TYPE;
+      default :
+        return CHAR_SILENCENOTE_TYPE;
+    }
+  }
 
-  virtual std::string getTypeStr() const = 0;
+  inline virtual std::string getTypeStr() const {
+    switch (_type) {
+      case NoteType::Silence :
+        return "Silence";
+      case NoteType::Rest :
+        return "Rest";
+      case NoteType::SingleNote :
+        return "SingleNote";
+      case NoteType::Chord :
+        return "Chord";
+      case NoteType::Tuplet :
+        return "Tuplet";
+      case NoteType::Grace :
+        return "Grace";
+      case NoteType::Acciaccatura :
+        return "Acciaccatura";
+      case NoteType::Appoggiatura :
+        return "Appoggiatura";
+      default :
+        return "";
+    }
+  }
 
   inline virtual bool isType(NoteType __ntype) const {
     return _type == __ntype;
@@ -118,7 +156,7 @@ class Note {
     return _type == NoteType::Rest;
   }
 
-  inline virtual bool isSilent() const {
+  inline virtual bool isSilence() const {
     return _type == NoteType::Silence;
   }
 
@@ -166,6 +204,10 @@ class Note {
 
   virtual const Property * getProperty(size_t __pos) const = 0;
 
+  virtual std::string getPropertyStr() const = 0;
+
+  virtual std::string getPropertyStr(size_t __pos) const = 0;
+
   virtual int getPitchSize() const = 0;
 
   virtual int getDurationSize() const = 0;
@@ -173,10 +215,6 @@ class Note {
   virtual int getPropertySize() const = 0;
 
   virtual void modify(const std::string& __context) = 0;
-
-  virtual void updateProperty(const std::string& __property) = 0;
-
-  virtual void updateProperty(const std::string& __property, size_t __pos) = 0;
 
   virtual std::string toString() const = 0;
 
