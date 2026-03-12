@@ -186,11 +186,11 @@ class Note {
 
   virtual bool isTied(size_t __pos) const = 0;
 
-  virtual const bool hasDuration() const = 0;
+  virtual bool hasDuration() const = 0;
   
-  virtual const bool hasPitch() const = 0;
+  virtual bool hasPitch() const = 0;
 
-  virtual const bool hasProperty() const = 0;
+  virtual bool hasProperty() const = 0;
 
   virtual const Duration * getDuration() const = 0;
 

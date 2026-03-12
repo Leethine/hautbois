@@ -215,15 +215,15 @@ bool SingleNote::isTied(size_t __pos) const {
   return _tied;
 }
 
-const bool SingleNote::hasDuration() const {
+bool SingleNote::hasDuration() const {
   return _duration != nullptr;
 }
   
-const bool SingleNote::hasPitch() const {
+bool SingleNote::hasPitch() const {
   return _pitch != nullptr;
 }
 
-const bool SingleNote::hasProperty() const {
+bool SingleNote::hasProperty() const {
   return _property != nullptr;
 }
 

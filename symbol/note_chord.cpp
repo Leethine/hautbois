@@ -301,11 +301,11 @@ bool Chord::isTied(size_t __pos) const {
   }
 }
 
-const bool Chord::hasDuration() const {
+bool Chord::hasDuration() const {
   return _duration != nullptr;
 }
 
-const bool Chord::hasPitch() const {
+bool Chord::hasPitch() const {
   if (!_pitch.empty()) {
     for (auto it=_pitch.cbegin(); it != _pitch.cend(); it++) {
       if (*it == nullptr) {
@@ -319,7 +319,7 @@ const bool Chord::hasPitch() const {
   }
 }
 
-const bool Chord::hasProperty() const {
+bool Chord::hasProperty() const {
   return _property != nullptr;
 }
 

@@ -90,11 +90,11 @@ class SingleNote : public Note {
 
   virtual bool isTied(size_t __pos) const;
 
-  virtual const bool hasDuration() const;
+  virtual bool hasDuration() const;
   
-  virtual const bool hasPitch() const;
+  virtual bool hasPitch() const;
 
-  virtual const bool hasProperty() const;
+  virtual bool hasProperty() const;
 
   virtual const Duration * getDuration() const;
 
