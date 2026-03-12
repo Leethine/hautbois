@@ -96,6 +96,12 @@ class SingleNote : public Note {
 
   virtual bool hasProperty() const;
 
+  virtual bool hasDuration(size_t __pos) const;
+  
+  virtual bool hasPitch(size_t __pos) const;
+
+  virtual bool hasProperty(size_t __pos) const;
+
   virtual const Duration * getDuration() const;
 
   virtual const Duration * getDuration(size_t __pos) const;

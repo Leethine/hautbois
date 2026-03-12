@@ -323,46 +323,82 @@ bool Chord::hasProperty() const {
   return _property != nullptr;
 }
 
+bool Chord::hasDuration(size_t __pos) const {
+  return _duration != nullptr;
+}
+
+bool Chord::hasPitch(size_t __pos) const {
+  if (__pos >= 0 && __pos < _pitch.size()) {
+    if (_pitch[__pos] != nullptr) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Chord::hasProperty(size_t __pos) const {
+  return _property != nullptr;
+}
+
 const Duration * Chord::getDuration() const {
-  return _duration;
+  if (_duration) {
+    return _duration;
+  }
+  else {
+    std::string msg = "duration is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
+  }
 }
 
 const Duration * Chord::getDuration(size_t __pos) const {
-  return _duration;
+  return Chord::getDuration();
 }
 
 const Pitch * Chord::getPitch() const {
   if (!_pitch.empty()) {
-    return _pitch.front();
+    if (_pitch.front()) {
+      return _pitch.front();
+    }
+    else {
+      std::string msg = "nullptr caught";
+      HB_THROW_MSG(std::runtime_error, msg);
+    }
   }
   else {
-    return nullptr;
+    std::string msg = "pitch is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
   }
 }
 
 const Pitch * Chord::getPitch(size_t __pos) const {
-  if (!_pitch.empty()) {
-    if (__pos >= _pitch.size()) {
-      return _pitch[_pitch.size() - 1];
-    }
-    else if (__pos < 0) {
-      return _pitch[0];
-    }
-    else {
-      return _pitch[__pos];
-    }
+  if (__pos >= _pitch.size() || __pos < 0 || _pitch.empty()) {
+    std::string msg = "Provided index " + std::to_string(__pos) 
+                    + " exceeds size "  + std::to_string(_pitch.size());
+    HB_THROW_MSG(std::out_of_range, msg);
   }
   else {
-    return nullptr;
+    if (_pitch[__pos]) {
+      return _pitch[__pos];
+    }
+    else {
+      std::string msg = "nullptr caught at pos " + std::to_string(__pos);
+      HB_THROW_MSG(std::runtime_error, msg);
+    }
   }
 }
 
 const Property * Chord::getProperty() const {
-  return _property;
+  if (_property) {
+    return _property;
+  }
+  else {
+    std::string msg = "property is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
+  }
 }
 
 const Property * Chord::getProperty(size_t __pos) const {
-  return _property;
+  return Chord::getProperty();
 }
 
 std::string Chord::getPropertyStr() const {

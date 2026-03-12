@@ -227,28 +227,58 @@ bool SingleNote::hasProperty() const {
   return _property != nullptr;
 }
 
+bool SingleNote::hasDuration(size_t __pos) const {
+  return _duration != nullptr;
+}
+
+bool SingleNote::hasPitch(size_t __pos) const {
+  return _pitch != nullptr;
+}
+
+bool SingleNote::hasProperty(size_t __pos) const {
+  return _property != nullptr;
+}
+
 const Duration * SingleNote::getDuration() const {
-  return _duration;
+  if (_duration) {
+    return _duration;
+  }
+  else {
+    std::string msg = "duration is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
+  }
 }
 
 const Duration * SingleNote::getDuration(size_t __pos) const {
-  return _duration;
+  return SingleNote::getDuration();
 }
 
 const Pitch * SingleNote::getPitch() const {
-  return _pitch;
+  if (_pitch) {
+    return _pitch;
+  }
+  else {
+    std::string msg = "pitch is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
+  }
 }
 
 const Pitch * SingleNote::getPitch(size_t __pos) const {
-  return _pitch;
+  return SingleNote::getPitch();
 }
 
 const Property * SingleNote::getProperty() const {
-  return _property;
+  if (_property) {
+    return _property;
+  }
+  else {
+    std::string msg = "property is empty";
+    HB_THROW_MSG(std::out_of_range, msg);
+  }
 }
 
 const Property * SingleNote::getProperty(size_t __pos) const {
-  return _property;
+  return SingleNote::getProperty();
 }
 
 std::string SingleNote::getPropertyStr() const {
@@ -264,20 +294,24 @@ std::string SingleNote::getPropertyStr(size_t __pos) const {
 }
 
 int SingleNote::getPitchSize() const {
-  return 1;
+  if (_pitch) {
+    return 1;
+  }
+  return 0;
 }
 
 int SingleNote::getDurationSize() const {
-  return 1;
+  if (_duration) {
+    return 1;
+  }
+  return 0;
 }
 
 int SingleNote::getPropertySize() const {
-  if (_property == nullptr) {
-    return 0;
-  }
-  else {
+  if (_property) {
     return 1;
   }
+  return 0;
 }
 
 void SingleNote::modify(const std::string& __context) { }
@@ -291,9 +325,13 @@ std::string SingleNote::toString() const {
     s += "R,";
   }
   else {
-    s += _pitch->toString() + ",";
+    if (_pitch) {
+      s += _pitch->toString() + ",";
+    }
   }
-  s += _duration->toString();
+  if (_duration) {
+    s += _duration->toString();
+  }
   return s;
 }
 

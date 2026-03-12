@@ -58,4 +58,15 @@ BOOST_AUTO_TEST_CASE(test_property) {
   BOOST_TEST(n1.getPropertyStr() == "trill");
 }
 
+BOOST_AUTO_TEST_CASE(test_get_except) {
+  class NewSingleNote : public SingleNote {
+    public:
+    NewSingleNote() : SingleNote() {}
+  };
+  NewSingleNote * n = new NewSingleNote();
+  BOOST_TEST(!n->hasPitch());
+  BOOST_TEST(n->getPitchSize() == 0);
+  BOOST_CHECK_THROW(n->getPitch(), std::out_of_range);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

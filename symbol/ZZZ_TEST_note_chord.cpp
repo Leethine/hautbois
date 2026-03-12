@@ -31,7 +31,6 @@ BOOST_AUTO_TEST_CASE(test_constr_throw) {
   BOOST_CHECK_THROW(Chord n2 ({"Cn4","XXX"}, 1,4),std::invalid_argument);
 }
 
-
 BOOST_AUTO_TEST_CASE(test_tie) {
   Chord n1 ({"C4", "Bb4", "A4"}, 1,4);
   n1.setTied(1);
@@ -57,6 +56,13 @@ BOOST_AUTO_TEST_CASE(test_get_pitch) {
   BOOST_TEST(n1.getPitch(0)->toString() == "C#4");
   BOOST_TEST(n1.getPitch(1)->toString() == "Bb4");
   BOOST_TEST(n1.getPitch(2)->toString() == "An4");
+}
+
+BOOST_AUTO_TEST_CASE(test_get_except) {
+  Note * n1 = new Chord ({"C4", "G#5", "Db3"}, 1,4);
+  BOOST_TEST(n1->getPitchSize() == 3);
+  BOOST_TEST(n1->getPitch(1)->toString() == "G#5");
+  BOOST_CHECK_THROW(n1->getPitch(5), std::out_of_range);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
