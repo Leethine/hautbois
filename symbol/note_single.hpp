@@ -42,6 +42,8 @@ class SingleNote : public Note {
 
   virtual void clearProperty();
 
+  virtual void * verify(const char * __context) const;
+
   virtual std::string filterProperty(const std::string& __text) const;
 
   SingleNote();

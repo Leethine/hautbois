@@ -39,17 +39,13 @@ void SingleNote::setDuration(Duration * __d) {
 }
 
 void SingleNote::addProperty(Property * __p) {
-  if (__p) {
-    SingleNote::clearProperty();
-    _property = __p;
-  }
+  SingleNote::clearProperty();
+  _property = __p;
 }
 
 void SingleNote::setProperty(Property * __p) {
-  if (__p) {
-    SingleNote::clearProperty();
-    _property = __p;
-  }
+  SingleNote::clearProperty();
+  _property = __p;
 }
 
 void SingleNote::clearPitch() {
@@ -65,6 +61,10 @@ void SingleNote::clearDuration() {
 void SingleNote::clearProperty() {
   delete _property;
   _property = nullptr;
+}
+
+void * SingleNote::verify(const char * __context) const {
+  return nullptr;
 }
 
 std::string SingleNote::filterProperty(const std::string& __text) const {

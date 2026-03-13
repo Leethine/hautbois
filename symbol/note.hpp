@@ -56,6 +56,8 @@ class Note {
 
   virtual void clearProperty() = 0;
 
+  virtual void * verify(const char * __context) const = 0;
+
   virtual std::string filterProperty(const std::string& __text) const = 0;
 
  public:

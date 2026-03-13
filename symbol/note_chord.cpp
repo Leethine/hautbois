@@ -11,6 +11,7 @@ namespace core {
 void Chord::addPitch(Pitch * __p) {
   if (__p) {
     _pitch.push_back(__p);
+    _tied.push_back(false);
   }
 }
 
@@ -18,6 +19,7 @@ void Chord::setPitch(Pitch * __p) {
   Chord::clearPitch();
   if (__p) {
     _pitch.push_back(__p);
+    _tied.push_back(false);
   }
 }
 
@@ -37,16 +39,12 @@ void Chord::setDuration(Duration * __d) {
 
 void Chord::addProperty(Property * __p) {
   Chord::clearProperty();
-  if (__p) {
-    _property = __p;
-  }
+  _property = __p;
 }
 
 void Chord::setProperty(Property * __p) {
   Chord::clearProperty();
-  if (__p) {
-    _property = __p;
-  }
+  _property = __p;
 }
 
 void Chord::clearPitch() {
@@ -54,6 +52,7 @@ void Chord::clearPitch() {
     delete (*it);
   }
   _pitch.clear();
+  _tied.clear();
 }
 
 void Chord::clearDuration() {
@@ -64,6 +63,10 @@ void Chord::clearDuration() {
 void Chord::clearProperty() {
   delete _property;
   _property = nullptr;
+}
+
+void * Chord::verify(const char * __context) const {
+  return nullptr;
 }
 
 std::string Chord::filterProperty(const std::string& __text) const {
@@ -80,10 +83,10 @@ Chord::Chord(const std::vector<std::string>& __pitches) : Chord() {
     std::string token(*it);
     Pitch * p = nullptr;
     HB_NESTED_THROW_MSG(std::invalid_argument,
-      std::string ("Failed to create Chord with invalid token: " + token),
+      std::string ("Failed to create Chord at token: " + token),
       SingleNote n(token, 1,4);
-      HB_NESTED_THROW_MSG(std::runtime_error,
-        std::string ("Runtime error occurred while processing token: " + token),
+      HB_NESTED_THROW_MSG(std::out_of_range,
+        std::string ("Empty pitch found while processing token: " + token),
         p = new Pitch(*n.getPitch());
       )
     )
@@ -118,7 +121,7 @@ Chord::Chord(const std::vector<std::string>& __pitches,
 }
 
 Chord::Chord(const std::vector<std::string>& __pitches,
-            const int& denom, const std::string& dots) :
+             const int& denom, const std::string& dots) :
   Chord(__pitches) {
   Duration * d = nullptr;
   HB_NESTED_THROW(std::invalid_argument,
@@ -145,6 +148,11 @@ Chord::Chord(Chord& __note) : Chord() {
       Pitch * p = new Pitch(*__note.getPitch(i));
       Chord::addPitch(p);
     }
+    for (int i=0; i < _pitch.size(); i++) { // Copy all tie information
+      if (__note.isTied(i)) {
+        Chord::setTied(i);
+      }
+    }
   }
   if (__note.hasDuration()) {
     Duration * d = new Duration(*__note.getDuration());
@@ -161,6 +169,11 @@ Chord::Chord(Chord&& __note) : Chord() {
     for (size_t i=0; i < __note.getPitchSize(); i++) {
       Pitch * p = new Pitch(*__note.getPitch(i));
       Chord::addPitch(p);
+    }
+    for (int i=0; i < _pitch.size(); i++) { // Copy all tie information
+      if (__note.isTied(i)) {
+        Chord::setTied(i);
+      }
     }
   }
   if (__note.hasDuration()) {
@@ -183,6 +196,11 @@ Chord& Chord::operator=(const Chord& __n) {
       for (size_t i=0; i < __n.getPitchSize(); i++) {
         Pitch * p = new Pitch(*__n.getPitch(i));
         Chord::addPitch(p);
+      }
+      for (int i=0; i < _pitch.size(); i++) { // Copy all tie information
+        if (__n.isTied(i)) {
+          Chord::setTied(i);
+        }
       }
     }
     if (__n.hasDuration()) {
@@ -278,6 +296,11 @@ bool Chord::isValid() const {
     return false;
   }
   else {
+    for (auto it = _pitch.cbegin(); it != _pitch.cend(); it++) {
+      if (*it == nullptr) {
+        return false;
+      }
+    }
     return true;
   }
 }
