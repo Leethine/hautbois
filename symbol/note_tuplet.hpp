@@ -28,10 +28,6 @@ class Tuplet : public Note {
 
   const int nbr_of_notes;
 
-  bool cmpNoteValue() const;
-
-  bool cmpNoteNumber() const;
-
  protected:
 
   virtual void addPitch(Pitch * __p);
@@ -52,27 +48,35 @@ class Tuplet : public Note {
 
   virtual void clearProperty();
 
+  virtual void * verify(const char * __context) const;
+
   virtual std::string filterProperty(const std::string& __text) const;
+
+  Tuplet(const int& __nbr_of_notes);
 
   Tuplet();
 
-  Tuplet(const std::initializer_list<std::string> __group);
+  Tuplet(const std::initializer_list<std::string> __group, const int& __nbr_of_notes);
 
-  Tuplet(const std::vector<std::string>& __group);
+  Tuplet(const std::vector<std::string>& __group, const int& __nbr_of_notes);
 
  public:
 
   Tuplet(const std::initializer_list<std::string> __group,
-         const int& num, const int& denom);
+         const int& num, const int& denom,
+         const int& __nbr_of_notes = 0);
 
   Tuplet(const std::vector<std::string>& __group,
-         const int& num, const int& denom);
+         const int& num, const int& denom,
+         const int& __nbr_of_notes = 0);
 
   Tuplet(const std::initializer_list<std::string> __group,
-         const int& denom, const std::string& dots);
+         const int& denom, const std::string& dots,
+         const int& __nbr_of_notes = 0);
 
   Tuplet(const std::vector<std::string>& __group,
-         const int& denom, const std::string& dots);
+         const int& denom, const std::string& dots,
+         const int& __nbr_of_notes = 0);
 
   Tuplet(Tuplet& __note);
   
