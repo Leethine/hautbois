@@ -14,6 +14,9 @@ class SingleNote : public Note {
 
  private:
 
+  /* Declared in class Note */
+  ///: NoteType _type;
+
   Duration * _duration;
 
   Pitch * _pitch;
@@ -23,6 +26,11 @@ class SingleNote : public Note {
   bool _tied;
 
  protected:
+  
+  /* The commented out virtual methods are to be implemented in derived classes.
+     Or they are already implemented in class Note, if it's not pure virtual. */
+
+  ///+ virtual void setNoteType(NoteType __ntype);
 
   virtual void addPitch(Pitch * __p);
 
@@ -35,6 +43,12 @@ class SingleNote : public Note {
   virtual void addProperty(Property * __p);
 
   virtual void setProperty(Property * __p);
+
+  virtual Pitch * getPitchToModify(int pos);
+
+  virtual Duration * getDurationToModify(int pos);
+
+  virtual Property * getPropertyToModify(int pos);
 
   virtual void clearPitch();
 
@@ -86,6 +100,30 @@ class SingleNote : public Note {
 
   virtual int getSize() const;
 
+  ///+ virtual NoteType getType();
+
+  ///+ virtual char getTypeChar() const;
+
+  ///+ virtual std::string getTypeStr() const;
+
+  ///+ virtual bool isType(NoteType __ntype) const;
+
+  ///+ virtual bool isSingle() const;
+
+  ///+ virtual bool isRest() const;
+
+  ///+ virtual bool isSilence() const;
+
+  ///+ virtual bool isChord() const;
+
+  ///+ virtual bool isTuplet() const;
+
+  ///+ virtual bool isGrace() const;
+
+  ///+ virtual bool isAppoggiatura() const;
+
+  ///+ virtual bool isAcciaccatura() const;
+
   virtual bool isValid() const;
 
   virtual bool isTied() const;
@@ -93,14 +131,14 @@ class SingleNote : public Note {
   virtual bool isTied(size_t __pos) const;
 
   virtual bool hasDuration() const;
-  
-  virtual bool hasPitch() const;
-
-  virtual bool hasProperty() const;
 
   virtual bool hasDuration(size_t __pos) const;
   
+  virtual bool hasPitch() const;
+  
   virtual bool hasPitch(size_t __pos) const;
+
+  virtual bool hasProperty() const;
 
   virtual bool hasProperty(size_t __pos) const;
 

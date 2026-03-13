@@ -12,40 +12,52 @@ namespace core {
 
 void SingleNote::addPitch(Pitch * __p) {
   if (__p) {
-    SingleNote::clearPitch();
+    delete _pitch;
     _pitch = __p;
   }
 }
 
 void SingleNote::setPitch(Pitch * __p) {
   if (__p) {
-    SingleNote::clearPitch();
+    delete _pitch;
     _pitch = __p;
   }
 }
 
 void SingleNote::addDuration(Duration * __d) {
   if (__d) {
-    SingleNote::clearDuration();
+    delete _duration;
     _duration = __d;
   }
 }
 
 void SingleNote::setDuration(Duration * __d) {
   if (__d) {
-    SingleNote::clearDuration();
+    delete _duration;
     _duration = __d;
   }
 }
 
 void SingleNote::addProperty(Property * __p) {
-  SingleNote::clearProperty();
+  delete _property; 
   _property = __p;
 }
 
 void SingleNote::setProperty(Property * __p) {
-  SingleNote::clearProperty();
+  delete _property;
   _property = __p;
+}
+
+Pitch * SingleNote::getPitchToModify(int pos) {
+  return _pitch;
+}
+
+Duration * SingleNote::getDurationToModify(int pos) {
+  return _duration;
+}
+
+Property * SingleNote::getPropertyToModify(int pos) {
+  return _property;
 }
 
 void SingleNote::clearPitch() {
@@ -64,6 +76,11 @@ void SingleNote::clearProperty() {
 }
 
 void * SingleNote::verify(const char * __context) const {
+  if (_pitch == nullptr || _duration == nullptr) {
+    HB_THROW_MSG(std::runtime_error,
+      std::string("No _pitch or _duration available.")
+    );
+  }
   return nullptr;
 }
 
@@ -98,8 +115,9 @@ SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
     }
   }
   else {
-    std::string msg ("Failed to create SingleNote with " + __pitch);
-    HB_THROW_MSG(std::invalid_argument, msg);
+    HB_THROW_MSG(std::invalid_argument,
+      std::string ("Cannot create SingleNote with Pitch: " + __pitch)
+    );
   }
   HB_NESTED_THROW(std::invalid_argument,
     _pitch = new Pitch(name, acc, oct - '0') ; 
@@ -201,16 +219,17 @@ void SingleNote::setUntied(size_t __pos) {
 }
 
 int SingleNote::getSize() const {
-  return 1;
+  if (_duration) {
+    return 1;
+  }
+  return 0;
 }
 
 bool SingleNote::isValid() const {
   if (_duration != nullptr && _pitch != nullptr) {
     return true;
   }
-  else {
-    return false;
-  }
+  return false;
 }
 
 bool SingleNote::isTied() const {
@@ -224,21 +243,21 @@ bool SingleNote::isTied(size_t __pos) const {
 bool SingleNote::hasDuration() const {
   return _duration != nullptr;
 }
-  
-bool SingleNote::hasPitch() const {
-  return _pitch != nullptr;
-}
-
-bool SingleNote::hasProperty() const {
-  return _property != nullptr;
-}
 
 bool SingleNote::hasDuration(size_t __pos) const {
   return _duration != nullptr;
 }
 
+bool SingleNote::hasPitch() const {
+  return _pitch != nullptr;
+}
+
 bool SingleNote::hasPitch(size_t __pos) const {
   return _pitch != nullptr;
+}
+
+bool SingleNote::hasProperty() const {
+  return _property != nullptr;
 }
 
 bool SingleNote::hasProperty(size_t __pos) const {
@@ -250,8 +269,7 @@ const Duration * SingleNote::getDuration() const {
     return _duration;
   }
   else {
-    std::string msg = "duration is empty";
-    HB_THROW_MSG(std::out_of_range, msg);
+    HB_THROW_MSG(std::out_of_range, std::string ("duration is empty"));
   }
 }
 
@@ -264,8 +282,7 @@ const Pitch * SingleNote::getPitch() const {
     return _pitch;
   }
   else {
-    std::string msg = "pitch is empty";
-    HB_THROW_MSG(std::out_of_range, msg);
+    HB_THROW_MSG(std::out_of_range, std::string ("pitch is empty"));
   }
 }
 
@@ -278,8 +295,7 @@ const Property * SingleNote::getProperty() const {
     return _property;
   }
   else {
-    std::string msg = "property is empty";
-    HB_THROW_MSG(std::out_of_range, msg);
+    HB_THROW_MSG(std::out_of_range, std::string ("property is empty"));
   }
 }
 
@@ -324,20 +340,12 @@ void SingleNote::modify(const std::string& __context) { }
 
 std::string SingleNote::toString() const {
   std::string s;
-  if (Note::isSilence()) {
-    s += "S,";
-  }
-  else if (Note::isRest()) {
-    s += "R,";
-  }
+  if (Note::isSilence())   { s += "S,"; }
+  else if (Note::isRest()) { s += "R,"; }
   else {
-    if (_pitch) {
-      s += _pitch->toString() + ",";
-    }
+    if (_pitch)  { s += _pitch->toString() + ","; }
   }
-  if (_duration) {
-    s += _duration->toString();
-  }
+  if (_duration) { s += _duration->toString(); }
   return s;
 }
 

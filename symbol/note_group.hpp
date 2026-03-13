@@ -20,7 +20,7 @@ class NoteGroup : public Note {
 private:
 
   /* Declared in class Note */
-  /// NoteType _type;
+  ///: NoteType _type;
 
   std::vector<Pitch *> _pitchList;
 
@@ -35,7 +35,7 @@ protected:
   /* The commented out virtual methods are to be implemented in derived classes.
      Or they are already implemented in class Note, if it's not pure virtual. */
 
-  //// virtual void setNoteType(NoteType __ntype);
+  ///+ virtual void setNoteType(NoteType __ntype);
 
   inline virtual void addPitch(Pitch *__p) {
     if (__p) {
@@ -44,9 +44,9 @@ protected:
     }
   }
 
-  /// virtual void setPitch(Pitch * __p) = 0;
+  ///- virtual void setPitch(Pitch * __p) = 0;
 
-  /// virtual void addDuration(Duration * __d) = 0;
+  ///- virtual void addDuration(Duration * __d) = 0;
 
   inline virtual void setDuration(Duration *__d) {
     if (__d) {
@@ -55,23 +55,23 @@ protected:
     }
   }
 
-  /// virtual void addProperty(Property * __p) = 0;
+  ///- virtual void addProperty(Property * __p) = 0;
 
   inline virtual void setProperty(Property *__p) {
     delete _property;
     _property = __p;
   }
 
-  inline virtual Pitch * getPitch(int pos) {
+  inline virtual Pitch * getPitchToModify(int pos) {
     if (_pitchList.empty()) {
       return nullptr;
     }
     else {
       if (pos < 0) {
-        return _pitchList[0];
+        return _pitchList.front();
       }
       else if (pos >= _pitchList.size()) {
-        return _pitchList[_pitchList.size() - 1];
+        return _pitchList.back();
       }
       else {
         return _pitchList[pos];
@@ -79,11 +79,11 @@ protected:
     }
   }
 
-  inline virtual Duration * getDuration(int pos) {
+  inline virtual Duration * getDurationToModify(int pos) {
     return _duration;
   }
 
-  inline virtual Property * getProperty(int pos) {
+  inline virtual Property * getPropertyToModify(int pos) {
     return _property;
   }
 
@@ -105,11 +105,14 @@ protected:
     _property = nullptr;
   }
 
-  /// virtual void * verify(const char * __context) const = 0;
+  ///- virtual void * verify(const char * __context) const = 0;
 
-  /// virtual std::string filterProperty(const std::string& __text) const = 0;
+  ///- virtual std::string filterProperty(const std::string& __text) const = 0;
 
   NoteGroup() = delete;
+  NoteGroup(NoteGroup&)=delete;
+  NoteGroup(NoteGroup&&)=delete;
+  virtual NoteGroup& operator=(const NoteGroup &__n) = delete;
 
   inline NoteGroup(NoteType __type) :
     Note(__type), _pitchList {}, _duration(nullptr), _property(nullptr), _tieList {} {
@@ -157,12 +160,6 @@ protected:
     }
   }
 
-  NoteGroup(NoteGroup&)=delete;
-
-  NoteGroup(NoteGroup&&)=delete;
-
-  virtual NoteGroup& operator=(const NoteGroup &__n) = delete;
-
 public:
 
   inline virtual ~NoteGroup() {
@@ -171,19 +168,19 @@ public:
     NoteGroup::clearPitch();
   }
 
-  /// virtual void updateDuration(const std::string& __context) = 0;
+  ///- virtual void updateDuration(const std::string& __context) = 0;
 
-  /// virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
+  ///- virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
 
-  /// virtual void updatePitch(const std::string& __context) = 0;
+  ///- virtual void updatePitch(const std::string& __context) = 0;
 
-  /// virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
+  ///- virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
 
-  /// virtual void updateProperty(const std::string& __context) = 0;
+  ///- virtual void updateProperty(const std::string& __context) = 0;
 
-  /// virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
+  ///- virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
 
-  /// virtual void setTied() = 0;
+  ///- virtual void setTied() = 0;
 
   inline virtual void setTied(size_t __pos) {
     if (__pos >= _tieList.size() || __pos < 0) {
@@ -196,7 +193,7 @@ public:
     }
   }
 
-  /// virtual void setUntied() = 0;
+  ///- virtual void setUntied() = 0;
 
   inline virtual void setUntied(size_t __pos) {
     if (__pos >= _tieList.size() || __pos < 0) {
@@ -209,31 +206,31 @@ public:
     }
   }
 
-  /// virtual int getSize() const = 0;
+  ///- virtual int getSize() const = 0;
 
-  //// virtual NoteType getType() const;
+  ///+ virtual NoteType getType() const;
 
-  //// virtual char getTypeChar() const;
+  ///+ virtual char getTypeChar() const;
 
-  //// virtual std::string getTypeStr() const;
+  ///+ virtual std::string getTypeStr() const;
 
-  //// virtual bool isType(NoteType __ntype) const;
+  ///+ virtual bool isType(NoteType __ntype) const;
 
-  //// virtual bool isSingle() const;
+  ///+ virtual bool isSingle() const;
 
-  //// virtual bool isRest() const;
+  ///+ virtual bool isRest() const;
 
-  //// virtual bool isSilence() const;
+  ///+ virtual bool isSilence() const;
 
-  //// virtual bool isChord() const;
+  ///+ virtual bool isChord() const;
 
-  //// virtual bool isTuplet() const;
+  ///+ virtual bool isTuplet() const;
 
-  //// virtual bool isGrace() const;
+  ///+ virtual bool isGrace() const;
 
-  //// virtual bool isAppoggiatura() const;
+  ///+ virtual bool isAppoggiatura() const;
 
-  //// virtual bool isAcciaccatura() const;
+  ///+ virtual bool isAcciaccatura() const;
 
   inline virtual bool isValid() const {
     if (_pitchList.empty() || _duration == nullptr) {
@@ -249,7 +246,7 @@ public:
     }
   }
 
-  /// virtual bool isTied() const = 0;
+  ///- virtual bool isTied() const = 0;
 
   inline virtual bool isTied(size_t __pos) const {
     if (__pos >= _tieList.size() || __pos < 0) {
@@ -266,9 +263,9 @@ public:
     return _duration != nullptr;
   }
 
-  /// virtual bool hasDuration(size_t __pos) const = 0;
+  ///- virtual bool hasDuration(size_t __pos) const = 0;
 
-  /// virtual bool hasPitch() const = 0;
+  ///- virtual bool hasPitch() const = 0;
 
   inline virtual bool hasPitch(size_t __pos) const {
     if (__pos >= _pitchList.size() || __pos < 0) {
@@ -283,13 +280,13 @@ public:
     return _property != nullptr;
   }
 
-  /// virtual bool hasProperty(size_t __pos) const = 0;
+  ///- virtual bool hasProperty(size_t __pos) const = 0;
 
   inline virtual const Duration *getDuration() const {
     return _duration;
   }
 
-  /// virtual const Pitch * getPitch() const = 0;
+  ///- virtual const Pitch * getPitch() const = 0;
 
   inline virtual const Pitch *getPitch(size_t __pos) const {
     if (__pos >= _pitchList.size() || __pos < 0) {
@@ -302,33 +299,33 @@ public:
     }
   }
 
-  inline virtual const Property * getProperty(size_t __pos) const {
+  inline virtual const Property * getProperty() const {
     return _property;
   }
 
-  /// virtual const Property * getProperty(size_t __pos) const = 0;
+  ///- virtual const Property * getProperty(size_t __pos) const = 0;
 
   inline virtual int getPitchSize() const {
     return _pitchList.size();
   }
 
-  /// virtual std::string getPropertyStr() const = 0;
+  ///- virtual std::string getPropertyStr() const = 0;
 
-  /// virtual std::string getPropertyStr(size_t __pos) const = 0;
+  ///- virtual std::string getPropertyStr(size_t __pos) const = 0;
 
   inline virtual int getPitchSize() const {
     return _pitchList.size();
   }
 
-  /// virtual int getDurationSize() const = 0;
+  ///- virtual int getDurationSize() const = 0;
 
-  /// virtual int getPropertySize() const = 0;
+  ///- virtual int getPropertySize() const = 0;
 
-  /// virtual void modify(const std::string& __context) = 0;
+  ///- virtual void modify(const std::string& __context) = 0;
 
-  /// virtual std::string toString() const = 0;
+  ///- virtual std::string toString() const = 0;
 
-  /// virtual void * toStream(const std::string& __context, void * __ostream) const = 0;
+  ///- virtual void * toStream(const std::string& __context, void * __ostream) const = 0;
 
 };
 

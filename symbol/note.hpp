@@ -50,11 +50,11 @@ class Note {
 
   virtual void setProperty(Property * __p) = 0;
 
-  virtual Pitch * getPitch(int pos) = 0;
+  virtual Pitch * getPitchToModify(int pos) = 0;
 
-  virtual Duration * getDuration(int pos) = 0;
+  virtual Duration * getDurationToModify(int pos) = 0;
 
-  virtual Property * getProperty(int pos) = 0;
+  virtual Property * getPropertyToModify(int pos) = 0;
 
   virtual void clearPitch() = 0;
 
