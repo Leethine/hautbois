@@ -305,10 +305,6 @@ public:
 
   ///- virtual const Property * getProperty(size_t __pos) const = 0;
 
-  inline virtual int getPitchSize() const {
-    return _pitchList.size();
-  }
-
   ///- virtual std::string getPropertyStr() const = 0;
 
   ///- virtual std::string getPropertyStr(size_t __pos) const = 0;

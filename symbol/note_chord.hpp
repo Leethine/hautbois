@@ -7,52 +7,60 @@
 #include <string>
 #include <initializer_list>
 
-#include "note.hpp"
+#include "note_group.hpp"
 
 namespace hautbois {
 namespace core {
 
-class Chord : public Note {
+class Chord : public NoteGroup {
 
- private:
+ // private:
 
-  Duration * _duration;
+  /* Declared in class Note */
+  ///: NoteType _type;
 
-  std::vector<Pitch *> _pitch;
-
-  Property * _property;
-
-  std::vector<bool> _tied;
+  /* Declared in class NoteGroup */
+  ///: std::vector<Pitch *> _pitchList;
+  ///: Duration * _duration;
+  ///: Property * _property;
+  ///: std::vector<bool> _tieList;
 
  protected:
 
-  virtual void addPitch(Pitch * __p);
+  /* The commented out methods are already implemented
+     in the base classes, namely Note and NoteGroup  */
+
+  ///+ virtual void setNoteType(NoteType __ntype);
+
+  ///+ virtual void addPitch(Pitch *__p);
 
   virtual void setPitch(Pitch * __p);
 
   virtual void addDuration(Duration * __d);
 
-  virtual void setDuration(Duration * __d);
+  ///+ virtual void setDuration(Duration *__d);
 
   virtual void addProperty(Property * __p);
 
-  virtual void setProperty(Property * __p);
+  ///+ virtual void setProperty(Property *__p);
 
-  virtual void clearPitch();
+  ///+ virtual Pitch * getPitchToModify(int pos);
 
-  virtual void clearDuration();
+  ///+ virtual Duration * getDurationToModify(int pos);
 
-  virtual void clearProperty();
+  ///+ virtual Property * getPropertyToModify(int pos);
+
+  ///+ virtual void clearPitch();
+
+  ///+ virtual void clearDuration();
+
+  ///+ virtual void clearProperty();
 
   virtual void * verify(const char * __context) const;
-  
+
   virtual std::string filterProperty(const std::string& __text) const;
 
   Chord();
-
-  Chord(const std::vector<std::string>& __pitches);
-
-  Chord(const std::initializer_list<const char *> __pitches);
 
  public:
  
@@ -79,7 +87,7 @@ class Chord : public Note {
   virtual void updateDuration(const std::string& __context);
 
   virtual void updateDuration(const std::string& __context, size_t __pos);
-  
+
   virtual void updatePitch(const std::string& __context);
 
   virtual void updatePitch(const std::string& __context, size_t __pos);
@@ -90,41 +98,63 @@ class Chord : public Note {
 
   virtual void setTied();
 
-  virtual void setTied(size_t __pos);
+  ///+ virtual void setTied(size_t __pos);
 
   virtual void setUntied();
 
-  virtual void setUntied(size_t __pos);
+  ///+ virtual void setUntied(size_t __pos);
 
   virtual int getSize() const;
 
-  virtual bool isValid() const;
+  ///+ virtual NoteType getType() const;
+
+  ///+ virtual char getTypeChar() const;
+
+  ///+ virtual std::string getTypeStr() const;
+
+  ///+ virtual bool isType(NoteType __ntype) const;
+
+  ///+ virtual bool isSingle() const;
+
+  ///+ virtual bool isRest() const;
+
+  ///+ virtual bool isSilence() const;
+
+  ///+ virtual bool isChord() const;
+
+  ///+ virtual bool isTuplet() const;
+
+  ///+ virtual bool isGrace() const;
+
+  ///+ virtual bool isAppoggiatura() const;
+
+  ///+ virtual bool isAcciaccatura() const;
+
+  ///+ virtual bool isValid() const;
 
   virtual bool isTied() const;
 
-  virtual bool isTied(size_t __pos) const;
+  ///+ virtual bool isTied(size_t __pos) const;
 
-  virtual bool hasDuration() const;
-  
-  virtual bool hasPitch() const;
-
-  virtual bool hasProperty() const;
+  ///+ virtual bool hasDuration() const;
 
   virtual bool hasDuration(size_t __pos) const;
-  
-  virtual bool hasPitch(size_t __pos) const;
+
+  virtual bool hasPitch() const;
+
+  ///+ virtual bool hasPitch(size_t __pos) const;
+
+  ///+ virtual bool hasProperty() const;
 
   virtual bool hasProperty(size_t __pos) const;
 
-  virtual const Duration * getDuration() const;
-
-  virtual const Duration * getDuration(size_t __pos) const;
+  ///+ virtual const Duration *getDuration() const;
 
   virtual const Pitch * getPitch() const;
 
-  virtual const Pitch * getPitch(size_t __pos) const;
+  ///+ virtual const Pitch *getPitch(size_t __pos) const;
 
-  virtual const Property * getProperty() const;
+  ///+ virtual const Property * getProperty() const;
 
   virtual const Property * getProperty(size_t __pos) const;
 
@@ -132,7 +162,7 @@ class Chord : public Note {
 
   virtual std::string getPropertyStr(size_t __pos) const;
 
-  virtual int getPitchSize() const;
+  ///+ virtual int getPitchSize() const;
 
   virtual int getDurationSize() const;
 
