@@ -50,6 +50,12 @@ class Note {
 
   virtual void setProperty(Property * __p) = 0;
 
+  virtual Pitch * getPitch() = 0;
+
+  virtual Duration * getDuration() = 0;
+
+  virtual Property * getProperty() = 0;
+
   virtual void clearPitch() = 0;
 
   virtual void clearDuration() = 0;
@@ -189,10 +195,16 @@ class Note {
   virtual bool isTied(size_t __pos) const = 0;
 
   virtual bool hasDuration() const = 0;
+
+  virtual bool hasDuration(size_t __pos) const = 0;
   
   virtual bool hasPitch() const = 0;
 
+  virtual bool hasPitch(size_t __pos) const = 0;
+
   virtual bool hasProperty() const = 0;
+
+  virtual bool hasProperty(size_t __pos) const = 0;
 
   virtual const Duration * getDuration() const = 0;
 
