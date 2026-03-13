@@ -35,7 +35,7 @@
   }                               
 
 #define HB_NESTED_THROW_MSG(EXP,MSG,PROC) \
-  try { PROC ; } catch(const EXP & e) {   \
+  try { PROC } catch(const EXP & e) {   \
     throw EXP(                            \
   std::string("\nFile: ")  +              \
   std::string(__FILE__) + "\nLine: " +    \
@@ -64,7 +64,7 @@
   }                               
 
 #define HB_NESTED_THROW_MSG(EXP,MSG,PROC) \
-  try { PROC ; } catch(const EXP & e) {   \
+  try { PROC } catch(const EXP & e) {   \
     throw EXP( "\nError: "+               \
       std::string( MSG )  +               \
       "\nUpper-level exception:\n" +      \
