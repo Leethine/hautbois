@@ -5,7 +5,6 @@
 
 #include <vector>
 #include <string>
-#include <cstring>
 #include <initializer_list>
 
 #include "note_group.hpp"
@@ -31,7 +30,11 @@ class NoteSequence : public NoteGroup {
   
   std::vector<Property *> _propertyList;
 
-  const unsigned int _durationDivisor;
+  Pitch * _pitch;
+
+  bool _tied;
+
+  const unsigned int _noteCount;
 
  protected:
 
@@ -40,75 +43,27 @@ class NoteSequence : public NoteGroup {
 
   ///+ virtual void setNoteType(NoteType __ntype);
 
-  ///+ virtual void addPitch(Pitch *__p);
+  virtual void addPitch(Pitch *__p);
 
-  ///- virtual void setPitch(Pitch * __p) = 0;
+  virtual void setPitch(Pitch * __p);
 
-  inline virtual void addDuration(Duration *__d) {
-    if (__d) {
-      _durationList.push_back(__d);
-    }
-  }
+  virtual void addDuration(Duration *__d);
 
-  inline virtual void addProperty(Property *__p) {
-    if (__p) {
-      _propertyList.push_back(__p);
-    }
-  }
+  virtual void addProperty(Property *__p);
 
-  ///- virtual void setProperty(Property *__p);
+  virtual void setProperty(Property *__p);
 
-  inline virtual Pitch * getPitchToModify(int pos) {
-    return NoteGroup::getPitchToModify(pos);
-  }
+  virtual Pitch * getPitchToModify(int pos);
 
-  inline virtual Duration * getDurationToModify(int pos) {
-    if (pos < 0 || _durationList.empty()) {
-      return NoteGroup::getDurationToModify(0);
-    }
-    else {
-      if (pos >= _durationList.size()) {
-        return _durationList.back();
-      }
-      else {
-        return _durationList[pos];
-      }
-    }
-  }
+  virtual Duration * getDurationToModify(int pos);
 
-  inline virtual Property * getPropertyToModify(int pos) {
-    if (pos < 0 || _propertyList.empty()) {
-      return NoteGroup::getPropertyToModify(0);
-    }
-    else {
-      if (pos >= _propertyList.size()) {
-        return _propertyList.back();
-      }
-      else {
-        return _propertyList[pos];
-      }
-    }
-  }
+  virtual Property * getPropertyToModify(int pos);
 
-  inline virtual void clearPitch() {
-    NoteGroup::clearPitch();
-  }
+  virtual void clearPitch();
 
-  inline virtual void clearDuration() {
-    NoteGroup::clearDuration();
-    for (auto it = _durationList.begin(); it != _durationList.end(); it++) {
-      delete *it;
-    }
-    _durationList.clear();
-  }
+  virtual void clearDuration();
 
-  inline virtual void clearProperty() {
-    NoteGroup::clearProperty();
-    for (auto it = _propertyList.begin(); it != _propertyList.end(); it++) {
-      delete *it;
-    }
-    _propertyList.clear();
-  }
+  virtual void clearProperty();
 
   ///- virtual void * verify(const char * __context) const = 0;
 
@@ -119,9 +74,15 @@ class NoteSequence : public NoteGroup {
   NoteSequence(NoteSequence&&)=delete;
   virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
 
-  inline NoteSequence(NoteType __type, const unsigned int divisor) :
-    NoteGroup(__type), _durationList {}, _propertyList {}, 
-    _durationDivisor (divisor) { }
+  NoteSequence(NoteType __type, const unsigned int __count);
+
+  NoteSequence(const char * __pitch, const char * __duration,
+               const std::initializer_list<const char *> __args,
+               NoteType __type, const unsigned int __count);
+
+  NoteSequence(const std::string& __pitch, const std::string& __duration,
+               const std::vector<std::string>& __args,
+               NoteType __type, const unsigned int __count);
 
  public:
 
@@ -152,7 +113,7 @@ class NoteSequence : public NoteGroup {
   ///+ virtual void setUntied(size_t __pos);
 
   inline virtual int getSize() {
-    return _durationDivisor;
+    return _noteCount;
   }
 
   ///+ virtual NoteType getType() const;
@@ -181,7 +142,7 @@ class NoteSequence : public NoteGroup {
 
   inline virtual bool isValid() const {
     if (NoteGroup::isValid() && ! _durationList.empty() &&
-        _durationList.size() == _propertyList.size() && _durationDivisor > 0) {
+        _durationList.size() == _propertyList.size() && _noteCount > 0) {
       for (auto it = _durationList.cbegin(); it != _durationList.cend(); it++) {
         if (*it == nullptr) {
           return false;
