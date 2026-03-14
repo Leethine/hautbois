@@ -89,7 +89,9 @@ std::string SingleNote::filterProperty(const std::string& __text) const {
 }
 
 SingleNote::SingleNote() : Note (NoteType::SingleNote), 
-  _duration ( nullptr ), _pitch ( nullptr ), _property ( nullptr ) {}
+  _duration ( nullptr ), _pitch ( nullptr ),
+  _property ( nullptr ), _tied ( false ) {
+}
 
 SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
   char name = CHAR_PITCHNAME_C;
@@ -125,19 +127,15 @@ SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
 
 SingleNote::SingleNote(const std::string& __pitch, 
                        const int& __num, const int& __denom) : SingleNote(__pitch) {
-  HB_NESTED_THROW_ACTION(std::invalid_argument,
+  HB_NESTED_THROW(std::invalid_argument,
     _duration = new Duration(__num, __denom);
-    ,
-    SingleNote::clearPitch(); // Clean up because Pitch * was already allocated
   )
 }
 
 SingleNote::SingleNote(const std::string& __pitch,
                        const int& __denom, const std::string& __dots) : SingleNote(__pitch) {
-  HB_NESTED_THROW_ACTION(std::invalid_argument,
+  HB_NESTED_THROW(std::invalid_argument,
     _duration = new Duration(__denom, __dots);
-    ,
-    SingleNote::clearPitch(); // Clean up because Pitch * was already allocated
   )
 }
 

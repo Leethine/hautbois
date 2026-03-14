@@ -35,11 +35,12 @@ BOOST_AUTO_TEST_CASE(test_constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(test_constr_throw) {
-  BOOST_CHECK_THROW(SingleNote n0 ("", 1,4),         std::invalid_argument);
-  BOOST_CHECK_THROW(SingleNote n1 ("X", 1,4),        std::invalid_argument);
-  BOOST_CHECK_THROW(SingleNote n2 ("STD", 1,4),      std::invalid_argument);
-  BOOST_CHECK_THROW(SingleNote n3 ("Cdd4", 1,4),     std::invalid_argument);
-  BOOST_CHECK_THROW(SingleNote n4 ("C5",4,"..."),    std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("", 1,4),         std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("X", 1,4),        std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("STD", 1,4),      std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("Cdd4", 1,4),     std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("C5",4,"..."),    std::invalid_argument);
+  BOOST_CHECK_THROW(new SingleNote ("Cn5",0,0),    std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(test_member) {
@@ -58,16 +59,27 @@ BOOST_AUTO_TEST_CASE(test_property) {
   BOOST_TEST(n1.getPropertyStr() == "trill");
 }
 
-BOOST_AUTO_TEST_CASE(test_get_except) {
+BOOST_AUTO_TEST_CASE(test_hasPitch) {
   class NewSingleNote : public SingleNote {
     public:
     NewSingleNote() : SingleNote() {}
   };
-  NewSingleNote * n = new NewSingleNote();
+  SingleNote * n = new NewSingleNote();
   BOOST_TEST(!n->hasPitch());
   BOOST_TEST(n->getPitchSize() == 0);
   BOOST_TEST(!n->hasDuration());
   BOOST_TEST(n->getDurationSize() == 0);
+  BOOST_TEST(!n->isValid());
+  delete n;
+}
+
+BOOST_AUTO_TEST_CASE(test_tie) {
+  SingleNote n1 ("C4", 1,4);
+  BOOST_TEST(! n1.isTied());
+  n1.setTied();
+  BOOST_TEST(n1.isTied());
+  n1.setUntied();
+  BOOST_TEST(! n1.isTied());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
