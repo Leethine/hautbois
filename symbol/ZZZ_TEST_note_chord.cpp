@@ -71,4 +71,29 @@ BOOST_AUTO_TEST_CASE(test_get) {
   delete n1;
 }
 
+BOOST_AUTO_TEST_CASE(test_copy_constr) {
+  Chord n1 ({"C4", "G#5", "Db3"}, 3,4);
+  Chord n2 (n1);
+  BOOST_TEST(n2.getPitch(0)->toString() == "Cn4");
+  BOOST_TEST(n2.getPitch(1)->toString() == "G#5");
+  BOOST_TEST(n2.getPitch(2)->toString() == "Db3");
+  BOOST_TEST(n2.getDuration()->toString() == "3/4");
+  BOOST_TEST(!n2.isTied(0));
+  BOOST_TEST(!n2.isTied(1));
+  BOOST_TEST(!n2.isTied(2));
+  n1.setTied(1);
+  Chord n3 (n1);
+  BOOST_TEST(!n3.isTied(0));
+  BOOST_TEST(n3.isTied(1));
+  BOOST_TEST(!n3.isTied(2));
+  n1.setTied(2);
+  n1.updateProperty("hhha");
+  BOOST_TEST(n1.hasProperty());
+  Chord n4 = n1;
+  BOOST_TEST(!n4.isTied(0));
+  BOOST_TEST(n4.isTied(1));
+  BOOST_TEST(n4.isTied(2));
+  BOOST_TEST(n4.getPropertyStr() == "hhha");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

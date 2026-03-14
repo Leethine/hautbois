@@ -126,48 +126,48 @@ Chord::Chord(const std::initializer_list<const char *> __pitches,
   NoteGroup::setDuration(d);
 }
 
-Chord::Chord(Chord& __note) : NoteGroup(NoteType::Chord) {
-  HB_NESTED_THROW(std::out_of_range,
-    for (int i=0; i<__note.getPitchSize(); i++) {
-      if (__note.hasPitch(i)) {
-        Pitch * p = new Pitch(*__note.getPitch(i));
-        NoteGroup::addPitch(p);
-        if (NoteGroup::isTied(i)) {
-          NoteGroup::setTied(i);
-        }
-      }
+Chord::Chord(Chord& __note) : Chord() {
+  for (int i=0; i<__note.getPitchSize(); i++) {
+    if (__note.hasPitch(i)) {
+      Pitch * p = new Pitch(*__note.getPitch(i));
+      NoteGroup::addPitch(p);
     }
-    if (__note.hasDuration()) {
-      Duration * d = new Duration(*__note.getDuration());
-      NoteGroup::setDuration(d);
+  }
+  if (__note.hasDuration()) {
+    Duration * d = new Duration(*__note.getDuration());
+    NoteGroup::setDuration(d);
+  }
+  if (__note.hasProperty()) {
+    Property * p = new Property(*__note.getProperty());
+    NoteGroup::setProperty(p);
+  }
+  for (int i=0; i < NoteGroup::getPitchSize(); i++) {
+    if (NoteGroup::hasPitch(i) && __note.isTied(i)) {
+      NoteGroup::setTied(i);
     }
-    if (NoteGroup::hasProperty()) {
-      Property * p = new Property(*__note.getProperty());
-      NoteGroup::setProperty(p);
-    }
-  )
+  }
 }
 
-Chord::Chord(Chord&& __note) : NoteGroup(NoteType::Chord) {
-  HB_NESTED_THROW(std::out_of_range,
-    for (int i=0; i<__note.getPitchSize(); i++) {
-      if (__note.hasPitch(i)) {
-        Pitch * p = new Pitch(*__note.getPitch(i));
-        NoteGroup::addPitch(p);
-        if (NoteGroup::isTied(i)) {
-          NoteGroup::setTied(i);
-        }
-      }
+Chord::Chord(Chord&& __note) : Chord() {
+  for (int i=0; i<__note.getPitchSize(); i++) {
+    if (__note.hasPitch(i)) {
+      Pitch * p = new Pitch(*__note.getPitch(i));
+      NoteGroup::addPitch(p);
     }
-    if (__note.hasDuration()) {
-      Duration * d = new Duration(*__note.getDuration());
-      NoteGroup::setDuration(d);
+  }
+  if (__note.hasDuration()) {
+    Duration * d = new Duration(*__note.getDuration());
+    NoteGroup::setDuration(d);
+  }
+  if (__note.hasProperty()) {
+    Property * p = new Property(*__note.getProperty());
+    NoteGroup::setProperty(p);
+  }
+  for (int i=0; i < NoteGroup::getPitchSize(); i++) {
+    if (NoteGroup::hasPitch(i) && __note.isTied(i)) {
+      NoteGroup::setTied(i);
     }
-    if (NoteGroup::hasProperty()) {
-      Property * p = new Property(*__note.getProperty());
-      NoteGroup::setProperty(p);
-    }
-  )
+  }
 }
 
 Chord& Chord::operator=(const Chord& __n) {
@@ -179,18 +179,20 @@ Chord& Chord::operator=(const Chord& __n) {
       if (__n.hasPitch(i)) {
         Pitch * p = new Pitch(*__n.getPitch(i));
         NoteGroup::addPitch(p);
-        if (NoteGroup::isTied(i)) {
-          NoteGroup::setTied(i);
-        }
       }
     }
     if (__n.hasDuration()) {
       Duration * d = new Duration(*__n.getDuration());
       NoteGroup::setDuration(d);
     }
-    if (NoteGroup::hasProperty()) {
+    if (__n.hasProperty()) {
       Property * p = new Property(*__n.getProperty());
       NoteGroup::setProperty(p);
+    }
+    for (int i=0; i < NoteGroup::getPitchSize(); i++) {
+      if (NoteGroup::hasPitch(i) && __n.isTied(i)) {
+        NoteGroup::setTied(i);
+      }
     }
   }
   return *this;
@@ -213,15 +215,15 @@ void Chord::updatePitch(const std::string& __context, size_t __pos) { }
 
 void Chord::updateProperty(const std::string& __context) {
   if (!__context.empty()) {
-    NoteGroup::clearProperty();
     Property * p = new Property(__context);
+    NoteGroup::setProperty(p);
   }
 }
 
 void Chord::updateProperty(const std::string& __context, size_t __pos) {
   if (!__context.empty()) {
-    NoteGroup::clearProperty();
     Property * p = new Property(__context);
+    NoteGroup::setProperty(p);
   }
 }
 
