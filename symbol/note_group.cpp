@@ -2,6 +2,9 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
+#include "utility/hbexcept.hpp"
+
+#include <cstring>
 
 namespace hautbois {
 namespace core {
@@ -64,6 +67,50 @@ void NoteGroup::clearProperty() {
 
 NoteGroup::NoteGroup(NoteType __type) : Note(__type),
   _pitchList {}, _duration(nullptr), _property(nullptr), _tieList {} {
+}
+
+NoteGroup::NoteGroup(const std::initializer_list<const char *> __pitches,
+                     NoteType __type) : NoteGroup(__type) {
+  for (auto& token : __pitches) {
+    Pitch * p = nullptr;
+    if (std::strlen(token) > 3 || std::strlen(token) == 0) {
+      NoteGroup::clearPitch();
+      HB_THROW_MSG(std::invalid_argument,
+      std::string ("Invalid token: " + std::string(token)));
+    }
+    HB_NESTED_THROW_MSG(std::invalid_argument,
+      std::string ("Invalid token: " + std::string(token)),
+        if (std::strlen(token) == 3) 
+          { p = new Pitch(token[0],token[1], token[2] - '0'); }
+        else if (std::strlen(token) == 2)
+          { p = new Pitch(token[0], token[1] - '0'); }
+        else if (std::strlen(token) == 1)
+          { p = new Pitch(token[0]); }
+    )
+    NoteGroup::addPitch(p);
+  }
+}
+
+NoteGroup::NoteGroup(const std::vector<std::string>& __pitches,
+                     NoteType __type) : NoteGroup(__type) {
+  for (auto& token : __pitches) {
+    Pitch * p = nullptr;
+    if (token.size() > 3 || token.size() == 0) {
+      NoteGroup::clearPitch();
+      HB_THROW_MSG(std::invalid_argument,
+      std::string ("Invalid token: " + std::string(token)));
+    }
+    HB_NESTED_THROW_MSG(std::invalid_argument,
+      std::string ("Invalid token: " + std::string(token)),
+        if (token.size() == 3) 
+          { p = new Pitch(token[0],token[1], token[2] - '0'); }
+        else if (token.size() == 2)
+          { p = new Pitch(token[0], token[1] - '0'); }
+        else if (token.size() == 1)
+          { p = new Pitch(token[0]); }
+    )
+    NoteGroup::addPitch(p);
+  }
 }
 
 NoteGroup::~NoteGroup() {

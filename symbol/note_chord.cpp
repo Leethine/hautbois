@@ -37,7 +37,8 @@ std::string Chord::filterProperty(const std::string& __text) const {
 }
 
 Chord::Chord() : NoteGroup(NoteType::Chord) {}
- 
+
+/*
 Chord::Chord(const std::initializer_list<const char *> __pitches) :
     NoteGroup(NoteType::Chord) {
   for (auto& token : __pitches) {
@@ -81,6 +82,13 @@ Chord::Chord(const std::vector<std::string>& __pitches) :
     NoteGroup::addPitch(p);
   }
 }
+*/
+
+Chord::Chord(const std::initializer_list<const char *> __pitches) :
+  NoteGroup(__pitches, NoteType::Chord) { }
+
+Chord::Chord(const std::vector<std::string>& __pitches) :
+  NoteGroup(__pitches, NoteType::Chord) { }
 
 Chord::Chord(const std::vector<std::string>& __pitches,
              const int& num, const int & denom) :

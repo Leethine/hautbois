@@ -7,7 +7,6 @@
 #include <string>
 
 #include "note.hpp"
-#include "utility/hbexcept.hpp"
 
 namespace hautbois {
 namespace core {
@@ -68,6 +67,10 @@ protected:
   virtual NoteGroup& operator=(const NoteGroup &__n) = delete;
 
   NoteGroup(NoteType __type);
+
+  NoteGroup(const std::initializer_list<const char *> __pitches, NoteType __type);
+
+  NoteGroup(const std::vector<std::string>& __pitches, NoteType __type);
 
 public:
 
