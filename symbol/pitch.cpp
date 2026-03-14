@@ -18,7 +18,6 @@ Pitch::Pitch(const char& __name, const char& __acc, const int& __oct) :
   auto it1 = std::find(VALID_PITCH_NAME.begin(),VALID_PITCH_NAME.end(), __name);
   auto it2 = std::find(VALID_PITCH_ACCIDENTAL.begin(),VALID_PITCH_ACCIDENTAL.end(), __acc);
 
-
   if (! (it1 != VALID_PITCH_NAME.end() && it2 != VALID_PITCH_ACCIDENTAL.end() && 
          __oct >= 0 && __oct <= 8) ) {
     std::string msg = "Failed to create Pitch with: " + std::string(1,__name)
