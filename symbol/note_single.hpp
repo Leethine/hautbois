@@ -100,29 +100,29 @@ class SingleNote : public Note {
 
   virtual int getSize() const;
 
-  ///+ virtual NoteType getType();
+  virtual NoteType getType();
 
-  ///+ virtual char getTypeChar() const;
+  virtual char getTypeChar() const;
 
-  ///+ virtual std::string getTypeStr() const;
+  virtual std::string getTypeStr() const;
 
-  ///+ virtual bool isType(NoteType __ntype) const;
+  virtual bool isType(NoteType __ntype) const;
 
-  ///+ virtual bool isSingle() const;
+  virtual bool isSingle() const;
 
-  ///+ virtual bool isRest() const;
+  virtual bool isRest() const;
 
-  ///+ virtual bool isSilence() const;
+  virtual bool isSilence() const;
 
-  ///+ virtual bool isChord() const;
+  virtual bool isChord() const;
 
-  ///+ virtual bool isTuplet() const;
+  virtual bool isTuplet() const;
 
-  ///+ virtual bool isGrace() const;
+  virtual bool isGrace() const;
 
-  ///+ virtual bool isAppoggiatura() const;
+  virtual bool isAppoggiatura() const;
 
-  ///+ virtual bool isAcciaccatura() const;
+  virtual bool isAcciaccatura() const;
 
   virtual bool isValid() const;
 

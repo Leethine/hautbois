@@ -62,6 +62,10 @@ class Chord : public NoteGroup {
 
   Chord();
 
+  Chord(const std::initializer_list<const char *> __pitches);
+
+  Chord(const std::vector<std::string>& __pitches);
+
  public:
  
   Chord(const std::vector<std::string>& __pitches,
@@ -98,63 +102,65 @@ class Chord : public NoteGroup {
 
   virtual void setTied();
 
-  ///+ virtual void setTied(size_t __pos);
+  virtual void setTied(size_t __pos);
 
   virtual void setUntied();
 
-  ///+ virtual void setUntied(size_t __pos);
+  virtual void setUntied(size_t __pos);
 
   virtual int getSize() const;
 
-  ///+ virtual NoteType getType() const;
+  virtual NoteType getType() const;
 
-  ///+ virtual char getTypeChar() const;
+  virtual char getTypeChar() const;
 
-  ///+ virtual std::string getTypeStr() const;
+  virtual std::string getTypeStr() const;
 
-  ///+ virtual bool isType(NoteType __ntype) const;
+  virtual bool isType(NoteType __ntype) const;
 
-  ///+ virtual bool isSingle() const;
+  virtual bool isSingle() const;
 
-  ///+ virtual bool isRest() const;
+  virtual bool isRest() const;
 
-  ///+ virtual bool isSilence() const;
+  virtual bool isSilence() const;
 
-  ///+ virtual bool isChord() const;
+  virtual bool isChord() const;
 
-  ///+ virtual bool isTuplet() const;
+  virtual bool isTuplet() const;
 
-  ///+ virtual bool isGrace() const;
+  virtual bool isGrace() const;
 
-  ///+ virtual bool isAppoggiatura() const;
+  virtual bool isAppoggiatura() const;
 
-  ///+ virtual bool isAcciaccatura() const;
+  virtual bool isAcciaccatura() const;
 
-  ///+ virtual bool isValid() const;
+  virtual bool isValid() const;
 
   virtual bool isTied() const;
 
-  ///+ virtual bool isTied(size_t __pos) const;
+  virtual bool isTied(size_t __pos) const;
 
-  ///+ virtual bool hasDuration() const;
+  virtual bool hasDuration() const;
 
   virtual bool hasDuration(size_t __pos) const;
 
   virtual bool hasPitch() const;
 
-  ///+ virtual bool hasPitch(size_t __pos) const;
+  virtual bool hasPitch(size_t __pos) const;
 
-  ///+ virtual bool hasProperty() const;
+  virtual bool hasProperty() const;
 
   virtual bool hasProperty(size_t __pos) const;
 
-  ///+ virtual const Duration *getDuration() const;
+  virtual const Duration * getDuration() const;
+
+  virtual const Duration * getDuration(size_t __pos) const;
 
   virtual const Pitch * getPitch() const;
 
-  ///+ virtual const Pitch *getPitch(size_t __pos) const;
+  virtual const Pitch * getPitch(size_t __pos) const;
 
-  ///+ virtual const Property * getProperty() const;
+  virtual const Property * getProperty() const;
 
   virtual const Property * getProperty(size_t __pos) const;
 
@@ -162,7 +168,7 @@ class Chord : public NoteGroup {
 
   virtual std::string getPropertyStr(size_t __pos) const;
 
-  ///+ virtual int getPitchSize() const;
+  virtual int getPitchSize() const;
 
   virtual int getDurationSize() const;
 

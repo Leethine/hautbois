@@ -225,6 +225,54 @@ int SingleNote::getSize() const {
   return 0;
 }
 
+NoteType SingleNote::getType() {
+  return Note::getType();
+}
+
+char SingleNote::getTypeChar() const {
+  return Note::getTypeChar();
+}
+
+std::string SingleNote::getTypeStr() const {
+  return Note::getTypeStr();
+}
+
+bool SingleNote::isType(NoteType __ntype) const {
+  return Note::isType(__ntype);
+}
+
+bool SingleNote::isSingle() const {
+  return Note::isSingle();
+}
+
+bool SingleNote::isRest() const {
+  return Note::isRest();
+}
+
+bool SingleNote::isSilence() const {
+  return Note::isSilence();
+}
+
+bool SingleNote::isChord() const {
+  return Note::isChord();
+}
+
+bool SingleNote::isTuplet() const {
+  return Note::isTuplet();
+}
+
+bool SingleNote::isGrace() const {
+  return Note::isGrace();
+}
+
+bool SingleNote::isAppoggiatura() const {
+  return Note::isAppoggiatura();
+}
+
+bool SingleNote::isAcciaccatura() const {
+  return Note::isAcciaccatura();
+}
+
 bool SingleNote::isValid() const {
   if (_duration != nullptr && _pitch != nullptr) {
     return true;
