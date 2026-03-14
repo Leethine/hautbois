@@ -66,7 +66,8 @@ BOOST_AUTO_TEST_CASE(test_get_except) {
   NewSingleNote * n = new NewSingleNote();
   BOOST_TEST(!n->hasPitch());
   BOOST_TEST(n->getPitchSize() == 0);
-  BOOST_CHECK_THROW(n->getPitch(), std::out_of_range);
+  BOOST_TEST(!n->hasDuration());
+  BOOST_TEST(n->getDurationSize() == 0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

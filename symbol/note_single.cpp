@@ -77,9 +77,8 @@ void SingleNote::clearProperty() {
 
 void * SingleNote::verify(const char * __context) const {
   if (_pitch == nullptr || _duration == nullptr) {
-    HB_THROW_MSG(std::runtime_error,
-      std::string("No _pitch or _duration available.")
-    );
+    const char * str = "No _pitch or _duration available.";
+    return (void *) str;
   }
   return nullptr;
 }
@@ -120,21 +119,25 @@ SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
     );
   }
   HB_NESTED_THROW(std::invalid_argument,
-    _pitch = new Pitch(name, acc, oct - '0') ; 
+    _pitch = new Pitch(name, acc, oct - '0');
   )
 }
 
 SingleNote::SingleNote(const std::string& __pitch, 
                        const int& __num, const int& __denom) : SingleNote(__pitch) {
-  HB_NESTED_THROW(std::invalid_argument,
-    _duration = new Duration(__num, __denom) ;
+  HB_NESTED_THROW_ACTION(std::invalid_argument,
+    _duration = new Duration(__num, __denom);
+    ,
+    SingleNote::clearPitch(); // Clean up because Pitch * was already allocated
   )
 }
 
 SingleNote::SingleNote(const std::string& __pitch,
                        const int& __denom, const std::string& __dots) : SingleNote(__pitch) {
-  HB_NESTED_THROW(std::invalid_argument,
-    _duration = new Duration(__denom, __dots) ;
+  HB_NESTED_THROW_ACTION(std::invalid_argument,
+    _duration = new Duration(__denom, __dots);
+    ,
+    SingleNote::clearPitch(); // Clean up because Pitch * was already allocated
   )
 }
 
@@ -313,12 +316,7 @@ bool SingleNote::hasProperty(size_t __pos) const {
 }
 
 const Duration * SingleNote::getDuration() const {
-  if (_duration) {
-    return _duration;
-  }
-  else {
-    HB_THROW_MSG(std::out_of_range, std::string ("duration is empty"));
-  }
+  return _duration;
 }
 
 const Duration * SingleNote::getDuration(size_t __pos) const {
@@ -326,12 +324,7 @@ const Duration * SingleNote::getDuration(size_t __pos) const {
 }
 
 const Pitch * SingleNote::getPitch() const {
-  if (_pitch) {
-    return _pitch;
-  }
-  else {
-    HB_THROW_MSG(std::out_of_range, std::string ("pitch is empty"));
-  }
+  return _pitch;
 }
 
 const Pitch * SingleNote::getPitch(size_t __pos) const {
@@ -339,12 +332,7 @@ const Pitch * SingleNote::getPitch(size_t __pos) const {
 }
 
 const Property * SingleNote::getProperty() const {
-  if (_property) {
-    return _property;
-  }
-  else {
-    HB_THROW_MSG(std::out_of_range, std::string ("property is empty"));
-  }
+  return _property;
 }
 
 const Property * SingleNote::getProperty(size_t __pos) const {

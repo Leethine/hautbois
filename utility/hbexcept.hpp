@@ -34,14 +34,38 @@
     std::string(e.what())) ;      \
   }                               
 
+
+#define HB_NESTED_THROW_ACTION(EXP,PROC,ACT) \
+  try { PROC }                               \
+  catch(const EXP & e) {  ACT                \
+    throw EXP( std::string("\nFile: ")  +    \
+    std::string(__FILE__) + "\nLine: "  +    \
+    std::to_string(__LINE__)            +    \
+    "\nUpper-level exception: "         +    \
+    std::string(e.what())) ;                 \
+  }                               
+
+
 #define HB_NESTED_THROW_MSG(EXP,MSG,PROC) \
-  try { PROC } catch(const EXP & e) {   \
+  try { PROC } catch(const EXP & e) {     \
     throw EXP(                            \
-  std::string("\nFile: ")  +              \
-  std::string(__FILE__) + "\nLine: " +    \
-  std::to_string(__LINE__) + "\nError: "+ \
-  std::string( MSG ) +                    \
-"\nUpper-level exception: " + e.what() ); \
+      std::string("\nFile: ") +           \
+      std::string(__FILE__) + "\nLine: "  \
+      + std::to_string(__LINE__)          \
+      + "\nError: " + std::string( MSG )  \
+      + "\nUpper-level exception: "       \
+      + e.what() );                       \
+}
+
+
+
+#define HB_NESTED_THROW_MSG_ACTION(EXP,MSG,PROC,ACT)  \
+  try { PROC } catch(const EXP & e) { ACT             \
+    throw EXP(                                        \
+      std::string("\nFile: ") + std::string(__FILE__) \
+      + "\nLine: " + std::to_string(__LINE__)         \
+      + "\nError: " + std::string( MSG )              \
+      + "\nUpper-level exception: " + e.what() );     \
 }
 
 #else
@@ -63,12 +87,25 @@
     std::string(e.what())) ;      \
   }                               
 
+#define HB_NESTED_THROW_ACTION(EXP,PROC,ACT) \
+  try { PROC }                               \
+  catch(const EXP & e) {  ACT                \
+    throw EXP("\nUpper-level exception:\n" + \
+    std::string(e.what())) ;                 \
+  }
+
 #define HB_NESTED_THROW_MSG(EXP,MSG,PROC) \
-  try { PROC } catch(const EXP & e) {   \
+  try { PROC } catch(const EXP & e) {     \
     throw EXP( "\nError: "+               \
       std::string( MSG )  +               \
       "\nUpper-level exception:\n" +      \
       e.what() ) ;                        \
+}
+
+#define HB_NESTED_THROW_MSG_ACTION(EXP,MSG,PROC,ACT) \
+  try { PROC } catch(const EXP & e) { ACT            \
+    throw EXP( "\nError: " + std::string( MSG ) +    \
+      "\nUpper-level exception:\n" + e.what() ) ;    \
 }
 
 #endif
