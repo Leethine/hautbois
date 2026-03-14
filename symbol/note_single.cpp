@@ -21,6 +21,7 @@ void SingleNote::setPitch(Pitch * __p) {
   if (__p) {
     delete _pitch;
     _pitch = __p;
+    _tied = false;
   }
 }
 
@@ -63,6 +64,7 @@ Property * SingleNote::getPropertyToModify(int pos) {
 void SingleNote::clearPitch() {
   delete _pitch;
   _pitch = nullptr;
+  _tied = false;
 }
 
 void SingleNote::clearDuration() {
