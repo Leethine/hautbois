@@ -43,17 +43,18 @@ Chord::Chord(const std::initializer_list<const char *> __pitches) :
   for (auto& token : __pitches) {
     Pitch * p = nullptr;
     if (std::strlen(token) > 3 || std::strlen(token) == 0) {
+      NoteGroup::clearPitch();
       HB_THROW_MSG(std::invalid_argument,
       std::string ("Invalid token: " + std::string(token)));
     }
     HB_NESTED_THROW_MSG(std::invalid_argument,
       std::string ("Invalid token: " + std::string(token)),
-      if (std::strlen(token) == 3) 
-        { p = new Pitch(token[0],token[1], token[2] - '0'); }
-      else if (std::strlen(token) == 2)
-        { p = new Pitch(token[0], token[1] - '0'); }
-      else if (std::strlen(token) == 1)
-        { p = new Pitch(token[0]); }
+        if (std::strlen(token) == 3) 
+          { p = new Pitch(token[0],token[1], token[2] - '0'); }
+        else if (std::strlen(token) == 2)
+          { p = new Pitch(token[0], token[1] - '0'); }
+        else if (std::strlen(token) == 1)
+          { p = new Pitch(token[0]); }
     )
     NoteGroup::addPitch(p);
   }
@@ -64,17 +65,18 @@ Chord::Chord(const std::vector<std::string>& __pitches) :
   for (auto& token : __pitches) {
     Pitch * p = nullptr;
     if (token.size() > 3 || token.size() == 0) {
+      NoteGroup::clearPitch();
       HB_THROW_MSG(std::invalid_argument,
       std::string ("Invalid token: " + std::string(token)));
     }
     HB_NESTED_THROW_MSG(std::invalid_argument,
       std::string ("Invalid token: " + std::string(token)),
-      if (token.size() == 3) 
-        { p = new Pitch(token[0],token[1], token[2] - '0'); }
-      else if (token.size() == 2)
-        { p = new Pitch(token[0], token[1] - '0'); }
-      else if (token.size() == 1)
-        { p = new Pitch(token[0]); }
+        if (token.size() == 3) 
+          { p = new Pitch(token[0],token[1], token[2] - '0'); }
+        else if (token.size() == 2)
+          { p = new Pitch(token[0], token[1] - '0'); }
+        else if (token.size() == 1)
+          { p = new Pitch(token[0]); }
     )
     NoteGroup::addPitch(p);
   }
@@ -173,25 +175,23 @@ Chord& Chord::operator=(const Chord& __n) {
     NoteGroup::clearPitch();
     NoteGroup::clearDuration();
     NoteGroup::clearProperty();
-    HB_NESTED_THROW(std::out_of_range,
-      for (int i=0; i<__n.getPitchSize(); i++) {
-        if (__n.hasPitch(i)) {
-          Pitch * p = new Pitch(*__n.getPitch(i));
-          NoteGroup::addPitch(p);
-          if (NoteGroup::isTied(i)) {
-            NoteGroup::setTied(i);
-          }
+    for (int i=0; i<__n.getPitchSize(); i++) {
+      if (__n.hasPitch(i)) {
+        Pitch * p = new Pitch(*__n.getPitch(i));
+        NoteGroup::addPitch(p);
+        if (NoteGroup::isTied(i)) {
+          NoteGroup::setTied(i);
         }
       }
-      if (__n.hasDuration()) {
-        Duration * d = new Duration(*__n.getDuration());
-        NoteGroup::setDuration(d);
-      }
-      if (NoteGroup::hasProperty()) {
-        Property * p = new Property(*__n.getProperty());
-        NoteGroup::setProperty(p);
-      }
-    )
+    }
+    if (__n.hasDuration()) {
+      Duration * d = new Duration(*__n.getDuration());
+      NoteGroup::setDuration(d);
+    }
+    if (NoteGroup::hasProperty()) {
+      Property * p = new Property(*__n.getProperty());
+      NoteGroup::setProperty(p);
+    }
   }
   return *this;
 }
@@ -236,11 +236,9 @@ void Chord::setTied(size_t __pos) {
 }
 
 void Chord::setUntied() {
-  HB_NESTED_THROW(std::out_of_range,
-    for (int i=0; i<NoteGroup::getPitchSize();i++) {
-      NoteGroup::setUntied(i);
-    }
-  )
+  for (int i=0; i<NoteGroup::getPitchSize();i++) {
+    NoteGroup::setUntied(i);
+  }
 }
 
 void Chord::setUntied(size_t __pos) {
@@ -304,13 +302,11 @@ bool Chord::isValid() const {
 }
 
 bool Chord::isTied() const {
-  HB_NESTED_THROW(std::out_of_range,
-    for (int i=0; i<NoteGroup::getPitchSize();i++) {
-      if (NoteGroup::isTied(i)) {
-        return true;
-      }
+  for (int i=0; i<NoteGroup::getPitchSize();i++) {
+    if (NoteGroup::isTied(i)) {
+      return true;
     }
-  )
+  }
   return false;
 }
 

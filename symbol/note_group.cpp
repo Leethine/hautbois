@@ -2,7 +2,6 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
 
 namespace hautbois {
 namespace core {
@@ -74,29 +73,20 @@ NoteGroup::~NoteGroup() {
 }
 
 void NoteGroup::setTied(size_t __pos) {
-  if (__pos >= _tieList.size() || __pos < 0) {
-    HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-      + std::to_string(__pos) +" > _tieList.size() "
-      + std::to_string(_tieList.size())));
-  }
-  else {
+  if (__pos >= 0 && __pos < _tieList.size()) {
     _tieList[__pos] = true;
   }
 }
 
 void NoteGroup::setUntied(size_t __pos) {
-  if (__pos >= _tieList.size() || __pos < 0) {
-    HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-      + std::to_string(__pos) +" > _tieList.size() "
-      + std::to_string(_tieList.size())));
-  }
-  else {
+  if (__pos >= 0 && __pos < _tieList.size()) {
     _tieList[__pos] = false;
   }
 }
 
 bool NoteGroup::isValid() const {
-  if (_pitchList.empty() || _duration == nullptr) {
+  if (_pitchList.empty() || _duration == nullptr || 
+      _pitchList.size() != _tieList.size()) {
     return false;
   }
   else {
@@ -111,9 +101,7 @@ bool NoteGroup::isValid() const {
 
 bool NoteGroup::isTied(size_t __pos) const {
   if (__pos >= _tieList.size() || __pos < 0) {
-    HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-      + std::to_string(__pos) +" > _tieList.size() "
-      + std::to_string(_tieList.size())));
+    return false;
   }
   else {
     return _tieList[__pos];
@@ -143,9 +131,7 @@ const Duration * NoteGroup::getDuration() const {
 
 const Pitch * NoteGroup::getPitch(size_t __pos) const {
   if (__pos >= _pitchList.size() || __pos < 0) {
-    HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-      + std::to_string(__pos) +" > _pitchList.size() "
-      + std::to_string(_pitchList.size())));
+    return nullptr;
   }
   else {
     return _pitchList[__pos];
