@@ -74,7 +74,11 @@ class NoteSequence : public NoteGroup {
   NoteSequence(NoteSequence&&)=delete;
   virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
 
-  NoteSequence(NoteType __type, const unsigned int __count);
+  NoteSequence(const char * __pitch, const char * __duration,
+               NoteType __type, const unsigned int __count);
+
+  NoteSequence(const std::string& __pitch, const std::string& __duration,
+               NoteType __type, const unsigned int __count);
 
   NoteSequence(const char * __pitch, const char * __duration,
                const std::initializer_list<const char *> __args,
@@ -104,17 +108,15 @@ class NoteSequence : public NoteGroup {
 
   ///- virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
 
-  ///- virtual void setTied() = 0;
+  virtual void setTied();
 
-  ///+ virtual void setTied(size_t __pos);
+  virtual void setTied(size_t __pos);
 
-  ///- virtual void setUntied() = 0;
+  virtual void setUntied();
 
-  ///+ virtual void setUntied(size_t __pos);
+  virtual void setUntied(size_t __pos);
 
-  inline virtual int getSize() {
-    return _noteCount;
-  }
+  virtual int getSize() const;
 
   ///+ virtual NoteType getType() const;
 
@@ -140,63 +142,27 @@ class NoteSequence : public NoteGroup {
 
   ///+ virtual bool isAcciaccatura() const;
 
-  inline virtual bool isValid() const {
-    if (NoteGroup::isValid() && ! _durationList.empty() &&
-        _durationList.size() == _propertyList.size() && _noteCount > 0) {
-      for (auto it = _durationList.cbegin(); it != _durationList.cend(); it++) {
-        if (*it == nullptr) {
-          return false;
-        }
-      }
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
+  virtual bool isValid() const;
 
-  ///- virtual bool isTied() const = 0;
+  virtual bool isTied() const;
 
-  ///+ virtual bool isTied(size_t __pos) const;
+  virtual bool isTied(size_t __pos) const;
 
-  ///+ virtual bool hasDuration() const;
+  virtual bool hasDuration() const;
 
-  inline virtual bool hasDuration(size_t __pos) const {
-    if (__pos >= _durationList.size() || __pos < 0) {
-      return false;
-    }
-    else {
-      return _durationList[__pos] != nullptr;
-    }
-  }
+  virtual bool hasDuration(size_t __pos) const;
 
-  ///- virtual bool hasPitch() const = 0;
+  virtual bool hasPitch() const;
 
-  ///+ virtual bool hasPitch(size_t __pos) const;
+  virtual bool hasPitch(size_t __pos) const;
 
-  ///+ virtual bool hasProperty() const;
+  virtual bool hasProperty() const;
 
-  inline virtual bool hasProperty(size_t __pos) const {
-    if (__pos >= _propertyList.size() || __pos < 0) {
-      return false;
-    }
-    else {
-      return _propertyList[__pos] != nullptr;
-    }
-  }
+  virtual bool hasProperty(size_t __pos) const;
 
-  ///+ virtual const Duration *getDuration() const;
+  ///+ virtual const Duration * getDuration() const;
 
-  inline virtual const Duration * getDuration(size_t __pos) {
-    if (__pos >= _durationList.size() || __pos < 0) {
-      HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-        + std::to_string(__pos) +" > _durationList.size() "
-        + std::to_string(_durationList.size())));
-    }
-    else {
-      return _durationList[__pos];
-    }
-  }
+  virtual const Duration * getDuration(size_t __pos);
 
   ///- virtual const Pitch * getPitch() const = 0;
 
@@ -204,34 +170,21 @@ class NoteSequence : public NoteGroup {
 
   ///+ virtual const Property * getProperty() const;
 
-  inline virtual const Property * getProperty(size_t __pos) const {
-    if (__pos >= _propertyList.size() || __pos < 0) {
-      HB_THROW_MSG(std::out_of_range, std::string("__pos == "
-        + std::to_string(__pos) +" > _propertyList.size() "
-        + std::to_string(_propertyList.size())));
-    }
-    else {
-      return _propertyList[__pos];
-    }
-  }
+  virtual const Property * getProperty(size_t __pos) const;
 
   ///- virtual std::string getPropertyStr() const = 0;
 
   ///- virtual std::string getPropertyStr(size_t __pos) const = 0;
 
-  ///+ virtual int getPitchSize() const;
+  virtual int getPitchSize() const;
 
-  inline virtual int getDurationSize() const {
-    return _durationList.size();
-  }
+  virtual int getDurationSize() const;
 
-  inline virtual int getPropertySize() const {
-    return _propertyList.size();
-  }
+  virtual int getPropertySize() const;
 
-  ///- virtual int getDurationSize() const = 0;
+  virtual int getDurationSize() const;
 
-  ///- virtual int getPropertySize() const = 0;
+  virtual int getPropertySize() const;
 
   ///- virtual void modify(const std::string& __context) = 0;
 
