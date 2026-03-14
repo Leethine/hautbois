@@ -139,7 +139,7 @@ SingleNote::SingleNote(const std::string& __pitch,
   )
 }
 
-SingleNote::SingleNote(SingleNote& __note) : Note(__note.getType()) {
+SingleNote::SingleNote(SingleNote& __note) : SingleNote() {
   if (__note.hasPitch()) {
     _pitch = new Pitch(*__note.getPitch());
   }
@@ -148,10 +148,13 @@ SingleNote::SingleNote(SingleNote& __note) : Note(__note.getType()) {
   }
   if (__note.hasProperty()) {
     _property = new Property(*__note.getProperty());
+  }
+  if (__note.isTied()) {
+    SingleNote::setTied();
   }
 }
   
-SingleNote::SingleNote(SingleNote&& __note) : Note(__note.getType()) {
+SingleNote::SingleNote(SingleNote&& __note) : SingleNote() {
   if (__note.hasPitch()) {
     _pitch = new Pitch(*__note.getPitch());
   }
@@ -160,6 +163,9 @@ SingleNote::SingleNote(SingleNote&& __note) : Note(__note.getType()) {
   }
   if (__note.hasProperty()) {
     _property = new Property(*__note.getProperty());
+  }
+  if (__note.isTied()) {
+    SingleNote::setTied();
   }
 }
 
@@ -173,6 +179,9 @@ SingleNote& SingleNote::operator=(const SingleNote& __note) {
     }
     if (__note.hasProperty()) {
       _property = new Property(*__note.getProperty());
+    }
+    if (__note.isTied()) {
+      SingleNote::setTied();
     }
   }
   return *this;

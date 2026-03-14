@@ -6,6 +6,7 @@
 #include "note_single.hpp"
 #include "pitch.hpp"
 #include "duration.hpp"
+#include "property.hpp"
 
 using namespace hautbois;
 using namespace core;
@@ -80,6 +81,20 @@ BOOST_AUTO_TEST_CASE(test_tie) {
   BOOST_TEST(n1.isTied());
   n1.setUntied();
   BOOST_TEST(! n1.isTied());
+}
+
+BOOST_AUTO_TEST_CASE(test_copy_constr) {
+  SingleNote n1 ("C4", 1,4);
+  n1.setTied();
+  SingleNote n2 (n1);
+  BOOST_TEST(n1.toString() == "Cn4,1/4");
+  BOOST_TEST(n2.toString() == "Cn4,1/4");
+  BOOST_TEST(n2.isTied());
+  n1.updateProperty("blablabla");
+
+  SingleNote n3 = n1;
+  BOOST_TEST(n3.hasProperty());
+  BOOST_TEST(n3.getProperty()->toString() == "blablabla");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
