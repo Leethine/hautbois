@@ -7,89 +7,35 @@
 #include <string>
 #include <initializer_list>
 
-#include "note.hpp"
+#include "note_sequence.hpp"
 
 namespace hautbois {
 namespace core {
 
-class Tuplet : public Note {
-
- private:
-
-  Duration * _noteValue;
-
-  std::vector<Duration *> _duration;
-
-  std::vector<Pitch *> _pitch;
-
-  std::vector<Property *> _property;
-
-  std::vector<bool> _tied;
-
-  const int nbr_of_notes;
+class Tuplet : public NoteSequence {
 
  protected:
-
-  virtual void addPitch(Pitch * __p);
-
-  virtual void setPitch(Pitch * __p);
-
-  virtual void addDuration(Duration * __d);
-
-  virtual void setDuration(Duration * __d);
-
-  virtual void addProperty(Property * __p);
-
-  virtual void setProperty(Property * __p);
-
-  virtual void clearPitch();
-
-  virtual void clearDuration();
-
-  virtual void clearProperty();
 
   virtual void * verify(const char * __context) const;
 
   virtual std::string filterProperty(const std::string& __text) const;
 
-  Tuplet(const int& __nbr_of_notes);
-
-  Tuplet();
-
-  Tuplet(const std::initializer_list<std::string> __group, const int& __nbr_of_notes);
-
-  Tuplet(const std::vector<std::string>& __group, const int& __nbr_of_notes);
-
  public:
 
-  Tuplet(const std::initializer_list<std::string> __group,
-         const int& num, const int& denom,
-         const int& __nbr_of_notes = 0);
+  Tuplet(const char * __pitch, const char * __duration,
+         const std::initializer_list<const char *> __args,
+         const unsigned int __count);
 
-  Tuplet(const std::vector<std::string>& __group,
-         const int& num, const int& denom,
-         const int& __nbr_of_notes = 0);
-
-  Tuplet(const std::initializer_list<std::string> __group,
-         const int& denom, const std::string& dots,
-         const int& __nbr_of_notes = 0);
-
-  Tuplet(const std::vector<std::string>& __group,
-         const int& denom, const std::string& dots,
-         const int& __nbr_of_notes = 0);
-
-  Tuplet(Tuplet& __note);
-  
-  Tuplet(Tuplet&& __note);
-
-  virtual Tuplet& operator=(const Tuplet& __n);
+  Tuplet(const std::string& __pitch, const std::string& __duration,
+         const std::vector<std::string>& __args,
+         const unsigned int __count);
 
   virtual ~Tuplet();
 
   virtual void updateDuration(const std::string& __context);
 
   virtual void updateDuration(const std::string& __context, size_t __pos);
-  
+
   virtual void updatePitch(const std::string& __context);
 
   virtual void updatePitch(const std::string& __context, size_t __pos);
@@ -108,6 +54,30 @@ class Tuplet : public Note {
 
   virtual int getSize() const;
 
+  virtual NoteType getType() const;
+
+  virtual char getTypeChar() const;
+
+  virtual std::string getTypeStr() const;
+
+  virtual bool isType(NoteType __ntype) const;
+
+  virtual bool isSingle() const;
+
+  virtual bool isRest() const;
+
+  virtual bool isSilence() const;
+
+  virtual bool isChord() const;
+
+  virtual bool isTuplet() const;
+
+  virtual bool isGrace() const;
+
+  virtual bool isAppoggiatura() const;
+
+  virtual bool isAcciaccatura() const;
+
   virtual bool isValid() const;
 
   virtual bool isTied() const;
@@ -115,14 +85,14 @@ class Tuplet : public Note {
   virtual bool isTied(size_t __pos) const;
 
   virtual bool hasDuration() const;
-  
-  virtual bool hasPitch() const;
-
-  virtual bool hasProperty() const;
 
   virtual bool hasDuration(size_t __pos) const;
-  
+
+  virtual bool hasPitch() const;
+
   virtual bool hasPitch(size_t __pos) const;
+
+  virtual bool hasProperty() const;
 
   virtual bool hasProperty(size_t __pos) const;
 

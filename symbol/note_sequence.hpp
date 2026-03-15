@@ -45,13 +45,15 @@ class NoteSequence : public NoteGroup {
 
   virtual void addPitch(Pitch *__p);
 
-  virtual void setPitch(Pitch * __p);
+  virtual void setPitch(Pitch * __p, int pos);
 
   virtual void addDuration(Duration *__d);
 
+  ///+ virtual void setDuration(Duration *__d, int pos);
+
   virtual void addProperty(Property *__p);
 
-  virtual void setProperty(Property *__p);
+  virtual void setProperty(Property *__p, int pos);
 
   virtual Pitch * getPitchToModify(int pos);
 
@@ -90,11 +92,7 @@ class NoteSequence : public NoteGroup {
 
  public:
 
-  inline virtual ~NoteSequence() {
-    NoteSequence::clearPitch();
-    NoteSequence::clearDuration();
-    NoteSequence::clearProperty();
-  }
+  virtual ~NoteSequence();
 
   ///- virtual void updateDuration(const std::string& __context) = 0;
 
@@ -162,9 +160,9 @@ class NoteSequence : public NoteGroup {
 
   ///+ virtual const Duration * getDuration() const;
 
-  virtual const Duration * getDuration(size_t __pos);
+  virtual const Duration * getDuration(size_t __pos) const;
 
-  ///- virtual const Pitch * getPitch() const = 0;
+  virtual const Pitch * getPitch() const;
 
   ///+ virtual const Pitch *getPitch(size_t __pos) const;
 
@@ -177,10 +175,6 @@ class NoteSequence : public NoteGroup {
   ///- virtual std::string getPropertyStr(size_t __pos) const = 0;
 
   virtual int getPitchSize() const;
-
-  virtual int getDurationSize() const;
-
-  virtual int getPropertySize() const;
 
   virtual int getDurationSize() const;
 

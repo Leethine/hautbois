@@ -71,6 +71,14 @@ BOOST_AUTO_TEST_CASE(test_get) {
   delete n1;
 }
 
+BOOST_AUTO_TEST_CASE(test_property) {
+  Chord n1 ({"C4", "G#5", "Db3"}, 1,4);
+  n1.updateProperty("ABC");
+  BOOST_TEST(n1.getPropertyStr() == "ABC");
+  n1.updateProperty("");
+  BOOST_TEST(!n1.hasProperty());
+}
+
 BOOST_AUTO_TEST_CASE(test_copy_constr) {
   Chord n1 ({"C4", "G#5", "Db3"}, 3,4);
   Chord n2 (n1);

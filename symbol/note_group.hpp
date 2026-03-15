@@ -35,15 +35,15 @@ protected:
 
   virtual void addPitch(Pitch *__p);
 
-  ///- virtual void setPitch(Pitch * __p) = 0;
+  virtual void setPitch(Pitch * __p, int pos);
 
   ///- virtual void addDuration(Duration * __d) = 0;
 
-  virtual void setDuration(Duration *__d);
+  virtual void setDuration(Duration *__d, int pos);
 
   ///- virtual void addProperty(Property * __p) = 0;
 
-  virtual void setProperty(Property *__p);
+  virtual void setProperty(Property *__p, int pos);
 
   virtual Pitch * getPitchToModify(int pos);
 

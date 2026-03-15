@@ -18,11 +18,14 @@ void NoteSequence::addPitch(Pitch *__p) {
   NoteGroup::addPitch(__p);
 }
 
-void NoteSequence::setPitch(Pitch * __p) {
-  if (__p) {
+void NoteSequence::setPitch(Pitch * __p, int pos) {
+  if (pos < 0 && __p) {
     delete _pitch;
     _pitch = __p;
     _tied = false;
+  }
+  else {
+    NoteGroup::setPitch(__p, pos);
   }
 }
 
@@ -36,8 +39,16 @@ void NoteSequence::addProperty(Property * __p) {
   _propertyList.push_back(__p);
 }
 
-void NoteSequence::setProperty(Property * __p) {
-  NoteGroup::setProperty(__p);
+void NoteSequence::setProperty(Property * __p, int pos) {
+  if (pos < 0) {
+    NoteGroup::setProperty(__p, pos);
+  }
+  else {
+    if (pos >= 0 && pos < _propertyList.size()) {
+      delete _propertyList[pos];
+      _propertyList[pos] = __p;
+    }
+  }
 }
 
 Pitch * NoteSequence::getPitchToModify(int pos) {
@@ -123,7 +134,7 @@ NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
       std::string("Failed to read pitch: " + std::string(__pitch)),
       p = new Pitch(name, acc, oct - '0');
     )
-    NoteSequence::setPitch(p);
+    NoteSequence::setPitch(p, -1);
   }
   // Process const char * __duration
   if (__duration != nullptr && std::strlen(__duration) > 0) {
@@ -138,7 +149,7 @@ NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
       std::string("Failed to read duration: " + std::string(__duration)),
       d = new Duration(std::atoi(__duration));
     )
-    NoteGroup::setDuration(d);
+    NoteGroup::setDuration(d,-1);
   }
 }
 
@@ -166,7 +177,7 @@ NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __dura
       std::string("Failed to read pitch: " + __pitch),
       p = new Pitch(name, acc, oct - '0');
     )
-    NoteSequence::setPitch(p);
+    NoteSequence::setPitch(p,-1);
   }
 
   if (! __duration.empty()) {
@@ -184,7 +195,7 @@ NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __dura
       std::string("Failed to read duration from: " + __duration),
       d = new Duration(denom);
     )
-    NoteGroup::setDuration(d);
+    NoteGroup::setDuration(d,-1);
   }
 }
 
@@ -279,6 +290,12 @@ NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __dura
 }
 
 
+NoteSequence::~NoteSequence() {
+  NoteSequence::clearPitch();
+  NoteSequence::clearDuration();
+  NoteSequence::clearProperty();
+}
+
 void NoteSequence::setTied() {
   _tied = true;  
 }
@@ -301,7 +318,8 @@ int NoteSequence::getSize() const {
 
 bool NoteSequence::isValid() const {
   if (NoteGroup::isValid() && ! _durationList.empty() &&
-      _durationList.size() == _propertyList.size()) {
+      _durationList.size() == _propertyList.size() &&
+      _durationList.size() == NoteGroup::getPitchSize()) {
     for (auto it = _durationList.cbegin(); it != _durationList.cend(); it++) {
       if ((*it) == nullptr) {
         return false;
@@ -356,13 +374,17 @@ bool NoteSequence::hasProperty(size_t __pos) const {
   }
 }
 
-const Duration * NoteSequence::getDuration(size_t __pos) {
+const Duration * NoteSequence::getDuration(size_t __pos) const {
   if (__pos >= _durationList.size() || __pos < 0) {
     return nullptr;
   }
   else {
     return _durationList[__pos];
   }
+}
+
+const Pitch * NoteSequence::getPitch() const {
+  return _pitch;
 }
 
 const Property * NoteSequence::getProperty(size_t __pos) const {

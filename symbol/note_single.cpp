@@ -17,7 +17,7 @@ void SingleNote::addPitch(Pitch * __p) {
   }
 }
 
-void SingleNote::setPitch(Pitch * __p) {
+void SingleNote::setPitch(Pitch * __p, int pos) {
   if (__p) {
     delete _pitch;
     _pitch = __p;
@@ -32,7 +32,7 @@ void SingleNote::addDuration(Duration * __d) {
   }
 }
 
-void SingleNote::setDuration(Duration * __d) {
+void SingleNote::setDuration(Duration * __d, int pos) {
   if (__d) {
     delete _duration;
     _duration = __d;
@@ -44,7 +44,7 @@ void SingleNote::addProperty(Property * __p) {
   _property = __p;
 }
 
-void SingleNote::setProperty(Property * __p) {
+void SingleNote::setProperty(Property * __p, int pos) {
   delete _property;
   _property = __p;
 }
@@ -207,6 +207,10 @@ void SingleNote::updateProperty(const std::string& __context) {
   SingleNote::clearProperty();
   if (!__context.empty()) {
     _property = new Property(__context);
+  }
+  else {
+    delete _property;
+    _property = nullptr;
   }
 }
 

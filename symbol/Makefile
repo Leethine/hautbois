@@ -9,8 +9,8 @@ all : libHbCore.a
 clean :
 	rm -f unittest_* *.o *.a
 
-libHbCore.a : duration.o pitch.o property.o note_single.o note_group.o note_chord.o
-	ar cr libHbCore.a duration.o pitch.o property.o note_single.o note_group.o note_chord.o
+libHbCore.a : duration.o pitch.o property.o note_single.o note_group.o note_chord.o note_tuplet.o
+	ar cr libHbCore.a duration.o pitch.o property.o note_single.o note_group.o note_chord.o note_tuplet.o
 
 duration.o : duration.cpp duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
@@ -29,6 +29,9 @@ note_group.o : note_group.cpp note_group.hpp
 
 note_chord.o : note_chord.cpp note_chord.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_chord.cpp
+
+note_tuplet.o : note_tuplet.cpp note_tuplet.hpp
+	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_tuplet.cpp
 
 test : libHbCore.a unittest_duration unittest_pitch unittest_property unittest_note_single
 

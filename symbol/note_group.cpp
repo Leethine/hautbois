@@ -16,14 +16,24 @@ void NoteGroup::addPitch(Pitch *__p) {
   }
 }
 
-void NoteGroup::setDuration(Duration *__d) {
+void NoteGroup::setPitch(Pitch * __p, int pos) {
+  if (pos >= 0 && pos < _pitchList.size() && __p) {
+    delete _pitchList[pos];
+    _pitchList[pos] = __p;
+  }
+  else if (_pitchList.empty() && __p) {
+    _pitchList.push_back(__p);
+  }
+}
+
+void NoteGroup::setDuration(Duration *__d, int pos) {
   if (__d) {
     NoteGroup::clearDuration();
     _duration = __d;
   }
 }
 
-void NoteGroup::setProperty(Property *__p) {
+void NoteGroup::setProperty(Property *__p, int pos) {
   NoteGroup::clearProperty();
   _property = __p;
 }

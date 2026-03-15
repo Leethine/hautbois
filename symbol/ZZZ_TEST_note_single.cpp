@@ -58,6 +58,8 @@ BOOST_AUTO_TEST_CASE(test_property) {
   BOOST_TEST(n1.getPropertyStr().empty());
   n1.updateProperty("trill");
   BOOST_TEST(n1.getPropertyStr() == "trill");
+  n1.updateProperty("");
+  BOOST_TEST(!n1.hasProperty());
 }
 
 BOOST_AUTO_TEST_CASE(test_hasPitch) {

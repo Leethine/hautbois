@@ -40,15 +40,15 @@ class Note {
 
   virtual void addPitch(Pitch * __p) = 0;
 
-  virtual void setPitch(Pitch * __p) = 0;
+  virtual void setPitch(Pitch * __p, int pos) = 0;
 
   virtual void addDuration(Duration * __d) = 0;
 
-  virtual void setDuration(Duration * __d) = 0;
+  virtual void setDuration(Duration * __d, int pos) = 0;
 
   virtual void addProperty(Property * __p) = 0;
 
-  virtual void setProperty(Property * __p) = 0;
+  virtual void setProperty(Property * __p, int pos) = 0;
 
   virtual Pitch * getPitchToModify(int pos) = 0;
 
