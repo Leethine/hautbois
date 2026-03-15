@@ -269,6 +269,9 @@ double LyPitch::toFrequency(const std::string& __temperament) const {
 }
 
 void LyPitch::modify(const char * __context) {
+  if (__context == nullptr) {
+    return ;
+  }
   std::string newpitch (__context);
   int oct = _raw.getOctave();
   std::string name;

@@ -100,8 +100,11 @@ class PropertyRaw final {
   }
 
   inline std::string getStr() const {
-    std::string s (_text);
-    return s;
+    if (_text) {
+      std::string s (_text);
+      return s;
+    }
+    return "";
   }
 
   inline PropertyRaw& operator=(const PropertyRaw& r) {

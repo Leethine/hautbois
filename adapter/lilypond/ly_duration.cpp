@@ -107,7 +107,7 @@ std::string LyDuration::toString() const {
 }
 
 void LyDuration::modify(const char * __context) {
-  if (std::strlen(__context) > 0 && std::strlen(__context) < 10) {
+  if (__context && std::strlen(__context) > 0 && std::strlen(__context) < 10) {
     char oper = __context[0];
     std::string digits;
     std::string dots;
