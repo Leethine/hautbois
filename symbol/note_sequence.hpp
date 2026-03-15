@@ -76,17 +76,17 @@ class NoteSequence : public NoteGroup {
   NoteSequence(NoteSequence&&)=delete;
   virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
 
-  NoteSequence(const char * __pitch, const char * __duration,
+  NoteSequence(const char * __pitch, int __num, int __denom,
                NoteType __type, const unsigned int __count);
 
-  NoteSequence(const std::string& __pitch, const std::string& __duration,
+  NoteSequence(const std::string& __pitch, int __num, int __denom,
                NoteType __type, const unsigned int __count);
 
-  NoteSequence(const char * __pitch, const char * __duration,
+  NoteSequence(const char * __pitch, int __num, int __denom,
                const std::initializer_list<const char *> __args,
                NoteType __type, const unsigned int __count);
 
-  NoteSequence(const std::string& __pitch, const std::string& __duration,
+  NoteSequence(const std::string& __pitch, int __num, int __denom,
                const std::vector<std::string>& __args,
                NoteType __type, const unsigned int __count);
 

@@ -109,8 +109,7 @@ void NoteSequence::clearProperty() {
   _propertyList.clear();
 }
 
-
-NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
+NoteSequence::NoteSequence(const char * __pitch, int __num, int __denom,
                            NoteType __type, const unsigned int __count) :
     NoteGroup(__type), _durationList {}, _propertyList {}, 
     _pitch ( nullptr ), _tied ( false ), _noteCount (__count) {
@@ -136,25 +135,18 @@ NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
     )
     NoteSequence::setPitch(p, -1);
   }
-  // Process const char * __duration
-  if (__duration != nullptr && std::strlen(__duration) > 0) {
-    for (int i=0; i<std::strlen(__duration); i++) { // check duration must be digits
-      if (!std::isdigit(__duration[i])) {
-        HB_THROW_MSG(std::invalid_argument,
-        std::string("Duration token must be digits, not: " + std::string(__duration)));
-      }
-    }
-    Duration * d = nullptr;
-    HB_NESTED_THROW_MSG(std::invalid_argument,
-      std::string("Failed to read duration: " + std::string(__duration)),
-      d = new Duration(std::atoi(__duration));
-    )
-    NoteGroup::setDuration(d,-1);
-  }
+  // Add _duration
+  Duration * d = nullptr;
+  HB_NESTED_THROW_MSG(std::invalid_argument,
+    std::string("Failed to read duration: " + 
+                 std::to_string(__num) + "/" + std::to_string(__denom)),
+    d = new Duration(__num, __denom);
+  )
+  NoteGroup::setDuration(d,-1);
 }
 
 
-NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __duration,
+NoteSequence::NoteSequence(const std::string& __pitch, int __num, int __denom,
                            NoteType __type, const unsigned int __count) :
     NoteGroup(__type), _durationList {}, _propertyList {}, 
     _pitch ( nullptr ), _tied ( false ), _noteCount (__count) {
@@ -179,31 +171,21 @@ NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __dura
     )
     NoteSequence::setPitch(p,-1);
   }
-
-  if (! __duration.empty()) {
-    int denom = 1;
-    HB_NESTED_THROW_MSG(std::invalid_argument,
-      std::string("Duration must be digits, not: " + __duration),
-      denom = std::stoi(__duration);
-    )
-    catch(const std::out_of_range&) {
-      HB_THROW_MSG(std::invalid_argument,
-      std::string("Duration too large: " + __duration));
-    }
-    Duration * d = nullptr;
-    HB_NESTED_THROW_MSG(std::invalid_argument,
-      std::string("Failed to read duration from: " + __duration),
-      d = new Duration(denom);
-    )
-    NoteGroup::setDuration(d,-1);
-  }
+  // Add _duration
+  Duration * d = nullptr;
+  HB_NESTED_THROW_MSG(std::invalid_argument,
+    std::string("Failed to read duration: " + 
+                 std::to_string(__num) + "/" + std::to_string(__denom)),
+    d = new Duration(__num, __denom);
+  )
+  NoteGroup::setDuration(d,-1);
 }
 
 
-NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
+NoteSequence::NoteSequence(const char * __pitch, int __num, int __denom,
                            const std::initializer_list<const char *> __args,
                            NoteType __type, const unsigned int __count) :
-    NoteSequence(__pitch, __duration, __type, __count) {
+    NoteSequence(__pitch, __num, __denom, __type, __count) {
   int count = 0;
   for (auto token : __args) {
     Pitch    * p = nullptr;
@@ -241,13 +223,17 @@ NoteSequence::NoteSequence(const char * __pitch, const char * __duration,
       NoteSequence::addDuration(d);
     }
   }
+  if (count % 2 != 0) {
+    HB_THROW_MSG(std::invalid_argument,
+                 std::string("Arg list must be even: <pitch,value>"));
+  }
 }
 
 
-NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __duration,
+NoteSequence::NoteSequence(const std::string& __pitch, int __num, int __denom,
                            const std::vector<std::string>& __args,
                            NoteType __type, const unsigned int __count) :
-    NoteSequence(__pitch, __duration, __type, __count) {
+    NoteSequence(__pitch, __num, __denom, __type, __count) {
   int count = 0;
   for (auto token : __args) {
     Pitch    * p = nullptr;
@@ -286,6 +272,10 @@ NoteSequence::NoteSequence(const std::string& __pitch, const std::string& __dura
       )
       NoteSequence::addDuration(d);
     }
+  }
+  if (count % 2 != 0) {
+    HB_THROW_MSG(std::invalid_argument,
+                 std::string("Arg list must be even: <pitch,value>"));
   }
 }
 

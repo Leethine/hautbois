@@ -22,11 +22,11 @@ class Tuplet : public NoteSequence {
 
  public:
 
-  Tuplet(const char * __pitch, const char * __duration,
+  Tuplet(const char * __pitch, int __num, int __denom,
          const std::initializer_list<const char *> __args,
          const unsigned int __count);
 
-  Tuplet(const std::string& __pitch, const std::string& __duration,
+  Tuplet(const std::string& __pitch, int __num, int __denom,
          const std::vector<std::string>& __args,
          const unsigned int __count);
 

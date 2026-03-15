@@ -18,16 +18,16 @@ std::string Tuplet::Tuplet::filterProperty(const std::string& __text) const {
   return s;
 }
 
-Tuplet::Tuplet(const char * __pitch, const char * __duration,
+Tuplet::Tuplet(const char * __pitch, int __num, int __denom,
               const std::initializer_list<const char *> __args,
               const unsigned int __count) :
-  NoteSequence(__pitch, __duration, __args, NoteType::Tuplet, __count) {
+  NoteSequence(__pitch, __num, __denom, __args, NoteType::Tuplet, __count) {
 }
 
-Tuplet::Tuplet(const std::string& __pitch, const std::string& __duration,
+Tuplet::Tuplet(const std::string& __pitch, int __num, int __denom,
        const std::vector<std::string>& __args,
        const unsigned int __count) :
-  NoteSequence(__pitch, __duration, __args, NoteType::Tuplet, __count) {
+  NoteSequence(__pitch, __num, __denom, __args, NoteType::Tuplet, __count) {
 }
 
 Tuplet::~Tuplet() { }
@@ -227,17 +227,23 @@ std::string Tuplet::toString() const {
     s = "";
     for (int i=0; i<Tuplet::getPitchSize(); i++) {
       if (Tuplet::hasPitch(i)) {
-        s += Tuplet::getPitch(i)->toString() + "/";
+        s += Tuplet::getPitch(i)->toString() + ",1/";
       }
       if (Tuplet::hasDuration(i)) {
         s += std::to_string(Tuplet::getDuration(i)->getDenom());
       }
       s += ",";
     }
-    s += " ";
-    s += std::to_string(Tuplet::getSize());
-    s += "/";
-    s += std::to_string(Tuplet::getDuration()->getDenom());
+    s += " [";
+    if (Tuplet::hasDuration()) {
+      s += std::to_string(Tuplet::getDuration()->getNum());
+      s += "/";
+      s += std::to_string(Tuplet::getDuration()->getDenom());
+      s += "] [" + std::to_string(Tuplet::getSize()) + "]";
+    }
+    else {
+      s += "?/?]";
+    }
   }
   return s;
 }
