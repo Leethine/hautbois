@@ -8,6 +8,41 @@
 namespace hautbois {
 namespace core {
 
+void Tuplet::addPitch(Pitch * __p) {
+  NoteSequence::addPitch(__p);
+}
+
+void Tuplet::setPitch(Pitch * __p, int pos) {
+  NoteSequence::setPitch(__p, pos);
+}
+
+void Tuplet::addDuration(Duration * __d) {
+  NoteSequence::addDuration(__d);
+}
+
+void Tuplet::setDuration(Duration * __d, int pos) {
+  NoteGroup::setDuration(__d, pos);
+}
+
+void Tuplet::addProperty(Property * __p) {
+  NoteSequence::addProperty(__p);
+}
+
+void Tuplet::setProperty(Property * __p, int pos) {
+  NoteSequence::setProperty(__p, pos);
+}
+
+void Tuplet::clearPitch() {
+  NoteSequence::clearPitch();
+}
+
+void Tuplet::clearDuration() {
+  NoteSequence::clearDuration();
+}
+
+void Tuplet::clearProperty() {
+  NoteSequence::clearProperty();
+}
 
 void * Tuplet::verify(const char * __context) const {
   return nullptr;
@@ -16,6 +51,9 @@ void * Tuplet::verify(const char * __context) const {
 std::string Tuplet::Tuplet::filterProperty(const std::string& __text) const {
   std::string s (__text);
   return s;
+}
+
+Tuplet::Tuplet(const unsigned int __count) : NoteSequence(NoteType::Tuplet, __count) {
 }
 
 Tuplet::Tuplet(int __num, int __denom,

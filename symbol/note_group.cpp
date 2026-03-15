@@ -38,25 +38,6 @@ void NoteGroup::setProperty(Property *__p, int pos) {
   _property = __p;
 }
 
-Pitch * NoteGroup::getPitchToModify(int pos) {
-  if (_pitchList.empty()) {
-    return nullptr;
-  }
-  else {
-    if (pos < 0) { return _pitchList.front(); }
-    else if (pos >= _pitchList.size()) { return _pitchList.back(); }
-    else { return _pitchList[pos]; }
-  }
-}
-
-Duration * NoteGroup::getDurationToModify(int pos) {
-  return _duration;
-}
-
-Property * NoteGroup::getPropertyToModify(int pos) {
-  return _property;
-}
-
 void NoteGroup::clearPitch() {
   for (auto it = _pitchList.begin(); it != _pitchList.end(); it++) {
     delete (*it);

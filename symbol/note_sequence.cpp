@@ -51,41 +51,6 @@ void NoteSequence::setProperty(Property * __p, int pos) {
   }
 }
 
-Pitch * NoteSequence::getPitchToModify(int pos) {
-  if (pos < 0) {
-    return _pitch;
-  }
-  return NoteGroup::getPitchToModify(pos);
-}
-
-Duration * NoteSequence::getDurationToModify(int pos) {
-  if (pos < 0 || _durationList.empty()) {
-    return NoteGroup::getDurationToModify(0);
-  }
-  else {
-    if (pos >= _durationList.size()) {
-      return _durationList.back();
-    }
-    else {
-      return _durationList[pos];
-    }
-  }
-}
-
-Property * NoteSequence::getPropertyToModify(int pos) {
-  if (pos < 0 || _propertyList.empty()) {
-    return NoteGroup::getPropertyToModify(0);
-  }
-  else {
-    if (pos >= _propertyList.size()) {
-      return _propertyList.back();
-    }
-    else {
-      return _propertyList[pos];
-    }
-  }
-}
-
 void NoteSequence::clearPitch() {
   delete _pitch;
   _pitch = nullptr;
@@ -107,6 +72,11 @@ void NoteSequence::clearProperty() {
     delete (*it);
   }
   _propertyList.clear();
+}
+
+NoteSequence::NoteSequence(NoteType __type, const unsigned int __count) : 
+    NoteGroup(__type), _durationList {}, _propertyList {}, 
+    _pitch ( nullptr ), _tied ( false ), _noteCount (__count) {
 }
 
 NoteSequence::NoteSequence(const char * __pitch, int __num, int __denom,

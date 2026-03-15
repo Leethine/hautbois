@@ -45,12 +45,6 @@ protected:
 
   virtual void setProperty(Property *__p, int pos);
 
-  virtual Pitch * getPitchToModify(int pos);
-
-  virtual Duration * getDurationToModify(int pos);
-
-  virtual Property * getPropertyToModify(int pos);
-
   virtual void clearPitch();
 
   virtual void clearDuration();

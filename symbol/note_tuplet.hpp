@@ -16,9 +16,29 @@ class Tuplet : public NoteSequence {
 
  protected:
 
+  virtual void addPitch(Pitch *__p);
+
+  virtual void setPitch(Pitch * __p, int pos);
+
+  virtual void addDuration(Duration *__d);
+
+  virtual void setDuration(Duration *__d, int pos);
+
+  virtual void addProperty(Property *__p);
+
+  virtual void setProperty(Property *__p, int pos);
+
+  virtual void clearPitch();
+
+  virtual void clearDuration();
+
+  virtual void clearProperty();
+
   virtual void * verify(const char * __context) const;
 
   virtual std::string filterProperty(const std::string& __text) const;
+
+  Tuplet(const unsigned int __count);
 
  public:
 

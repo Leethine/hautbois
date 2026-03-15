@@ -49,18 +49,6 @@ void SingleNote::setProperty(Property * __p, int pos) {
   _property = __p;
 }
 
-Pitch * SingleNote::getPitchToModify(int pos) {
-  return _pitch;
-}
-
-Duration * SingleNote::getDurationToModify(int pos) {
-  return _duration;
-}
-
-Property * SingleNote::getPropertyToModify(int pos) {
-  return _property;
-}
-
 void SingleNote::clearPitch() {
   delete _pitch;
   _pitch = nullptr;

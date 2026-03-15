@@ -43,23 +43,17 @@ class NoteSequence : public NoteGroup {
 
   ///+ virtual void setNoteType(NoteType __ntype);
 
-  virtual void addPitch(Pitch *__p);
+  virtual void addPitch(Pitch * __p);
 
   virtual void setPitch(Pitch * __p, int pos);
 
-  virtual void addDuration(Duration *__d);
+  virtual void addDuration(Duration * __d);
 
-  ///+ virtual void setDuration(Duration *__d, int pos);
+  ///+ virtual void setDuration(Duration * __d, int pos);
 
-  virtual void addProperty(Property *__p);
+  virtual void addProperty(Property * __p);
 
-  virtual void setProperty(Property *__p, int pos);
-
-  virtual Pitch * getPitchToModify(int pos);
-
-  virtual Duration * getDurationToModify(int pos);
-
-  virtual Property * getPropertyToModify(int pos);
+  virtual void setProperty(Property * __p, int pos);
 
   virtual void clearPitch();
 
@@ -75,6 +69,8 @@ class NoteSequence : public NoteGroup {
   NoteSequence(NoteSequence&)=delete;
   NoteSequence(NoteSequence&&)=delete;
   virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
+
+  NoteSequence(NoteType __type, const unsigned int __count);
 
   NoteSequence(const char * __pitch, int __num, int __denom,
                NoteType __type, const unsigned int __count);

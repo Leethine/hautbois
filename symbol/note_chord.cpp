@@ -11,6 +11,10 @@
 namespace hautbois {
 namespace core {
 
+void Chord::addPitch(Pitch *__p) {
+  NoteGroup::addPitch(__p);
+}
+
 void Chord::setPitch(Pitch * __p, int pos) {
   NoteGroup::setPitch(__p, pos);
 }
@@ -21,8 +25,28 @@ void Chord::addDuration(Duration * __d) {
   }
 }
 
+void Chord::setDuration(Duration *__d, int pos) {
+  Chord::addDuration(__d);
+}
+
 void Chord::addProperty(Property * __p) {
   NoteGroup::setProperty(__p, -1);
+}
+
+void Chord::setProperty(Property *__p, int pos) {
+  Chord::addProperty(__p);
+}
+
+void Chord::clearPitch() {
+  NoteGroup::clearPitch();
+}
+
+void Chord::clearDuration() {
+  NoteGroup::clearDuration();
+}
+
+void Chord::clearProperty() {
+  NoteGroup::clearProperty();
 }
 
 void * Chord::verify(const char * __context) const {
