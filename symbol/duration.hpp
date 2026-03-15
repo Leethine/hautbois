@@ -17,6 +17,8 @@ class Duration {
 
   Duration();
 
+  Duration(bool flag);
+
  public:
 
   Duration(const int& __num, const int& __denom);
@@ -69,11 +71,11 @@ class Duration {
   
   virtual Duration operator/(const int& __scale) const;
   
-  virtual void operator+=(const Duration& d2);
+  virtual Duration& operator+=(const Duration& d2);
   
-  virtual void operator*=(const int& __scale);
+  virtual Duration& operator*=(const int& __scale);
   
-  virtual void operator/=(const int& __scale);
+  virtual Duration& operator/=(const int& __scale);
 
 };
 

@@ -68,17 +68,11 @@ BOOST_AUTO_TEST_CASE(test_operators_plusminus) {
   BOOST_TEST(dd4.getNum() == 1);
   BOOST_TEST(dd4.getDenom() == 8);
 
-  try {
-    d1 - d4;
+  if (d4 - d1 == d1) {
+    BOOST_TEST(true);
   }
-  catch(std::logic_error& e) {
-    std::string err_msg (e.what());
-    if (!err_msg.empty()) {
-      BOOST_TEST(true);
-    }
-    else {
-      BOOST_TEST(false);
-    }
+  else {
+    BOOST_TEST(false);
   }
 }
 

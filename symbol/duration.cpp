@@ -2,7 +2,6 @@
 #include "utility/hbexcept.hpp"
 
 #include <algorithm>
-#include <stdexcept>
 #include <numeric>
 #include <array>
 
@@ -27,6 +26,8 @@ namespace hautbois {
 namespace core {
 
 Duration::Duration() : _raw (1, 1) { }
+
+Duration::Duration(bool flag) : _raw (0, 0) { }
 
 Duration::Duration(const int& __num, const int& __denom) : _raw (__num, __denom) {
   std::array<int,8> valid_denom {1,2,4,8,16,32,64,128};
@@ -94,7 +95,8 @@ int Duration::getDenom() const {
 }
 
 std::string Duration::toString() const {
-  return std::to_string(getNum()) + "/" + std::to_string(getDenom());
+  return std::to_string(Duration::getNum()) 
+    + "/" + std::to_string(Duration::getDenom());
 }
 
 void Duration::modify(const char * __context) {
@@ -147,11 +149,7 @@ Duration Duration::operator+ (const Duration& d2) const {
 }
 
 Duration Duration::operator- (const Duration& d2) const {
-  if ((*this) == d2) {
-    std::string msg ("Cannot apply operator-() if d1 == d2");
-    HB_THROW_MSG(std::logic_error, msg);
-  }
-  else {
+  if ((*this) != d2) {
     int tNum = Duration::getNum() * d2.getDenom() >
                d2.getNum() * Duration::getDenom() ?
                Duration::getNum() * d2.getDenom()
@@ -163,63 +161,57 @@ Duration Duration::operator- (const Duration& d2) const {
     int tGcd   = HB_GCD(tNum,tDenom); 
     return Duration((tNum/tGcd), (tDenom/tGcd));
   }
+  return *this;
 }
 
 Duration Duration::operator* (const int& __scale) const {
-  if (__scale <= 0) {
-    std::string msg ("Cannot apply operator* if scale <= 0");
-    HB_THROW_MSG(std::logic_error, msg);
-  }
-  else {
+  if (__scale > 0) {
     int tNum   = Duration::getNum() * __scale;
     int tDenom = Duration::getDenom();
     int tGcd   = HB_GCD(tNum,tDenom);
     return Duration((tNum / tGcd), (tDenom / tGcd));
   }
+  return *this;
 }
 
 Duration Duration::operator/ (const int& __scale) const {
-  if (__scale <= 0) {
-    std::string msg ("Cannot apply operator/ if scale <= 0");
-    HB_THROW_MSG(std::logic_error, msg);
-  }
-  else {
+  if (__scale > 0) {
     int tNum   = Duration::getNum();
     int tDenom = Duration::getDenom() * __scale;
     int tGcd   = HB_GCD(tNum,tDenom);
     return Duration((tNum / tGcd), (tDenom / tGcd));
   }
+  return *this;
 }
 
-void Duration::operator+= (const Duration& d2) {
+Duration& Duration::operator+= (const Duration& d2) {
   int tNum = Duration::getNum() * d2.getDenom()
             + d2.getNum() * Duration::getDenom();
   int tDenom = Duration::getDenom() * d2.getDenom();
   int tGcd = HB_GCD(tNum, tDenom);
   _raw.setNum(tNum/tGcd);
   _raw.setDenom(tDenom/tGcd);
+  return *this;
 }
 
-void Duration::operator*= (const int& __scale) {
-  if (__scale <= 0) {
-    std::string msg ("Cannot apply operator*= if scale <= 0");
-    HB_THROW_MSG(std::logic_error, msg);
+Duration& Duration::operator*= (const int& __scale) {
+  if (__scale > 0) {
+    int tNum = Duration::getNum() * __scale;
+    int tGcd = HB_GCD(tNum, Duration::getDenom());
+    _raw.setNum(tNum/tGcd);
+    _raw.setDenom(Duration::getDenom()/tGcd);
   }
-  int tNum = getNum() * __scale;
-  int tGcd = HB_GCD(tNum, getDenom());
-  _raw.setNum(tNum/tGcd);
-  _raw.setDenom(getDenom()/tGcd);
+  return *this;
 }
 
-void Duration::operator/= (const int& __scale) {
-  if (__scale <= 0) {
-    std::string msg ("Cannot apply operator/= if scale <= 0");
-    HB_THROW_MSG(std::logic_error, msg);
+Duration& Duration::operator/= (const int& __scale) {
+  if (__scale > 0) {
+    int tDenom = Duration::getDenom() * __scale;
+    int tGcd = HB_GCD(Duration::getNum(), tDenom);
+    _raw.setNum(Duration::getNum()/tGcd);
+    _raw.setDenom(tDenom/tGcd);
   }
-  int tDenom = getDenom() * __scale;
-  int tGcd = HB_GCD(getNum(), tDenom);
-  _raw.setNum(getNum()/tGcd);
-  _raw.setDenom(tDenom/tGcd);
+  return *this;
 }
 
 } // namespace hautbois
