@@ -18,16 +18,16 @@ std::string Tuplet::Tuplet::filterProperty(const std::string& __text) const {
   return s;
 }
 
-Tuplet::Tuplet(const char * __pitch, int __num, int __denom,
-              const std::initializer_list<const char *> __args,
-              const unsigned int __count) :
-  NoteSequence(__pitch, __num, __denom, __args, NoteType::Tuplet, __count) {
+Tuplet::Tuplet(int __num, int __denom,
+               const std::initializer_list<const char *> __args,
+               const unsigned int __count) :
+  NoteSequence("", __num, __denom, __args, NoteType::Tuplet, __count) {
 }
 
-Tuplet::Tuplet(const std::string& __pitch, int __num, int __denom,
-       const std::vector<std::string>& __args,
-       const unsigned int __count) :
-  NoteSequence(__pitch, __num, __denom, __args, NoteType::Tuplet, __count) {
+Tuplet::Tuplet(int __num, int __denom,
+               const std::vector<std::string>& __args,
+               const unsigned int __count) :
+  NoteSequence("", __num, __denom, __args, NoteType::Tuplet, __count) {
 }
 
 Tuplet::~Tuplet() { }

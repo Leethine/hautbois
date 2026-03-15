@@ -14,7 +14,7 @@ using namespace core;
 BOOST_AUTO_TEST_SUITE(TupletTestSuite)
 
 BOOST_AUTO_TEST_CASE(test_constructor) {
-  Tuplet n1("", 1, 4, {"C4","8","G#5","8","Db3","8"}, 3);
+  Tuplet n1(1, 4, {"C4","8","G#5","8","Db3","8"}, 3);
   BOOST_TEST(n1.toString() == "Cn4,1/8,G#5,1/8,Db3,1/8, [1/4] [3]");
   std::vector<std::string> args;
   args.emplace_back("Cx6");
@@ -25,15 +25,14 @@ BOOST_AUTO_TEST_CASE(test_constructor) {
   args.emplace_back("8");
   args.emplace_back("D6");
   args.emplace_back("8");
-  std::string s;
-  Tuplet n2 (s, 1, 4, args, 3);
+  Tuplet n2 (1, 4, args, 3);
   BOOST_TEST(n2.toString() == "Cx6,1/16,DB5,1/16,C#4,1/8,Dn6,1/8, [1/4] [3]");
 }
 
 BOOST_AUTO_TEST_CASE(test_constr_throw) {
-  BOOST_CHECK_THROW(Tuplet n0 ("", 1, 4, {""}, 4),         std::invalid_argument);
-  BOOST_CHECK_THROW(Tuplet n0 ("", 1,2,{"Cn4","4","C"},4), std::invalid_argument);
-  BOOST_CHECK_THROW(Tuplet n0 ("X", 1, 4, {""}, 4),        std::invalid_argument);
+  BOOST_CHECK_THROW(Tuplet n0 (1, 4, {""}, 4),         std::invalid_argument);
+  BOOST_CHECK_THROW(Tuplet n0 (1,2,{"Cn4","4","C"},4), std::invalid_argument);
+  BOOST_CHECK_THROW(Tuplet n0 (1, 4, {""}, 4),        std::invalid_argument);
 }
 
 /*
