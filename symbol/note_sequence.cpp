@@ -225,7 +225,7 @@ NoteSequence::NoteSequence(const char * __pitch, int __num, int __denom,
   }
   if (count % 2 != 0) {
     HB_THROW_MSG(std::invalid_argument,
-                 std::string("Arg list must be even: <pitch,value>"));
+                 std::string("Arg list must be: <pitch1,value1>, <pitch2,value2>, ..."));
   }
 }
 
@@ -275,7 +275,7 @@ NoteSequence::NoteSequence(const std::string& __pitch, int __num, int __denom,
   }
   if (count % 2 != 0) {
     HB_THROW_MSG(std::invalid_argument,
-                 std::string("Arg list must be even: <pitch,value>"));
+                 std::string("Arg list must be: <pitch1,value1>, <pitch2,value2>, ..."));
   }
 }
 
