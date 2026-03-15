@@ -115,9 +115,7 @@ int Pitch::toIndex() const {
   auto it1 = nameMap.find(_raw.getName());
   auto it2 = accMap.find(_raw.getAccidental());
   if (it1 == nameMap.end() || it2 == accMap.end()) {
-    std::string msg = "Invalid pitch: " + Pitch::getName() + Pitch::getAccidental();
-    HB_THROW_MSG(std::runtime_error, msg);
-    return 0;
+    return -1;
   }
   int idx = nameMap[_raw.getName()] + accMap[_raw.getAccidental()]
           + 12 * (_raw.getOctave() - 1);
