@@ -11,7 +11,8 @@ namespace core {
 
 class Property {
 
- private:
+ protected:
+
   PropertyRaw _raw;
 
  public:
@@ -30,11 +31,11 @@ class Property {
   
   virtual ~Property();
   
-  Property& operator=(const Property& p);
+  virtual Property& operator=(const Property& p);
 
   virtual void modify(const char* context);
 
-  virtual void * convert(const char* context);
+  virtual void * convert(const char* context) const;
 
   virtual bool hasValue() const;
 
@@ -48,7 +49,7 @@ class Property {
 
 };
 
-} // namespace hautbois
 } // namespace core
+} // namespace hautbois
 
 #endif

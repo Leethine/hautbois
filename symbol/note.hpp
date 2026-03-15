@@ -3,19 +3,21 @@
 #ifndef NOTE_H
 #define NOTE_H
 
-#include <vector>
 #include <string>
-#include <tuple>
+#include "symbol_raw/core_types.hpp"
 
 namespace hautbois {
 namespace core {
 
 enum class NoteType {
-  SingleNote =  0,
-  Chord      =  1,
-  Tuplet     =  2,
-  Rest       = -1,
-  Silence    = -2
+  SingleNote   =  0,
+  Chord        =  1,
+  Tuplet       =  2,
+  Rest         = -1,
+  Silence      = -2,
+  Grace        =  3,
+  Appoggiatura =  4,
+  Acciaccatura =  5
 };
 
 class Duration;
@@ -30,111 +32,201 @@ class Note {
 
   NoteType _type;
 
-  Duration * _duration;
-
-  std::vector<Pitch *> _pitch;
-
-  Property * _property;
-
-  bool _tied = false;
-
  protected:
 
-  virtual void setNoteType(NoteType __ntype);
+  inline virtual void setNoteType(NoteType __ntype) {
+    _type = __ntype;
+  }
 
-  virtual void addPitch(Pitch * __p);
+  virtual void addPitch(Pitch * __p) = 0;
 
-  virtual void setPitch(Pitch * __p);
+  virtual void setPitch(Pitch * __p, int pos) = 0;
 
-  virtual void clearPitch();
+  virtual void addDuration(Duration * __d) = 0;
 
-  virtual void setDuration(Duration * __d);
+  virtual void setDuration(Duration * __d, int pos) = 0;
 
-  virtual void setProperty(Property * __p);
+  virtual void addProperty(Property * __p) = 0;
 
-  virtual NoteType guessNoteType(const std::string& __input) const;
+  virtual void setProperty(Property * __p, int pos) = 0;
 
-  virtual bool checkFormatThrowExp(const std::string& __pitch) const;
+  virtual void clearPitch() = 0;
 
-  virtual std::tuple<std::string, std::string, std::string> 
-    parseSingleNote(const std::string& __pitch) const;
+  virtual void clearDuration() = 0;
 
-  virtual std::vector< std::tuple<std::string, std::string, std::string> >
-    parseGroupNote(const std::string& __pitch, NoteType __type=NoteType::Chord) const;
+  virtual void clearProperty() = 0;
 
-  virtual std::string filterProperty(const std::string& __text) const;
+  virtual void * verify(const char * __context) const = 0;
+
+  virtual std::string filterProperty(const std::string& __text) const = 0;
 
  public:
 
-  Note();
+  inline Note() : _type ( NoteType::Silence ) { }
 
-  Note(const int& __num, const int& __denom);
+  inline Note(NoteType __ntype) : _type ( __ntype ) { }
 
-  Note(const int& __num, const int& __denom, const std::string& __pitch);
-
-  Note(const Note& __n);
-
-  Note(const Note&& __n);
-
-  virtual ~Note();
-
-  virtual Note& operator=(const Note& __n);
-
-  virtual void updateDuration(const std::string& __context);
+  Note(Note&) = delete;
   
-  virtual void updatePitch(const std::string& __context);
+  Note(Note&&) = delete;
 
-  virtual void updateProperty(const std::string& __context);
+  virtual Note& operator=(const Note& __n) = delete;
 
-  virtual void setTied();
+  inline virtual ~Note() { };
 
-  virtual void setUntied();
+  virtual void updateDuration(const std::string& __context) = 0;
 
-  virtual bool hasProperty() const;
+  virtual void updateDuration(const std::string& __context, size_t __pos) = 0;
+  
+  virtual void updatePitch(const std::string& __context) = 0;
 
-  virtual int pitchSize() const;
+  virtual void updatePitch(const std::string& __context, size_t __pos) = 0;
 
-  virtual NoteType getType() const;
+  virtual void updateProperty(const std::string& __context) = 0;
 
-  virtual char getTypeChar() const;
+  virtual void updateProperty(const std::string& __context, size_t __pos) = 0;
 
-  virtual std::string getTypeStr() const;
+  virtual void setTied() = 0;
 
-  virtual bool isType(NoteType iType) const;
+  virtual void setTied(size_t __pos) = 0;
 
-  virtual bool isSingle() const;
+  virtual void setUntied() = 0;
 
-  virtual bool isChord() const;
+  virtual void setUntied(size_t __pos) = 0;
 
-  virtual bool isRest() const;
+  virtual int getSize() const = 0;
 
-  virtual bool isSilent() const;
+  inline virtual NoteType getType() const {
+    return _type;
+  };
 
-  virtual bool isTuplet() const;
+  inline virtual char getTypeChar() const {
+    switch (_type) {
+      case NoteType::Silence :
+        return CHAR_SILENCENOTE_TYPE;
+      case NoteType::Rest :
+        return CHAR_RESTNOTE_TYPE;
+      case NoteType::SingleNote :
+        return CHAR_SINGLENOTE_TYPE;
+      case NoteType::Chord :
+        return CHAR_CHORD_TYPE;
+      case NoteType::Tuplet :
+        return CHAR_TUPLET_TYPE;
+      case NoteType::Grace :
+        return CHAR_GRACENOTE_TYPE;
+      case NoteType::Acciaccatura :
+        return CHAR_ACCIACCATURA_TYPE;
+      case NoteType::Appoggiatura :
+        return CHAR_APPOGGIATURA_TYPE;
+      default :
+        return CHAR_SILENCENOTE_TYPE;
+    }
+  }
 
-  virtual bool isValid() const;
+  inline virtual std::string getTypeStr() const {
+    switch (_type) {
+      case NoteType::Silence :
+        return "Silence";
+      case NoteType::Rest :
+        return "Rest";
+      case NoteType::SingleNote :
+        return "SingleNote";
+      case NoteType::Chord :
+        return "Chord";
+      case NoteType::Tuplet :
+        return "Tuplet";
+      case NoteType::Grace :
+        return "Grace";
+      case NoteType::Acciaccatura :
+        return "Acciaccatura";
+      case NoteType::Appoggiatura :
+        return "Appoggiatura";
+      default :
+        return "";
+    }
+  }
 
-  virtual bool isTied() const;
+  inline virtual bool isType(NoteType __ntype) const {
+    return _type == __ntype;
+  }
 
-  virtual const Duration * getDuration() const;
+  inline virtual bool isSingle() const {
+    return _type == NoteType::SingleNote;
+  }
 
-  virtual const Pitch * getPitch() const;
+  inline virtual bool isRest() const {
+    return _type == NoteType::Rest;
+  }
 
-  virtual const Property * getProperty() const;
+  inline virtual bool isSilence() const {
+    return _type == NoteType::Silence;
+  }
 
-  virtual const std::vector<const Pitch *> getPitchGroup() const;
+  inline virtual bool isChord() const {
+    return _type == NoteType::Chord;
+  }
 
-  virtual std::string getDurationStr() const;
+  inline virtual bool isTuplet() const {
+    return _type == NoteType::Tuplet;
+  }
 
-  virtual std::string getPitchStr() const;
+  inline virtual bool isGrace() const {
+    return _type == NoteType::Grace;
+  }
 
-  virtual std::vector<std::string> getPitchGroupStr() const;
+  inline virtual bool isAppoggiatura() const {
+    return _type == NoteType::Appoggiatura;
+  }
 
-  virtual std::string getPropertyStr() const;
+  inline virtual bool isAcciaccatura() const {
+    return _type == NoteType::Acciaccatura;
+  }
 
-  virtual std::string toString() const;
+  virtual bool isValid() const = 0;
 
-  virtual void * toStream(const std::string& __context, void * __ostream) const;
+  virtual bool isTied() const = 0;
+
+  virtual bool isTied(size_t __pos) const = 0;
+
+  virtual bool hasDuration() const = 0;
+
+  virtual bool hasDuration(size_t __pos) const = 0;
+  
+  virtual bool hasPitch() const = 0;
+
+  virtual bool hasPitch(size_t __pos) const = 0;
+
+  virtual bool hasProperty() const = 0;
+
+  virtual bool hasProperty(size_t __pos) const = 0;
+
+  virtual const Duration * getDuration() const = 0;
+
+  virtual const Duration * getDuration(size_t __pos) const = 0;
+
+  virtual const Pitch * getPitch() const = 0;
+
+  virtual const Pitch * getPitch(size_t __pos) const = 0;
+
+  virtual const Property * getProperty() const = 0;
+
+  virtual const Property * getProperty(size_t __pos) const = 0;
+
+  virtual std::string getPropertyStr() const = 0;
+
+  virtual std::string getPropertyStr(size_t __pos) const = 0;
+
+  virtual int getPitchSize() const = 0;
+
+  virtual int getDurationSize() const = 0;
+
+  virtual int getPropertySize() const = 0;
+
+  virtual void modify(const std::string& __context) = 0;
+
+  virtual std::string toString() const = 0;
+
+  virtual void * toStream(const std::string& __context, void * __ostream) const = 0;
 
 };
 
