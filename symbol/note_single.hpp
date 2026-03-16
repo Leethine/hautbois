@@ -44,6 +44,12 @@ class SingleNote : public Note {
 
   virtual void setProperty(Property * __p, int pos);
 
+  virtual Pitch * getPitchyMod(int pos) = 0;
+
+  virtual Duration * getDurationMod(int pos) = 0;
+
+  virtual Property * getPropertyMod(int pos) = 0;
+
   virtual void clearPitch();
 
   virtual void clearDuration();

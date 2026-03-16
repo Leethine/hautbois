@@ -37,6 +37,18 @@ void Chord::setProperty(Property *__p, int pos) {
   Chord::addProperty(__p);
 }
 
+Pitch * Chord::getPitchyMod(int pos) {
+  return NoteGroup::getPitchyMod(pos);
+}
+
+Duration * Chord::getDurationMod(int pos) {
+  return NoteGroup::getDurationMod(pos);
+}
+
+Property * Chord::getPropertyMod(int pos) {
+  return NoteGroup::getPropertyMod(pos);
+}
+
 void Chord::clearPitch() {
   NoteGroup::clearPitch();
 }

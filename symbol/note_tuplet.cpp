@@ -32,6 +32,18 @@ void Tuplet::setProperty(Property * __p, int pos) {
   NoteSequence::setProperty(__p, pos);
 }
 
+Pitch * Tuplet::getPitchyMod(int pos) {
+  return NoteSequence::getPitchyMod(pos);
+}
+
+Duration * Tuplet::getDurationMod(int pos) {
+  return NoteSequence::getDurationMod(pos);
+}
+
+Property * Tuplet::getPropertyMod(int pos) {
+  return NoteSequence::getPropertyMod(pos);
+}
+
 void Tuplet::clearPitch() {
   NoteSequence::clearPitch();
 }

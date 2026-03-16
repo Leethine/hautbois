@@ -44,6 +44,12 @@ class Chord : public NoteGroup {
 
   virtual void setProperty(Property *__p, int pos);
 
+  virtual Pitch * getPitchyMod(int pos);
+
+  virtual Duration * getDurationMod(int pos);
+
+  virtual Property * getPropertyMod(int pos);
+
   virtual void clearPitch();
 
   virtual void clearDuration();

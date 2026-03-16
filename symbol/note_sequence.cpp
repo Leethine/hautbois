@@ -51,6 +51,39 @@ void NoteSequence::setProperty(Property * __p, int pos) {
   }
 }
 
+Pitch * NoteSequence::getPitchyMod(int pos) {
+  if (pos < 0) {
+    return _pitch;
+  }
+  else {
+    return NoteGroup::getPitchyMod(pos);
+  }
+}
+
+Duration * NoteSequence::getDurationMod(int pos) {
+  if (pos < 0) {
+    return NoteGroup::getDurationMod(pos);
+  }
+  else if (pos < _durationList.size()) {
+    return _durationList[pos];
+  }
+  else {
+    return nullptr;
+  }
+}
+
+Property * NoteSequence::getPropertyMod(int pos) {
+  if (pos < 0) {
+    return NoteGroup::getPropertyMod(pos);
+  }
+  else if (pos < _propertyList.size()) {
+    return _propertyList[pos];
+  }
+  else {
+    return nullptr;
+  }
+}
+
 void NoteSequence::clearPitch() {
   delete _pitch;
   _pitch = nullptr;
