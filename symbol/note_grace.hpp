@@ -7,39 +7,32 @@
 #include <string>
 
 #include "note.hpp"
+#include "note_sequence.hpp"
 
 namespace hautbois {
 namespace core {
 
-class GraceNote : public Note {
-
- private:
-
-  Duration * _duration;
-
-  Pitch * _pitch;
-
-  Property * _property;
-
-  std::vector<Duration *> _duration_other;
-
-  std::vector<Pitch *> _pitch_other;
-
-  bool _tied;
+class GraceNote : public NoteSequence {
 
  protected:
 
-  virtual void addPitch(Pitch * __p);
+  virtual void addPitch(Pitch *__p);
 
-  virtual void setPitch(Pitch * __p);
+  virtual void setPitch(Pitch * __p, int pos);
 
-  virtual void addDuration(Duration * __d);
+  virtual void addDuration(Duration *__d);
 
-  virtual void setDuration(Duration * __d);
+  virtual void setDuration(Duration *__d, int pos);
 
-  virtual void addProperty(Property * __p);
+  virtual void addProperty(Property *__p);
 
-  virtual void setProperty(Property * __p);
+  virtual void setProperty(Property *__p, int pos);
+
+  virtual Pitch * getPitchyMod(int pos);
+
+  virtual Duration * getDurationMod(int pos);
+
+  virtual Property * getPropertyMod(int pos);
 
   virtual void clearPitch();
 
@@ -49,15 +42,22 @@ class GraceNote : public Note {
 
   virtual std::string filterProperty(const std::string& __text) const;
 
+  GraceNote(NoteType __type, int __num, int __denom, const char * __pitch,
+            const std::initializer_list<const char *> __args);
+
  public:
 
-  GraceNote();
+  GraceNote(int __num, int __denom, const char * __pitch,
+            const std::initializer_list<const char *> __args);
 
-  GraceNote(GraceNote& __note);
+  GraceNote(int __num, int __denom, const std::string& __pitch,
+            const std::vector<std::string>& __args);
+
+  // GraceNote(GraceNote& __note);
   
-  GraceNote(GraceNote&& __note);
+  // GraceNote(GraceNote&& __note);
 
-  virtual GraceNote& operator=(const GraceNote& __n);
+  // virtual GraceNote& operator=(const GraceNote& __n);
 
   virtual ~GraceNote();
 
@@ -90,10 +90,16 @@ class GraceNote : public Note {
   virtual bool isTied(size_t __pos) const;
 
   virtual bool hasDuration() const;
-  
+
+  virtual bool hasDuration(size_t __pos) const;
+
   virtual bool hasPitch() const;
 
+  virtual bool hasPitch(size_t __pos) const;
+
   virtual bool hasProperty() const;
+
+  virtual bool hasProperty(size_t __pos) const;
 
   virtual const Duration * getDuration() const;
 
