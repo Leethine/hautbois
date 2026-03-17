@@ -58,6 +58,9 @@ class Tuplet : public NoteSequence {
 
   virtual ~Tuplet();
 
+  // Tuplet(Tuplet&); //TODO
+  // Tuplet(Tuplet&&); //TODO
+
   virtual void updateDuration(const std::string& __context);
 
   virtual void updateDuration(const std::string& __context, size_t __pos);

@@ -7,6 +7,7 @@
 #include <string>
 #include <initializer_list>
 
+#include "note.hpp"
 #include "note_group.hpp"
 #include "pitch.hpp"
 #include "utility/hbexcept.hpp"

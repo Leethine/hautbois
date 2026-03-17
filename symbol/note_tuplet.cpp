@@ -1,5 +1,4 @@
 #include "note_tuplet.hpp"
-#include "note_single.hpp"
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
