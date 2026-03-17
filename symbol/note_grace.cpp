@@ -131,7 +131,7 @@ int GraceNote::getSize() const {
 }
 
 bool GraceNote::isValid() const {
-  return NoteSequence::isValid();
+  return NoteSequence::hasPitch() && NoteSequence::isValid();
 }
 
 bool GraceNote::isTied() const {
