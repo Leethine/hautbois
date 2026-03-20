@@ -81,6 +81,103 @@ Tuplet::Tuplet(int __num, int __denom,
 
 Tuplet::~Tuplet() { }
 
+Tuplet::Tuplet(const Tuplet& __other) :
+    NoteSequence(NoteType::Tuplet, __other.getSize()) {
+  if (__other.hasDuration()) {
+    Duration * d = new Duration(*__other.getDuration());
+    NoteGroup::setDuration(d, -1);
+  }
+  if (__other.hasProperty()) {
+    Property * p = new Property(*__other.getProperty());
+    NoteGroup::setProperty(p, -1);
+  }
+  for (int i=0; i<__other.getPitchSize(); i++) {
+    if (__other.getPitch(i)) {
+      Pitch * p = new Pitch(*__other.getPitch(i));
+      NoteGroup::addPitch(p);
+      NoteGroup::setTied(i);
+    }
+  }
+  for (int i=0; i<__other.getDurationSize(); i++) {
+    if (__other.getDuration(i)) {
+      Duration * d = new Duration(*__other.getDuration(i));
+      NoteSequence::addDuration(d);
+    }
+  }
+  for (int i=0; i<__other.getPropertySize(); i++) {
+    if (__other.getProperty(i)) {
+      Property * p = new Property(*__other.getProperty(i));
+      NoteSequence::addProperty(p);
+    }
+  }
+}
+
+Tuplet::Tuplet(const Tuplet&& __other) :
+    NoteSequence(NoteType::Tuplet, __other.getSize()) {
+  if (__other.hasDuration()) {
+    Duration * d = new Duration(*__other.getDuration());
+    NoteGroup::setDuration(d, -1);
+  }
+  if (__other.hasProperty()) {
+    Property * p = new Property(*__other.getProperty());
+    NoteGroup::setProperty(p, -1);
+  }
+  for (int i=0; i<__other.getPitchSize(); i++) {
+    if (__other.getPitch(i)) {
+      Pitch * p = new Pitch(*__other.getPitch(i));
+      NoteGroup::addPitch(p);
+      NoteGroup::setTied(i);
+    }
+  }
+  for (int i=0; i<__other.getDurationSize(); i++) {
+    if (__other.getDuration(i)) {
+      Duration * d = new Duration(*__other.getDuration(i));
+      NoteSequence::addDuration(d);
+    }
+  }
+  for (int i=0; i<__other.getPropertySize(); i++) {
+    if (__other.getProperty(i)) {
+      Property * p = new Property(*__other.getProperty(i));
+      NoteSequence::addProperty(p);
+    }
+  }
+}
+
+Tuplet& Tuplet::operator=(const Tuplet& __other) {
+  if (this != &__other) {
+    if (Tuplet::getSize() == __other.getSize()) {
+      if (__other.hasDuration()) {
+        Duration * d = new Duration(*__other.getDuration());
+        NoteGroup::setDuration(d, -1);
+      }
+      if (__other.hasProperty()) {
+        Property * p = new Property(*__other.getProperty());
+        NoteGroup::setProperty(p, -1);
+      }
+      for (int i=0; i<__other.getPitchSize(); i++) {
+        if (__other.getPitch(i)) {
+          Pitch * p = new Pitch(*__other.getPitch(i));
+          NoteGroup::addPitch(p);
+          NoteGroup::setTied(i);
+        }
+      }
+      for (int i=0; i<__other.getDurationSize(); i++) {
+        if (__other.getDuration(i)) {
+          Duration * d = new Duration(*__other.getDuration(i));
+          NoteSequence::addDuration(d);
+        }
+      }
+      for (int i=0; i<__other.getPropertySize(); i++) {
+        if (__other.getProperty(i)) {
+          Property * p = new Property(*__other.getProperty(i));
+          NoteSequence::addProperty(p);
+        }
+      }
+    }
+  }
+  return *this;
+}
+
 void Tuplet::updateDuration(const std::string& __context) { }
 
 void Tuplet::updateDuration(const std::string& __context, size_t __pos) { }

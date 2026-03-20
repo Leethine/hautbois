@@ -53,11 +53,11 @@ class GraceNote : public NoteSequence {
   GraceNote(int __num, int __denom, const std::string& __pitch,
             const std::vector<std::string>& __args);
 
-  // GraceNote(GraceNote& __note);
+  GraceNote(GraceNote& __other);
   
-  // GraceNote(GraceNote&& __note);
+  GraceNote(GraceNote&& __other);
 
-  // virtual GraceNote& operator=(const GraceNote& __n);
+  virtual GraceNote& operator=(const GraceNote& __other);
 
   virtual ~GraceNote();
 

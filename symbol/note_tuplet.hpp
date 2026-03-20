@@ -58,8 +58,11 @@ class Tuplet : public NoteSequence {
 
   virtual ~Tuplet();
 
-  // Tuplet(Tuplet&); //TODO
-  // Tuplet(Tuplet&&); //TODO
+  Tuplet(const Tuplet& __other);
+
+  Tuplet(const Tuplet&& __other);
+
+  virtual Tuplet& operator=(const Tuplet& __other);
 
   virtual void updateDuration(const std::string& __context);
 

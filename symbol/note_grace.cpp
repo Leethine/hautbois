@@ -75,6 +75,111 @@ GraceNote::GraceNote(int __num, int __denom, const std::string& __pitch,
   NoteSequence(__pitch, __num, __denom, __args, NoteType::Grace, 0) {
 }
 
+GraceNote::GraceNote(GraceNote& __other) : NoteSequence(NoteType::Grace, 0) {
+  if (__other.hasPitch()) {
+    Pitch * p = new Pitch(*__other.getPitch());
+    NoteGroup::setPitch(p, -1);
+  }
+  if (__other.hasDuration()) {
+    Duration * d = new Duration(*__other.getDuration());
+    NoteGroup::setDuration(d, -1);
+  }
+  if (__other.hasProperty()) {
+    Property * p = new Property(*__other.getProperty());
+    NoteGroup::setProperty(p, -1);
+  }
+  for (int i=0; i<__other.getPitchSize(); i++) {
+    if (__other.getPitch(i)) {
+      Pitch * p = new Pitch(*__other.getPitch(i));
+      NoteGroup::addPitch(p);
+      NoteGroup::setTied(i);
+    }
+  }
+  for (int i=0; i<__other.getDurationSize(); i++) {
+    if (__other.getDuration(i)) {
+      Duration * d = new Duration(*__other.getDuration(i));
+      NoteSequence::addDuration(d);
+    }
+  }
+  for (int i=0; i<__other.getPropertySize(); i++) {
+    if (__other.getProperty(i)) {
+      Property * p = new Property(*__other.getProperty(i));
+      NoteSequence::addProperty(p);
+    }
+  }
+}
+  
+GraceNote::GraceNote(GraceNote&& __other) : NoteSequence(NoteType::Grace, 0) {
+  if (__other.hasPitch()) {
+    Pitch * p = new Pitch(*__other.getPitch());
+    NoteGroup::setPitch(p, -1);
+  }
+  if (__other.hasDuration()) {
+    Duration * d = new Duration(*__other.getDuration());
+    NoteGroup::setDuration(d, -1);
+  }
+  if (__other.hasProperty()) {
+    Property * p = new Property(*__other.getProperty());
+    NoteGroup::setProperty(p, -1);
+  }
+  for (int i=0; i<__other.getPitchSize(); i++) {
+    if (__other.getPitch(i)) {
+      Pitch * p = new Pitch(*__other.getPitch(i));
+      NoteGroup::addPitch(p);
+      NoteGroup::setTied(i);
+    }
+  }
+  for (int i=0; i<__other.getDurationSize(); i++) {
+    if (__other.getDuration(i)) {
+      Duration * d = new Duration(*__other.getDuration(i));
+      NoteSequence::addDuration(d);
+    }
+  }
+  for (int i=0; i<__other.getPropertySize(); i++) {
+    if (__other.getProperty(i)) {
+      Property * p = new Property(*__other.getProperty(i));
+      NoteSequence::addProperty(p);
+    }
+  }
+}
+
+GraceNote& GraceNote::operator=(const GraceNote& __other) {
+  if (this != &__other && GraceNote::getPitchSize() == __other.getPitchSize()) {
+    if (__other.hasPitch()) {
+      Pitch * p = new Pitch(*__other.getPitch());
+      NoteGroup::setPitch(p, -1);
+    }
+    if (__other.hasDuration()) {
+      Duration * d = new Duration(*__other.getDuration());
+      NoteGroup::setDuration(d, -1);
+    }
+    if (__other.hasProperty()) {
+      Property * p = new Property(*__other.getProperty());
+      NoteGroup::setProperty(p, -1);
+    }
+    for (int i=0; i<__other.getPitchSize(); i++) {
+      if (__other.getPitch(i)) {
+        Pitch * p = new Pitch(*__other.getPitch(i));
+        NoteGroup::addPitch(p);
+        NoteGroup::setTied(i);
+      }
+    }
+    for (int i=0; i<__other.getDurationSize(); i++) {
+      if (__other.getDuration(i)) {
+        Duration * d = new Duration(*__other.getDuration(i));
+        NoteSequence::addDuration(d);
+      }
+    }
+    for (int i=0; i<__other.getPropertySize(); i++) {
+      if (__other.getProperty(i)) {
+        Property * p = new Property(*__other.getProperty(i));
+        NoteSequence::addProperty(p);
+      }
+    }
+  }
+  return *this;
+}
+
 GraceNote::~GraceNote() {
 }
 
