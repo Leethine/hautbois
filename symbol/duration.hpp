@@ -3,7 +3,7 @@
 #ifndef DURATION_H
 #define DURATION_H
 
-#include "symbol_raw/duration_raw.hpp"
+#include "../symbol_raw/duration_raw.hpp"
 #include <string>
 
 namespace hautbois {

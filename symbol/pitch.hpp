@@ -3,12 +3,11 @@
 #ifndef PITCH_H
 #define PITCH_H
 
-#include "symbol_raw/pitch_raw.hpp"
-#include "symbol_raw/core_types.hpp"
+#include "../symbol_raw/pitch_raw.hpp"
+#include "../symbol_raw/core_types.hpp"
 
 #include <string>
 #include <array>
-#include <vector>
 
 namespace hautbois {
 namespace core {
@@ -68,13 +67,13 @@ class Pitch {
   virtual std::string getName() const;
 
   virtual std::string getAccidental() const;
-  
+
   virtual std::string getOctave() const;
 
   virtual int getOctaveInt() const;
 
   virtual const PitchRaw& raw() const;
-  
+
   virtual PitchRaw getRaw() const;
 
   virtual std::string toString() const;

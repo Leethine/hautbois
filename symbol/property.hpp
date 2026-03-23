@@ -3,7 +3,7 @@
 #ifndef PROPERTY_H
 #define PROPERTY_H
 
-#include "symbol_raw/property_raw.hpp"
+#include "../symbol_raw/property_raw.hpp"
 #include <string>
 
 namespace hautbois {

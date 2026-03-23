@@ -1,5 +1,5 @@
 #include "duration.hpp"
-#include "utility/hbexcept.hpp"
+#include "../utility/hbexcept.hpp"
 
 #include <algorithm>
 #include <numeric>

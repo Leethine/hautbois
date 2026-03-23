@@ -1,11 +1,8 @@
 #include "pitch.hpp"
-#include "utility/hbexcept.hpp"
+#include "../utility/hbexcept.hpp"
 
 #include <unordered_map>
-#include <stdexcept>
 #include <algorithm>
-// #include <cctype>
-// #include <cmath>
 
 namespace hautbois {
 namespace core {
