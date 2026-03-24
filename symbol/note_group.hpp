@@ -64,7 +64,7 @@ protected:
   NoteGroup() = delete;
   NoteGroup(NoteGroup&)=delete;
   NoteGroup(NoteGroup&&)=delete;
-  virtual NoteGroup& operator=(const NoteGroup &__n) = delete;
+  // virtual NoteGroup& operator=(const NoteGroup &__n);
 
   NoteGroup(NoteType __type);
 

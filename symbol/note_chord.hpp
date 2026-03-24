@@ -80,9 +80,9 @@ class Chord : public NoteGroup {
   Chord(const std::initializer_list<const char *> __pitches,
         const int& denom, const std::string& dots);
 
-  Chord(Chord& __note);
+  Chord(const Chord& __note);
 
-  Chord(Chord&& __note);
+  Chord(const Chord&& __note);
 
   virtual Chord& operator=(const Chord& __n);
 

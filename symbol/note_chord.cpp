@@ -3,7 +3,7 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
+#include "../utility/hbexcept.hpp"
 
 #include <initializer_list>
 #include <cstring>
@@ -168,7 +168,7 @@ Chord::Chord(const std::initializer_list<const char *> __pitches,
   NoteGroup::setDuration(d,-1);
 }
 
-Chord::Chord(Chord& __note) : Chord() {
+Chord::Chord(const Chord& __note) : Chord() {
   for (int i=0; i<__note.getPitchSize(); i++) {
     if (__note.hasPitch(i)) {
       Pitch * p = new Pitch(*__note.getPitch(i));
@@ -190,7 +190,7 @@ Chord::Chord(Chord& __note) : Chord() {
   }
 }
 
-Chord::Chord(Chord&& __note) : Chord() {
+Chord::Chord(const Chord&& __note) : Chord() {
   for (int i=0; i<__note.getPitchSize(); i++) {
     if (__note.hasPitch(i)) {
       Pitch * p = new Pitch(*__note.getPitch(i));

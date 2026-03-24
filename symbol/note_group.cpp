@@ -2,7 +2,7 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
+#include "../utility/hbexcept.hpp"
 
 #include <cstring>
 
@@ -126,13 +126,13 @@ NoteGroup::~NoteGroup() {
 }
 
 void NoteGroup::setTied(size_t __pos) {
-  if (__pos >= 0 && __pos < _tieList.size()) {
+  if (__pos < _tieList.size()) {
     _tieList[__pos] = true;
   }
 }
 
 void NoteGroup::setUntied(size_t __pos) {
-  if (__pos >= 0 && __pos < _tieList.size()) {
+  if (__pos < _tieList.size()) {
     _tieList[__pos] = false;
   }
 }
@@ -153,7 +153,7 @@ bool NoteGroup::isValid() const {
 }
 
 bool NoteGroup::isTied(size_t __pos) const {
-  if (__pos >= _tieList.size() || __pos < 0) {
+  if (__pos >= _tieList.size()) {
     return false;
   }
   else {
@@ -166,7 +166,7 @@ bool NoteGroup::hasDuration() const {
 }
 
 bool NoteGroup::hasPitch(size_t __pos) const {
-  if (__pos >= _pitchList.size() || __pos < 0) {
+  if (__pos >= _pitchList.size()) {
     return false;
   }
   else {
@@ -183,7 +183,7 @@ const Duration * NoteGroup::getDuration() const {
 }
 
 const Pitch * NoteGroup::getPitch(size_t __pos) const {
-  if (__pos >= _pitchList.size() || __pos < 0) {
+  if (__pos >= _pitchList.size()) {
     return nullptr;
   }
   else {
