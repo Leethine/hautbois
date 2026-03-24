@@ -2,13 +2,17 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
-#include "symbol_raw/core_types.hpp"
-
-#include <stdexcept>
+#include "../utility/hbexcept.hpp"
+#include "../symbol_raw/core_types.hpp"
 
 namespace hautbois {
 namespace core {
+
+void SingleNote::setNoteType(NoteType __ntype) {
+  if (__ntype == NoteType::SingleNote || __ntype == NoteType::Rest || __ntype == NoteType::Silence) {
+    Note::setNoteType(__ntype);
+  }
+}
 
 void SingleNote::addPitch(Pitch * __p) {
   if (__p) {
@@ -111,10 +115,10 @@ SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
   else if (__pitch.size() == 1) {
     name = __pitch[0];
     if (name == CHAR_PITCHNAME_SILENCE) {
-      setNoteType(NoteType::Silence);
+      Note::setNoteType(NoteType::Silence);
     }
     if (name == CHAR_PITCHNAME_REST) {
-      setNoteType(NoteType::Rest);
+      Note::setNoteType(NoteType::Rest);
     }
   }
   else {
@@ -241,7 +245,7 @@ int SingleNote::getSize() const {
   return 0;
 }
 
-NoteType SingleNote::getType() {
+NoteType SingleNote::getType() const {
   return Note::getType();
 }
 

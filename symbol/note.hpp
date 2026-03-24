@@ -4,7 +4,7 @@
 #define NOTE_H
 
 #include <string>
-#include "symbol_raw/core_types.hpp"
+#include "../symbol_raw/core_types.hpp"
 
 namespace hautbois {
 namespace core {
@@ -50,11 +50,11 @@ class Note {
 
   virtual void setProperty(Property * __p, int pos) = 0;
 
-  virtual Pitch * getPitchyMod(int pos) = 0;
+  // virtual Pitch * getPitchyMod(int pos) = 0;
 
-  virtual Duration * getDurationMod(int pos) = 0;
+  // virtual Duration * getDurationMod(int pos) = 0;
 
-  virtual Property * getPropertyMod(int pos) = 0;
+  // virtual Property * getPropertyMod(int pos) = 0;
 
   virtual void clearPitch() = 0;
 
@@ -76,7 +76,7 @@ class Note {
   
   Note(Note&&) = delete;
 
-  virtual Note& operator=(const Note& __n) = delete;
+  // virtual Note& operator=(const Note& __n) = 0;
 
   inline virtual ~Note() { };
 

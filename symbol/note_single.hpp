@@ -30,7 +30,7 @@ class SingleNote : public Note {
   /* The commented out virtual methods are to be implemented in derived classes.
      Or they are already implemented in class Note, if it's not pure virtual. */
 
-  ///+ virtual void setNoteType(NoteType __ntype);
+  virtual void setNoteType(NoteType __ntype);
 
   virtual void addPitch(Pitch * __p);
 
@@ -44,11 +44,11 @@ class SingleNote : public Note {
 
   virtual void setProperty(Property * __p, int pos);
 
-  virtual Pitch * getPitchyMod(int pos) = 0;
+  virtual Pitch * getPitchyMod(int pos);
 
-  virtual Duration * getDurationMod(int pos) = 0;
+  virtual Duration * getDurationMod(int pos);
 
-  virtual Property * getPropertyMod(int pos) = 0;
+  virtual Property * getPropertyMod(int pos);
 
   virtual void clearPitch();
 
@@ -100,7 +100,7 @@ class SingleNote : public Note {
 
   virtual int getSize() const;
 
-  virtual NoteType getType();
+  virtual NoteType getType() const;
 
   virtual char getTypeChar() const;
 
