@@ -2,7 +2,6 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
 
 namespace hautbois {
 namespace core {
@@ -20,7 +19,7 @@ void Tuplet::addDuration(Duration * __d) {
 }
 
 void Tuplet::setDuration(Duration * __d, int pos) {
-  NoteGroup::setDuration(__d, pos);
+  NoteSequence::setDuration(__d, pos);
 }
 
 void Tuplet::addProperty(Property * __p) {
@@ -109,6 +108,9 @@ Tuplet::Tuplet(const Tuplet& __other) :
       Property * p = new Property(*__other.getProperty(i));
       NoteSequence::addProperty(p);
     }
+    else { // fill empty property (nullptr)
+      NoteSequence::addProperty(nullptr);
+    }
   }
 }
 
@@ -139,6 +141,9 @@ Tuplet::Tuplet(const Tuplet&& __other) :
     if (__other.getProperty(i)) {
       Property * p = new Property(*__other.getProperty(i));
       NoteSequence::addProperty(p);
+    }
+    else {
+      NoteSequence::addProperty(nullptr);
     }
   }
 }
@@ -197,7 +202,7 @@ void Tuplet::updateProperty(const std::string& __context) {
 }
 
 void Tuplet::updateProperty(const std::string& __context, size_t __pos) {
-  if (__pos >= 0 &&  __pos < NoteSequence::getPropertySize()) {
+  if (__pos < NoteSequence::getPropertySize()) {
     if (!__context.empty()) {
       Property * p = new Property(__context);
       NoteSequence::setProperty(p, __pos);

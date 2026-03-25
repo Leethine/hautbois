@@ -130,27 +130,27 @@ public:
 
   virtual bool hasDuration() const;
 
-  ///- virtual bool hasDuration(size_t __pos) const = 0;
+  virtual bool hasDuration(size_t __pos) const;
 
-  ///- virtual bool hasPitch() const = 0;
+  virtual bool hasPitch() const;
 
   virtual bool hasPitch(size_t __pos) const;
 
   virtual bool hasProperty() const;
 
-  ///- virtual bool hasProperty(size_t __pos) const = 0;
+  virtual bool hasProperty(size_t __pos) const;
 
   virtual const Duration * getDuration() const;
 
-  ///- virtual const Duration * getDuration(size_t __pos) const = 0;
+  virtual const Duration * getDuration(size_t __pos) const;
 
-  ///- virtual const Pitch * getPitch() const = 0;
+  virtual const Pitch * getPitch() const;
 
   virtual const Pitch * getPitch(size_t __pos) const;
 
   virtual const Property * getProperty() const;
 
-  ///- virtual const Property * getProperty(size_t __pos) const = 0;
+  virtual const Property * getProperty(size_t __pos) const;
 
   ///- virtual std::string getPropertyStr() const = 0;
 

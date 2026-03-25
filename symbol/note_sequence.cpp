@@ -2,7 +2,7 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
+#include "../utility/hbexcept.hpp"
 
 #include <vector>
 #include <string>
@@ -32,6 +32,18 @@ void NoteSequence::setPitch(Pitch * __p, int pos) {
 void NoteSequence::addDuration(Duration * __d) {
   if (__d) {
     _durationList.push_back(__d);
+  }
+}
+
+void NoteSequence::setDuration(Duration * __d, int pos) {
+  if (pos < 0) {
+    NoteGroup::setDuration(__d, pos);
+  }
+  else {
+    if (pos >= 0 && pos < _durationList.size() && __d) {
+      delete _durationList[pos];
+      _durationList[pos] = __d;
+    }
   }
 }
 
@@ -338,7 +350,7 @@ bool NoteSequence::hasDuration() const {
 }
 
 bool NoteSequence::hasDuration(size_t __pos) const {
-  if (__pos >= _durationList.size() || __pos < 0) {
+  if (__pos >= _durationList.size()) {
     return false;
   }
   else {
@@ -359,7 +371,7 @@ bool NoteSequence::hasProperty() const {
 }
 
 bool NoteSequence::hasProperty(size_t __pos) const {
-  if (__pos >= _propertyList.size() || __pos < 0) {
+  if (__pos >= _propertyList.size()) {
     return false;
   }
   else {
@@ -368,7 +380,7 @@ bool NoteSequence::hasProperty(size_t __pos) const {
 }
 
 const Duration * NoteSequence::getDuration(size_t __pos) const {
-  if (__pos >= _durationList.size() || __pos < 0) {
+  if (__pos >= _durationList.size()) {
     return nullptr;
   }
   else {
@@ -381,7 +393,7 @@ const Pitch * NoteSequence::getPitch() const {
 }
 
 const Property * NoteSequence::getProperty(size_t __pos) const {
-  if (__pos >= _propertyList.size() || __pos < 0) {
+  if (__pos >= _propertyList.size()) {
     return nullptr;
   }
   else {

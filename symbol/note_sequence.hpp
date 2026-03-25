@@ -10,7 +10,6 @@
 #include "note.hpp"
 #include "note_group.hpp"
 #include "pitch.hpp"
-#include "utility/hbexcept.hpp"
 
 namespace hautbois {
 namespace core {
@@ -50,7 +49,7 @@ class NoteSequence : public NoteGroup {
 
   virtual void addDuration(Duration * __d);
 
-  ///+ virtual void setDuration(Duration * __d, int pos);
+  virtual void setDuration(Duration * __d, int pos);
 
   virtual void addProperty(Property * __p);
 
@@ -75,7 +74,7 @@ class NoteSequence : public NoteGroup {
   NoteSequence()=delete;
   NoteSequence(NoteSequence&)=delete;
   NoteSequence(NoteSequence&&)=delete;
-  virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
+  // virtual NoteSequence& operator=(const NoteSequence& __n)=delete;
 
   NoteSequence(NoteType __type, const unsigned int __count);
 

@@ -165,6 +165,14 @@ bool NoteGroup::hasDuration() const {
   return _duration != nullptr;
 }
 
+bool NoteGroup::hasDuration(size_t __pos) const {
+  return _duration != nullptr;
+}
+
+bool NoteGroup::hasPitch() const {
+  return !_pitchList.empty();
+}
+
 bool NoteGroup::hasPitch(size_t __pos) const {
   if (__pos >= _pitchList.size()) {
     return false;
@@ -178,8 +186,25 @@ bool NoteGroup::hasProperty() const {
   return _property != nullptr;
 }
 
+bool NoteGroup::hasProperty(size_t __pos) const {
+  return _property != nullptr;
+}
+
 const Duration * NoteGroup::getDuration() const {
   return _duration;
+}
+
+const Duration * NoteGroup::getDuration(size_t __pos) const {
+  return _duration;
+}
+
+const Pitch * NoteGroup::getPitch() const {
+  if (_pitchList.empty()) {
+    return nullptr;
+  }
+  else {
+    return _pitchList[0];
+  }
 }
 
 const Pitch * NoteGroup::getPitch(size_t __pos) const {
@@ -192,6 +217,10 @@ const Pitch * NoteGroup::getPitch(size_t __pos) const {
 }
 
 const Property * NoteGroup::getProperty() const {
+  return _property;
+}
+
+const Property * NoteGroup::getProperty(size_t __pos) const {
   return _property;
 }
 
