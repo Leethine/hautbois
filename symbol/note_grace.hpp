@@ -40,6 +40,8 @@ class GraceNote : public NoteSequence {
 
   virtual void clearProperty();
 
+  virtual void * verify(const char * __context) const;
+
   virtual std::string filterProperty(const std::string& __text) const;
 
   GraceNote(NoteType __type, int __num, int __denom, const char * __pitch,
@@ -53,9 +55,9 @@ class GraceNote : public NoteSequence {
   GraceNote(int __num, int __denom, const std::string& __pitch,
             const std::vector<std::string>& __args);
 
-  GraceNote(GraceNote& __other);
+  GraceNote(const GraceNote& __other);
   
-  GraceNote(GraceNote&& __other);
+  GraceNote(const GraceNote&& __other);
 
   virtual GraceNote& operator=(const GraceNote& __other);
 

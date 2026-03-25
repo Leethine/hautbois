@@ -1,8 +1,8 @@
 #include "note_grace.hpp"
+#include "note_sequence.hpp"
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
-#include "utility/hbexcept.hpp"
 
 namespace hautbois {
 namespace core {
@@ -20,7 +20,7 @@ void GraceNote::addDuration(Duration *__d) {
 }
 
 void GraceNote::setDuration(Duration *__d, int pos) {
-  NoteGroup::setDuration(__d, pos);
+  NoteSequence::setDuration(__d, pos);
 }
 
 void GraceNote::addProperty(Property *__p) {
@@ -55,6 +55,10 @@ void GraceNote::clearProperty() {
   NoteSequence::clearProperty();
 }
 
+void * GraceNote::verify(const char * __context) const {
+  return nullptr;
+}
+
 std::string GraceNote::filterProperty(const std::string& __text) const {
   std::string s (__text);
   return s;
@@ -75,10 +79,10 @@ GraceNote::GraceNote(int __num, int __denom, const std::string& __pitch,
   NoteSequence(__pitch, __num, __denom, __args, NoteType::Grace, 0) {
 }
 
-GraceNote::GraceNote(GraceNote& __other) : NoteSequence(NoteType::Grace, 0) {
+GraceNote::GraceNote(const GraceNote& __other) : NoteSequence(NoteType::Grace, 0) {
   if (__other.hasPitch()) {
     Pitch * p = new Pitch(*__other.getPitch());
-    NoteGroup::setPitch(p, -1);
+    NoteSequence::setPitch(p, -1);
   }
   if (__other.hasDuration()) {
     Duration * d = new Duration(*__other.getDuration());
@@ -105,11 +109,14 @@ GraceNote::GraceNote(GraceNote& __other) : NoteSequence(NoteType::Grace, 0) {
     if (__other.getProperty(i)) {
       Property * p = new Property(*__other.getProperty(i));
       NoteSequence::addProperty(p);
+    }
+    else {
+      NoteSequence::addProperty(nullptr);
     }
   }
 }
   
-GraceNote::GraceNote(GraceNote&& __other) : NoteSequence(NoteType::Grace, 0) {
+GraceNote::GraceNote(const GraceNote&& __other) : NoteSequence(NoteType::Grace, 0) {
   if (__other.hasPitch()) {
     Pitch * p = new Pitch(*__other.getPitch());
     NoteGroup::setPitch(p, -1);
@@ -139,6 +146,9 @@ GraceNote::GraceNote(GraceNote&& __other) : NoteSequence(NoteType::Grace, 0) {
     if (__other.getProperty(i)) {
       Property * p = new Property(*__other.getProperty(i));
       NoteSequence::addProperty(p);
+    }
+    else {
+      NoteSequence::addProperty(nullptr);
     }
   }
 }
