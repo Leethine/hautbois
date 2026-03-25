@@ -7,7 +7,7 @@ INC_LIBRARY  =
 all : libHbCore.a
 
 clean :
-	rm -f unittest_* *.o *.a
+	rm -f test_* *.o *.a
 
 libHbCore.a : duration.o pitch.o property.o note_single.o note_group.o note_sequence.o note_chord.o note_tuplet.o
 	ar cr libHbCore.a duration.o pitch.o property.o note_single.o note_group.o note_sequence.o note_chord.o note_tuplet.o
@@ -36,7 +36,7 @@ note_chord.o : note_chord.cpp note_chord.hpp
 note_tuplet.o : note_tuplet.cpp note_tuplet.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_tuplet.cpp
 
-test : test_duration test_pitch test_property test_singlenote
+test : test_duration test_pitch test_property test_singlenote test_chord test_tuplet
 
 test_duration : libHbCore.a
 	$(CC) $(CCFLAG) zzz_test_duration.cpp libHbCore.a $(LINK_LIBRARY) $(INC_LIBRARY) -o test_duration
@@ -52,3 +52,6 @@ test_singlenote : libHbCore.a
 
 test_chord : libHbCore.a
 	$(CC) $(CCFLAG) zzz_test_chord.cpp libHbCore.a $(LINK_LIBRARY) $(INC_LIBRARY) -o test_chord
+
+test_tuplet : libHbCore.a
+	$(CC) $(CCFLAG) zzz_test_tuplet.cpp libHbCore.a $(LINK_LIBRARY) $(INC_LIBRARY) -o test_tuplet
