@@ -1,10 +1,10 @@
 CPPSTD = c++17
 CC = g++
-CCFLAG = -std=$(CPPSTD) -g
-LINK_LIBRARY = -lboost_unit_test_framework -lboost_serialization
+CCFLAG = -std=$(CPPSTD) -g -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-sign-compare
+LINK_LIBRARY = -lboost_serialization
 
 test :
-	$(CC) $(CCFLAG) ZZZ_TEST_raw.cpp $(LINK_LIBRARY) -o unittest
+	$(CC) $(CCFLAG) zzz_test_raw.cpp $(LINK_LIBRARY) -o test_raw
 
 clean :
-	rm unittest cereal_object*
+	rm test_raw cereal_object*
