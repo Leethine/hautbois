@@ -18,6 +18,7 @@ int main() {
 // Create tuplet with a list of pitch-value pair (both str), then the note value
 Tuplet * t1 = new Tuplet(1,4,{"C4","8","E4","8","G4","8"},3);
 // must provide param pos to getPitch(), otherwise nullptr will be returned
+PRINTL(t1->toString());
 assert(t1->getPitch(0)->toString() == "Cn4");
 assert(t1->getPitch(1)->toString() == "En4");
 assert(t1->getPitch(2)->toString() == "Gn4");
@@ -69,7 +70,7 @@ public:
   virtual void setPitch(Pitch * __p, int pos) { Tuplet::setPitch(__p, pos); }
   virtual void setDuration(Duration *__d, int pos) { Tuplet::setDuration(__d, pos); }
   virtual void setProperty(Property *__p, int pos) { Tuplet::setProperty(__p, pos); }
-  virtual Pitch * getPitchyMod(int pos) { return Tuplet::getPitchyMod(pos); }
+  virtual Pitch * getPitchMod(int pos) { return Tuplet::getPitchMod(pos); }
   virtual Duration * getDurationMod(int pos) { return Tuplet::getDurationMod(pos); }
   virtual Property * getPropertyMod(int pos) { return Tuplet::getPropertyMod(pos); }
   virtual TupletTest& operator=(const TupletTest& __n) { return *this; }

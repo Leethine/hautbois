@@ -13,29 +13,33 @@ class Acciaccatura : public GraceNote {
 
  protected:
 
-  virtual void addPitch(Pitch *__p);
+  virtual void setNoteType(NoteType __ntype);
 
-  virtual void setPitch(Pitch * __p, int pos);
+  virtual void addPitch(Pitch * __p);
 
-  virtual void addDuration(Duration *__d);
+  virtual void setPitch(Pitch * __p, int __pos);
 
-  virtual void setDuration(Duration *__d, int pos);
+  virtual void addDuration(Duration * __d);
 
-  virtual void addProperty(Property *__p);
+  virtual void setDuration(Duration * __d, int __pos);
 
-  virtual void setProperty(Property *__p, int pos);
+  virtual void addProperty(Property * __p);
 
-  virtual Pitch * getPitchyMod(int pos);
+  virtual void setProperty(Property * __p, int __pos);
 
-  virtual Duration * getDurationMod(int pos);
+  virtual Pitch * getPitchMod(int __pos);
 
-  virtual Property * getPropertyMod(int pos);
+  virtual Duration * getDurationMod(int __pos);
+
+  virtual Property * getPropertyMod(int __pos);
 
   virtual void clearPitch();
 
   virtual void clearDuration();
 
   virtual void clearProperty();
+
+  virtual void * verify(const char * __context) const;
 
   virtual std::string filterProperty(const std::string& __text) const;
 
@@ -47,11 +51,11 @@ class Acciaccatura : public GraceNote {
   Acciaccatura(int __num, int __denom, const std::string& __pitch,
                const std::vector<std::string>& __args);
 
-  // Acciaccatura(Acciaccatura& __note);
-  
-  // Acciaccatura(Acciaccatura&& __note);
+  Acciaccatura(const Acciaccatura& __other);
 
-  // virtual Acciaccatura& operator=(const Acciaccatura& __n);
+  Acciaccatura(const Acciaccatura&& __other);
+
+  virtual Acciaccatura& operator=(const Acciaccatura& __other);
 
   virtual ~Acciaccatura();
 

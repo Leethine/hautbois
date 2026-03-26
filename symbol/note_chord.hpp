@@ -7,48 +7,46 @@
 #include <string>
 #include <initializer_list>
 
-#include "note_group.hpp"
+#include "note.hpp"
 
 namespace hautbois {
 namespace core {
 
-class Chord : public NoteGroup {
+class Chord : public Note {
 
- // private:
-
+private:
   /* Declared in class Note */
   ///: NoteType _type;
 
-  /* Declared in class NoteGroup */
-  ///: std::vector<Pitch *> _pitchList;
-  ///: Duration * _duration;
-  ///: Property * _property;
-  ///: std::vector<bool> _tieList;
+  std::vector<Pitch *> _pitchList;
+
+  Duration * _duration;
+
+  Property * _property;
+
+  std::vector<bool> _tieList;
 
  protected:
 
-  /* The commented out methods are already implemented
-     in the base classes, namely Note and NoteGroup  */
+  virtual void setNoteType(NoteType __ntype);
 
-  ///+ virtual void setNoteType(NoteType __ntype);
+  virtual void addPitch(Pitch * __p);
 
-  virtual void addPitch(Pitch *__p);
-
-  virtual void setPitch(Pitch * __p, int pos);
+  virtual void setPitch(Pitch * __p, int __pos);
 
   virtual void addDuration(Duration * __d);
 
-  virtual void setDuration(Duration *__d, int pos);
+  virtual void setDuration(Duration * __d, int __pos);
 
   virtual void addProperty(Property * __p);
 
-  virtual void setProperty(Property *__p, int pos);
+  virtual void setProperty(Property * __p, int __pos);
 
-  virtual Pitch * getPitchyMod(int pos);
+  virtual Pitch * getPitchMod(int __pos);
 
-  virtual Duration * getDurationMod(int pos);
+  virtual Duration * getDurationMod(int __pos);
 
-  virtual Property * getPropertyMod(int pos);
+  virtual Property * getPropertyMod(int __pos);
 
   virtual void clearPitch();
 
@@ -71,20 +69,14 @@ class Chord : public NoteGroup {
   Chord(const std::vector<std::string>& __pitches,
         const int& num, const int& denom);
 
-  Chord(const std::vector<std::string>& __pitches,
-        const int& denom, const std::string& dots);
-
   Chord(const std::initializer_list<const char *> __pitches, 
         const int& num, const int& denom);
-
-  Chord(const std::initializer_list<const char *> __pitches,
-        const int& denom, const std::string& dots);
 
   Chord(const Chord& __note);
 
   Chord(const Chord&& __note);
 
-  virtual Chord& operator=(const Chord& __n);
+  virtual Chord& operator=(const Chord& __n)=delete;
 
   virtual ~Chord();
 

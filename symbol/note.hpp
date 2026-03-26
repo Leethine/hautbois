@@ -40,21 +40,21 @@ class Note {
 
   virtual void addPitch(Pitch * __p) = 0;
 
-  virtual void setPitch(Pitch * __p, int pos) = 0;
+  virtual void setPitch(Pitch * __p, int __pos) = 0;
 
   virtual void addDuration(Duration * __d) = 0;
 
-  virtual void setDuration(Duration * __d, int pos) = 0;
+  virtual void setDuration(Duration * __d, int __pos) = 0;
 
   virtual void addProperty(Property * __p) = 0;
 
-  virtual void setProperty(Property * __p, int pos) = 0;
+  virtual void setProperty(Property * __p, int __pos) = 0;
 
-  // virtual Pitch * getPitchyMod(int pos) = 0;
+  virtual Pitch * getPitchMod(int __pos) = 0;
 
-  // virtual Duration * getDurationMod(int pos) = 0;
+  virtual Duration * getDurationMod(int __pos) = 0;
 
-  // virtual Property * getPropertyMod(int pos) = 0;
+  virtual Property * getPropertyMod(int __pos) = 0;
 
   virtual void clearPitch() = 0;
 
@@ -73,7 +73,7 @@ class Note {
   inline Note(NoteType __ntype) : _type ( __ntype ) { }
 
   Note(Note&) = delete;
-  
+
   Note(Note&&) = delete;
 
   // virtual Note& operator=(const Note& __n) = 0;

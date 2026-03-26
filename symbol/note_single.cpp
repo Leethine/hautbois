@@ -5,6 +5,8 @@
 #include "../utility/hbexcept.hpp"
 #include "../symbol_raw/core_types.hpp"
 
+#include <utility>
+
 namespace hautbois {
 namespace core {
 
@@ -21,7 +23,7 @@ void SingleNote::addPitch(Pitch * __p) {
   }
 }
 
-void SingleNote::setPitch(Pitch * __p, int pos) {
+void SingleNote::setPitch(Pitch * __p, int __pos) {
   if (__p) {
     delete _pitch;
     _pitch = __p;
@@ -36,7 +38,7 @@ void SingleNote::addDuration(Duration * __d) {
   }
 }
 
-void SingleNote::setDuration(Duration * __d, int pos) {
+void SingleNote::setDuration(Duration * __d, int __pos) {
   if (__d) {
     delete _duration;
     _duration = __d;
@@ -48,20 +50,20 @@ void SingleNote::addProperty(Property * __p) {
   _property = __p;
 }
 
-void SingleNote::setProperty(Property * __p, int pos) {
+void SingleNote::setProperty(Property * __p, int __pos) {
   delete _property;
   _property = __p;
 }
 
-Pitch * SingleNote::getPitchyMod(int pos) {
+Pitch * SingleNote::getPitchMod(int __pos) {
   return _pitch;
 }
 
-Duration * SingleNote::getDurationMod(int pos) {
+Duration * SingleNote::getDurationMod(int __pos) {
   return _duration;
 }
 
-Property * SingleNote::getPropertyMod(int pos) {
+Property * SingleNote::getPropertyMod(int __pos) {
   return _property;
 }
 
@@ -95,8 +97,7 @@ std::string SingleNote::filterProperty(const std::string& __text) const {
 }
 
 SingleNote::SingleNote() : Note (NoteType::SingleNote), 
-  _duration ( nullptr ), _pitch ( nullptr ),
-  _property ( nullptr ), _tied ( false ) {
+  _duration ( nullptr ), _pitch ( nullptr ), _property ( nullptr ), _tied ( false ) {
 }
 
 SingleNote::SingleNote(const std::string& __pitch) : SingleNote() {
@@ -138,59 +139,23 @@ SingleNote::SingleNote(const std::string& __pitch,
   )
 }
 
-SingleNote::SingleNote(const std::string& __pitch,
-                       const int& __denom, const std::string& __dots) : SingleNote(__pitch) {
-  HB_NESTED_THROW(std::invalid_argument,
-    _duration = new Duration(__denom, __dots);
-  )
-}
-
-SingleNote::SingleNote(SingleNote& __note) : SingleNote() {
-  if (__note.hasPitch()) {
-    _pitch = new Pitch(*__note.getPitch());
-  }
-  if (__note.hasDuration()) {
-    _duration = new Duration(*__note.getDuration());
-  }
-  if (__note.hasProperty()) {
-    _property = new Property(*__note.getProperty());
-  }
-  if (__note.isTied()) {
-    SingleNote::setTied();
-  }
+SingleNote::SingleNote(const SingleNote& __note) : 
+  SingleNote(std::forward<const SingleNote>(__note)) {
 }
   
-SingleNote::SingleNote(SingleNote&& __note) : SingleNote() {
+SingleNote::SingleNote(const SingleNote&& __note) : SingleNote() {
   if (__note.hasPitch()) {
-    _pitch = new Pitch(*__note.getPitch());
+    _pitch = new Pitch(* __note.getPitch());
   }
   if (__note.hasDuration()) {
-    _duration = new Duration(*__note.getDuration());
+    _duration = new Duration(* __note.getDuration());
   }
   if (__note.hasProperty()) {
-    _property = new Property(*__note.getProperty());
+    _property = new Property(* __note.getProperty());
   }
   if (__note.isTied()) {
     SingleNote::setTied();
   }
-}
-
-SingleNote& SingleNote::operator=(const SingleNote& __note) {
-  if (this != &__note) {
-    if (__note.hasPitch()) {
-      _pitch = new Pitch(*__note.getPitch());
-    }
-    if (__note.hasDuration()) {
-      _duration = new Duration(*__note.getDuration());
-    }
-    if (__note.hasProperty()) {
-      _property = new Property(*__note.getProperty());
-    }
-    if (__note.isTied()) {
-      SingleNote::setTied();
-    }
-  }
-  return *this;
 }
 
 SingleNote::~SingleNote() {

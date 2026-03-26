@@ -9,8 +9,8 @@ all : libHbCore.a
 clean :
 	rm -f test_* *.o *.a
 
-libHbCore.a : duration.o pitch.o property.o note_single.o note_group.o note_sequence.o note_chord.o note_tuplet.o note_grace.o
-	ar cr libHbCore.a duration.o pitch.o property.o note_single.o note_group.o note_sequence.o note_chord.o note_tuplet.o note_grace.o
+libHbCore.a : duration.o pitch.o property.o note_single.o note_chord.o note_tuplet.o note_grace.o
+	ar cr libHbCore.a duration.o pitch.o property.o note_single.o note_chord.o note_tuplet.o note_grace.o
 
 duration.o : duration.cpp duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
@@ -24,12 +24,6 @@ property.o : property.cpp property.hpp
 note_single.o : note_single.cpp note_single.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_single.cpp
 
-note_group.o : note_group.cpp note_group.hpp
-	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_group.cpp
-
-note_sequence.o : note_sequence.cpp note_sequence.hpp
-	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_sequence.cpp
-
 note_chord.o : note_chord.cpp note_chord.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_chord.cpp
 
@@ -38,6 +32,7 @@ note_tuplet.o : note_tuplet.cpp note_tuplet.hpp
 
 note_grace.o : note_grace.cpp note_grace.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) note_grace.cpp
+
 
 test : test_duration test_pitch test_property test_singlenote test_chord test_tuplet test_gracenote
 

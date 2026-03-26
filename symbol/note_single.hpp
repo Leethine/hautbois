@@ -26,29 +26,26 @@ class SingleNote : public Note {
   bool _tied;
 
  protected:
-  
-  /* The commented out virtual methods are to be implemented in derived classes.
-     Or they are already implemented in class Note, if it's not pure virtual. */
 
   virtual void setNoteType(NoteType __ntype);
 
   virtual void addPitch(Pitch * __p);
 
-  virtual void setPitch(Pitch * __p, int pos);
+  virtual void setPitch(Pitch * __p, int __pos);
 
   virtual void addDuration(Duration * __d);
 
-  virtual void setDuration(Duration * __d, int pos);
+  virtual void setDuration(Duration * __d, int __pos);
 
   virtual void addProperty(Property * __p);
 
-  virtual void setProperty(Property * __p, int pos);
+  virtual void setProperty(Property * __p, int __pos);
 
-  virtual Pitch * getPitchyMod(int pos);
+  virtual Pitch * getPitchMod(int __pos);
 
-  virtual Duration * getDurationMod(int pos);
+  virtual Duration * getDurationMod(int __pos);
 
-  virtual Property * getPropertyMod(int pos);
+  virtual Property * getPropertyMod(int __pos);
 
   virtual void clearPitch();
 
@@ -68,13 +65,11 @@ class SingleNote : public Note {
 
   SingleNote(const std::string& __pitch, const int& __num, const int& __denom);
 
-  SingleNote(const std::string& __pitch, const int& __denom, const std::string& __dots);
-
-  SingleNote(SingleNote& __note);
+  SingleNote(const SingleNote& __note);
   
-  SingleNote(SingleNote&& __note);
+  SingleNote(const SingleNote&& __note);
 
-  virtual SingleNote& operator=(const SingleNote& __n);
+  virtual SingleNote& operator=(const SingleNote& __n)=delete;
 
   virtual ~SingleNote();
 

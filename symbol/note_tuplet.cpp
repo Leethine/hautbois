@@ -2,56 +2,132 @@
 #include "pitch.hpp"
 #include "duration.hpp"
 #include "property.hpp"
+#include "../utility/hbexcept.hpp"
+
+#include <utility>
 
 namespace hautbois {
 namespace core {
 
-void Tuplet::addPitch(Pitch * __p) {
-  NoteSequence::addPitch(__p);
+void Tuplet::setNoteType(NoteType __ntype) {
 }
 
-void Tuplet::setPitch(Pitch * __p, int pos) {
-  NoteSequence::setPitch(__p, pos);
+void Tuplet::addPitch(Pitch * __p) {
+  if (__p) {
+    _pitchList.push_back(__p);
+    _tieList.push_back(false);
+  }
+}
+
+void Tuplet::setPitch(Pitch * __p, int __pos) {
+  if (__pos >= 0 && __pos < _pitchList.size() && __p) {
+    delete _pitchList[__pos];
+    _pitchList[__pos] = __p;
+  }
+  else if (_pitchList.empty() && __p) {
+    _pitchList.push_back(__p);
+  }
 }
 
 void Tuplet::addDuration(Duration * __d) {
-  NoteSequence::addDuration(__d);
+  if (__d) {
+    _durationList.push_back(__d);
+  }
 }
 
-void Tuplet::setDuration(Duration * __d, int pos) {
-  NoteSequence::setDuration(__d, pos);
+void Tuplet::setDuration(Duration * __d, int __pos) {
+  if (__d) {
+    if (__pos < 0) {
+      delete _duration;
+      _duration = __d;
+    }
+    else {
+      if (__pos >= 0 && __pos < _durationList.size()) {
+        delete _durationList[__pos];
+        _durationList[__pos] = __d;
+      }
+      else if (_durationList.empty()) {
+        _durationList.push_back(__d);
+      }
+    }
+  }
 }
 
 void Tuplet::addProperty(Property * __p) {
-  NoteSequence::addProperty(__p);
+  _propertyList.push_back(__p);
 }
 
-void Tuplet::setProperty(Property * __p, int pos) {
-  NoteSequence::setProperty(__p, pos);
+void Tuplet::setProperty(Property * __p, int __pos) {
+  if (__pos < 0) {
+    delete _property;
+    _property = __p;
+  }
+  else {
+    if (__pos >= 0 && __pos < _propertyList.size()) {
+      delete _propertyList[__pos];
+      _propertyList[__pos] = __p;
+    }
+    else if (_propertyList.empty()) {
+      _propertyList.push_back(__p);
+    }
+  }
 }
 
-Pitch * Tuplet::getPitchyMod(int pos) {
-  return NoteSequence::getPitchyMod(pos);
+Pitch * Tuplet::getPitchMod(int __pos) {
+  if (__pos >= 0 && __pos < _pitchList.size()) {
+    return _pitchList[__pos];
+  }
+  return nullptr;
 }
 
-Duration * Tuplet::getDurationMod(int pos) {
-  return NoteSequence::getDurationMod(pos);
+Duration * Tuplet::getDurationMod(int __pos) {
+  if (__pos < 0) {
+    return _duration;
+  }
+  else if (__pos < _durationList.size()) {
+    return _durationList[__pos];
+  }
+  else {
+    return nullptr;
+  }
 }
 
-Property * Tuplet::getPropertyMod(int pos) {
-  return NoteSequence::getPropertyMod(pos);
+Property * Tuplet::getPropertyMod(int __pos) {
+  if (__pos < 0) {
+    return _property;
+  }
+  else if (__pos < _propertyList.size()) {
+    return _propertyList[__pos];
+  }
+  else {
+    return nullptr;
+  }
 }
 
 void Tuplet::clearPitch() {
-  NoteSequence::clearPitch();
+  for (auto it = _pitchList.begin(); it != _pitchList.end(); it++) {
+    delete (*it);
+  }
+  _pitchList.clear();
+  _tieList.clear();
 }
 
 void Tuplet::clearDuration() {
-  NoteSequence::clearDuration();
+  delete _duration;
+  _duration = nullptr;
+  for (auto it = _durationList.begin(); it != _durationList.end(); it++) {
+    delete (*it);
+  }
+  _durationList.clear();
 }
 
 void Tuplet::clearProperty() {
-  NoteSequence::clearProperty();
+  delete _property;
+  _property = nullptr;
+  for (auto it = _propertyList.begin(); it != _propertyList.end(); it++) {
+    delete (*it);
+  }
+  _propertyList.clear();
 }
 
 void * Tuplet::verify(const char * __context) const {
@@ -63,87 +139,159 @@ std::string Tuplet::Tuplet::filterProperty(const std::string& __text) const {
   return s;
 }
 
-Tuplet::Tuplet(const unsigned int __count) : NoteSequence(NoteType::Tuplet, __count) {
+Tuplet::Tuplet(const unsigned int __count) : 
+  Note(NoteType::Tuplet),
+  _duration (nullptr), _property (nullptr), _noteCount (__count),
+  _pitchList {}, _tieList {}, _durationList {}, _propertyList {} {
+}
+
+Tuplet::Tuplet(const unsigned int __count, int __num, int __denom) : Tuplet(__count) {
+  Duration * d = nullptr;
+  HB_NESTED_THROW_MSG(std::invalid_argument,
+    std::string("Failed to read duration: " + 
+                 std::to_string(__num) + "/" + std::to_string(__denom)),
+    d = new Duration(__num, __denom);
+  )
+  Tuplet::setDuration(d, -1);
 }
 
 Tuplet::Tuplet(int __num, int __denom,
                const std::initializer_list<const char *> __args,
-               const unsigned int __count) :
-  NoteSequence("", __num, __denom, __args, NoteType::Tuplet, __count) {
+               const unsigned int __count) : Tuplet(__count, __num, __denom) {
+  int count = 0;
+  for (auto token : __args) {
+    Pitch    * p = nullptr;
+    Duration * d = nullptr;
+    if (++count % 2 == 1) {
+      char name    = CHAR_PITCHNAME_SILENCE;
+      char acc     = CHAR_ACCIDENTAL_NATURAL;
+      char oct     = CHAR_OCTAVE_DEFAULT;
+      if (std::strlen(token) == 3) { name = token[0]; acc = token[1]; oct = token[2]; }
+      else if (std::strlen(token) == 2) { name = token[0]; oct = token[1]; }
+      else if (std::strlen(token) == 1) { name = token[0]; }      
+      else { // check pitch, must be 1 to 3 length
+        HB_THROW_MSG(std::invalid_argument,
+                     std::string("Invalid pitch token at pos 1: ") + std::string(token));
+      }
+      HB_NESTED_THROW_MSG(std::invalid_argument,
+        std::string("Failed to read token pos 1: " + std::string(token)),
+        p = new Pitch(name, acc, oct - '0');
+      )
+      Tuplet::addPitch(p);
+      Tuplet::addProperty(nullptr);
+    }
+    else {
+      for (int i=0; i<std::strlen(token); i++) { // check duration must be digits
+        if (!std::isdigit(token[i])) {
+          HB_THROW_MSG(std::invalid_argument,
+            std::string("Duration token must be digits at pos 2: " + std::string(token))
+          );
+        }
+      }
+      HB_NESTED_THROW_MSG(std::invalid_argument,
+        std::string("Failed to read token pos 2: " + std::string(token)),
+        d = new Duration(std::atoi(token));
+      )
+      Tuplet::addDuration(d);
+    }
+  }
+  if (count % 2 != 0) {
+    HB_THROW_MSG(std::invalid_argument,
+                 std::string("Arg list must be: <pitch1,value1>, <pitch2,value2>, ..."));
+  }
 }
 
 Tuplet::Tuplet(int __num, int __denom,
                const std::vector<std::string>& __args,
-               const unsigned int __count) :
-  NoteSequence("", __num, __denom, __args, NoteType::Tuplet, __count) {
-}
-
-Tuplet::~Tuplet() { }
-
-Tuplet::Tuplet(const Tuplet& __other) :
-    NoteSequence(NoteType::Tuplet, __other.getSize()) {
-  if (__other.hasDuration()) {
-    Duration * d = new Duration(*__other.getDuration());
-    NoteGroup::setDuration(d, -1);
-  }
-  if (__other.hasProperty()) {
-    Property * p = new Property(*__other.getProperty());
-    NoteGroup::setProperty(p, -1);
-  }
-  for (int i=0; i<__other.getPitchSize(); i++) {
-    if (__other.getPitch(i)) {
-      Pitch * p = new Pitch(*__other.getPitch(i));
-      NoteGroup::addPitch(p);
-      NoteGroup::setTied(i);
-    }
-  }
-  for (int i=0; i<__other.getDurationSize(); i++) {
-    if (__other.getDuration(i)) {
-      Duration * d = new Duration(*__other.getDuration(i));
-      NoteSequence::addDuration(d);
-    }
-  }
-  for (int i=0; i<__other.getPropertySize(); i++) {
-    if (__other.getProperty(i)) {
-      Property * p = new Property(*__other.getProperty(i));
-      NoteSequence::addProperty(p);
-    }
-    else { // fill empty property (nullptr)
-      NoteSequence::addProperty(nullptr);
-    }
-  }
-}
-
-Tuplet::Tuplet(const Tuplet&& __other) :
-    NoteSequence(NoteType::Tuplet, __other.getSize()) {
-  if (__other.hasDuration()) {
-    Duration * d = new Duration(*__other.getDuration());
-    NoteGroup::setDuration(d, -1);
-  }
-  if (__other.hasProperty()) {
-    Property * p = new Property(*__other.getProperty());
-    NoteGroup::setProperty(p, -1);
-  }
-  for (int i=0; i<__other.getPitchSize(); i++) {
-    if (__other.getPitch(i)) {
-      Pitch * p = new Pitch(*__other.getPitch(i));
-      NoteGroup::addPitch(p);
-      NoteGroup::setTied(i);
-    }
-  }
-  for (int i=0; i<__other.getDurationSize(); i++) {
-    if (__other.getDuration(i)) {
-      Duration * d = new Duration(*__other.getDuration(i));
-      NoteSequence::addDuration(d);
-    }
-  }
-  for (int i=0; i<__other.getPropertySize(); i++) {
-    if (__other.getProperty(i)) {
-      Property * p = new Property(*__other.getProperty(i));
-      NoteSequence::addProperty(p);
+               const unsigned int __count) : Tuplet(__count, __num, __denom) {
+  int count = 0;
+  for (auto token : __args) {
+    Pitch    * p = nullptr;
+    Duration * d = nullptr;
+    if (++count % 2 == 1) {
+      char name    = CHAR_PITCHNAME_SILENCE;
+      char acc     = CHAR_ACCIDENTAL_NATURAL;
+      char oct     = CHAR_OCTAVE_DEFAULT;
+      if (token.size() == 3) { name = token[0]; acc = token[1]; oct = token[2]; }
+      else if (token.size() == 2) { name = token[0]; oct = token[1]; }
+      else if (token.size() == 1) { name = token[0]; }      
+      else { // check pitch, must be 1 to 3 length
+        HB_THROW_MSG(std::invalid_argument,
+                     std::string("Invalid pitch token at pos 1: ") + token);
+      }
+      HB_NESTED_THROW_MSG(std::invalid_argument,
+        std::string("Failed to read token pos 1: " + token),
+        p = new Pitch(name, acc, oct - '0');
+      )
+      Tuplet::addPitch(p);
+      Tuplet::addProperty(nullptr);
     }
     else {
-      NoteSequence::addProperty(nullptr);
+      int denom = 1;
+      HB_NESTED_THROW_MSG(std::invalid_argument,
+        std::string("Duration token must be digits at pos 2: " + token),
+        denom = std::stoi(token);
+      )
+      catch(const std::out_of_range&) {
+        HB_THROW_MSG(std::invalid_argument,
+          std::string("Duration token too big at pos 2: " + token));
+      }
+      HB_NESTED_THROW_MSG(std::invalid_argument,
+        std::string("Failed to read token pos 2: " + token),
+        d = new Duration(denom);
+      )
+      Tuplet::addDuration(d);
+    }
+  }
+  if (count % 2 != 0) {
+    HB_THROW_MSG(std::invalid_argument,
+                 std::string("Arg list must be: <pitch1,value1>, <pitch2,value2>, ..."));
+  }
+}
+
+Tuplet::~Tuplet() {
+  Tuplet::clearDuration();
+  Tuplet::clearPitch();
+  Tuplet::clearProperty();
+}
+
+Tuplet::Tuplet(const Tuplet& __other) : Tuplet(std::forward<const Tuplet>(__other)) {
+}
+
+Tuplet::Tuplet(const Tuplet&& __other) : Tuplet(__other.getSize()) {
+  if (__other.hasDuration()) {
+    Duration * d = new Duration(* __other.getDuration());
+    Tuplet::setDuration(d, -1);
+  }
+  if (__other.hasProperty()) {
+    Property * p = new Property(* __other.getProperty());
+    Tuplet::setProperty(p, -1);
+  }
+  for (int i=0; i<__other.getPitchSize(); i++) {
+    if (__other.getPitch(i)) {
+      Pitch * p = new Pitch(* __other.getPitch(i));
+      Tuplet::addPitch(p);
+    }
+  }
+  for (int i=0; i<__other.getDurationSize(); i++) {
+    if (__other.getDuration(i)) {
+      Duration * d = new Duration(* __other.getDuration(i));
+      Tuplet::addDuration(d);
+    }
+  }
+  for (int i=0; i<__other.getPropertySize(); i++) {
+    if (__other.getProperty(i)) {
+      Property * p = new Property(* __other.getProperty(i));
+      Tuplet::addProperty(p);
+    }
+    else { // fill empty property (nullptr)
+      Tuplet::addProperty(nullptr);
+    }
+  }
+  // set Ties
+  for (int i=0; i < __other.getPitchSize(); i++) {
+    if (__other.hasPitch(i) && __other.isTied(i)) {
+      Tuplet::setTied(i);
     }
   }
 }
@@ -152,30 +300,30 @@ Tuplet& Tuplet::operator=(const Tuplet& __other) {
   if (this != &__other) {
     if (Tuplet::getSize() == __other.getSize()) {
       if (__other.hasDuration()) {
-        Duration * d = new Duration(*__other.getDuration());
-        NoteGroup::setDuration(d, -1);
+        Duration * d = new Duration(* __other.getDuration());
+        Tuplet::setDuration(d, -1);
       }
       if (__other.hasProperty()) {
-        Property * p = new Property(*__other.getProperty());
-        NoteGroup::setProperty(p, -1);
+        Property * p = new Property(* __other.getProperty());
+        Tuplet::setProperty(p, -1);
       }
       for (int i=0; i<__other.getPitchSize(); i++) {
         if (__other.getPitch(i)) {
-          Pitch * p = new Pitch(*__other.getPitch(i));
-          NoteGroup::addPitch(p);
-          NoteGroup::setTied(i);
+          Pitch * p = new Pitch(* __other.getPitch(i));
+          Tuplet::addPitch(p);
+          Tuplet::setTied(i);
         }
       }
       for (int i=0; i<__other.getDurationSize(); i++) {
         if (__other.getDuration(i)) {
-          Duration * d = new Duration(*__other.getDuration(i));
-          NoteSequence::addDuration(d);
+          Duration * d = new Duration(* __other.getDuration(i));
+          Tuplet::addDuration(d);
         }
       }
       for (int i=0; i<__other.getPropertySize(); i++) {
         if (__other.getProperty(i)) {
-          Property * p = new Property(*__other.getProperty(i));
-          NoteSequence::addProperty(p);
+          Property * p = new Property(* __other.getProperty(i));
+          Tuplet::addProperty(p);
         }
       }
     }
@@ -194,43 +342,54 @@ void Tuplet::updatePitch(const std::string& __context, size_t __pos) { }
 void Tuplet::updateProperty(const std::string& __context) {
   if (!__context.empty()) {
     Property * p = new Property(__context);
-    NoteGroup::setProperty(p, -1);
+    Tuplet::setProperty(p, -1);
   }
   else {
-    NoteGroup::setProperty(nullptr, -1);
+    Tuplet::setProperty(nullptr, -1);
   }
 }
 
 void Tuplet::updateProperty(const std::string& __context, size_t __pos) {
-  if (__pos < NoteSequence::getPropertySize()) {
+  if (__pos < Tuplet::getPropertySize()) {
     if (!__context.empty()) {
       Property * p = new Property(__context);
-      NoteSequence::setProperty(p, __pos);
+      Tuplet::setProperty(p, __pos);
     }
     else {
-      NoteSequence::setProperty(nullptr, __pos);
+      Tuplet::setProperty(nullptr, __pos);
     }
   }
 }
 
 void Tuplet::setTied() {
-  NoteSequence::setTied();
+  if (_tieList.empty()) {
+    _tieList.push_back(true);
+  }
+  else {
+    _tieList.back() = true;
+  }
 }
 
 void Tuplet::setTied(size_t __pos) {
-  NoteSequence::setTied(__pos);
+  if (__pos < _tieList.size()) {
+    _tieList[__pos] = true;
+  }
 }
 
 void Tuplet::setUntied() {
-  NoteSequence::setUntied();
+  if (_tieList.empty()) {
+    _tieList.push_back(false);
+  }
 }
 
 void Tuplet::setUntied(size_t __pos) {
-  NoteSequence::setUntied(__pos);
+  if (__pos < _tieList.size()) {
+    _tieList[__pos] = false;
+  }
 }
 
 int Tuplet::getSize() const {
-  return NoteSequence::getSize();
+  return _noteCount;
 }
 
 NoteType Tuplet::getType() const {
@@ -282,69 +441,138 @@ bool Tuplet::isAcciaccatura() const {
 }
 
 bool Tuplet::isValid() const {
-  return NoteSequence::isValid();
+  if (_durationList.empty() || _pitchList.empty() || _tieList.empty() || 
+      _duration == nullptr || _pitchList.size() != _tieList.size() ||
+      _durationList.size() != _propertyList.size() ||
+      _durationList.size() != _pitchList.size()) {
+    return false;
+  }
+  for (auto it = _durationList.cbegin(); it != _durationList.cend(); it++) {
+    if ((*it) == nullptr) {
+      return false;
+    }
+  }
+  for (auto it = _pitchList.cbegin(); it != _pitchList.cend(); it++) {
+    if ((*it) == nullptr) {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool Tuplet::isTied() const {
-  return NoteSequence::isTied();
+  if (_tieList.empty()) {
+    return false;
+  }
+  else {
+    return _tieList.back();
+  }
 }
 
 bool Tuplet::isTied(size_t __pos) const {
-  return NoteSequence::isTied(__pos);
+  if (__pos >= _tieList.size()) {
+    return false;
+  }
+  else {
+    return _tieList[__pos];
+  }
 }
 
 bool Tuplet::hasDuration() const {
-  return NoteSequence::hasDuration();
+  return _duration != nullptr;
 }
 
 bool Tuplet::hasDuration(size_t __pos) const {
-  return NoteSequence::hasDuration(__pos);
+  if (__pos >= _durationList.size()) {
+    return false;
+  }
+  else {
+    return _durationList[__pos] != nullptr;
+  }
 }
 
 bool Tuplet::hasPitch() const {
-  return NoteSequence::hasPitch();
+  if (!_pitchList.empty()) {
+    for (auto it = _pitchList.begin(); it != _pitchList.end(); it++) {
+      if ((*it) == nullptr) {
+        return false;
+      }
+      return true;
+    }
+  }
+  return false;
 }
 
 bool Tuplet::hasPitch(size_t __pos) const {
-  return NoteSequence::hasPitch(__pos);
+  if (__pos >= _pitchList.size()) {
+    return false;
+  }
+  else {
+    return _pitchList[__pos] != nullptr;
+  }
 }
 
 bool Tuplet::hasProperty() const {
-  return NoteSequence::hasProperty();
+  return _property != nullptr;
 }
 
 bool Tuplet::hasProperty(size_t __pos) const {
-  return NoteSequence::hasProperty(__pos);
+  if (__pos >= _propertyList.size()) {
+    return false;
+  }
+  else {
+    return _propertyList[__pos] != nullptr;
+  }
 }
 
 const Duration * Tuplet::getDuration() const {
-  return NoteGroup::getDuration();
+  return _duration;
 }
 
 const Duration * Tuplet::getDuration(size_t __pos) const {
-  return NoteSequence::getDuration(__pos);
+  if (__pos >= _durationList.size()) {
+    return nullptr;
+  }
+  else {
+    return _durationList[__pos];
+  }
 }
 
 const Pitch * Tuplet::getPitch() const {
-  return NoteSequence::getPitch();
+  if (_pitchList.empty()) {
+    return nullptr;
+  }
+  else {
+    return _pitchList.back();
+  }
 }
 
 const Pitch * Tuplet::getPitch(size_t __pos) const {
-  return NoteGroup::getPitch(__pos);
+  if (__pos >= _pitchList.size()) {
+    return nullptr;
+  }
+  else {
+    return _pitchList[__pos];
+  }
 }
 
 const Property * Tuplet::getProperty() const {
-  return NoteGroup::getProperty();
+  return _property;
 }
 
 const Property * Tuplet::getProperty(size_t __pos) const {
-  return NoteSequence::getProperty(__pos);
+  if (__pos >= _propertyList.size()) {
+    return nullptr;
+  }
+  else {
+    return _propertyList[__pos];
+  }
 }
 
 std::string Tuplet::getPropertyStr() const {
   std::string s;
-  if (Tuplet::hasProperty()) {
-    s = Tuplet::getProperty()->toString();
+  if (_property) {
+    s = _property->toString();
   }
   return s;
 }
@@ -358,15 +586,15 @@ std::string Tuplet::getPropertyStr(size_t __pos) const {
 }
 
 int Tuplet::getPitchSize() const {
-  return NoteSequence::getPitchSize();
+  return _pitchList.size();
 }
 
 int Tuplet::getDurationSize() const {
-  return NoteSequence::getDurationSize();
+  return _durationList.size();
 }
 
 int Tuplet::getPropertySize() const {
-  return NoteSequence::getPropertySize();
+  return _propertyList.size();
 }
 
 void Tuplet::modify(const std::string& __context) {

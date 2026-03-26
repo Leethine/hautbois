@@ -65,7 +65,7 @@ public:
   virtual void setPitch(Pitch * __p, int pos) { GraceNote::setPitch(__p, pos); }
   virtual void setDuration(Duration *__d, int pos) { GraceNote::setDuration(__d, pos); }
   virtual void setProperty(Property *__p, int pos) { GraceNote::setProperty(__p, pos); }
-  virtual Pitch * getPitchyMod(int pos) { return GraceNote::getPitchyMod(pos); }
+  virtual Pitch * getPitchMod(int pos) { return GraceNote::getPitchMod(pos); }
   virtual Duration * getDurationMod(int pos) { return GraceNote::getDurationMod(pos); }
   virtual Property * getPropertyMod(int pos) { return GraceNote::getPropertyMod(pos); }
   virtual GraceNoteTest& operator=(const GraceNoteTest& __n) { return *this; }

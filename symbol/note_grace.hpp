@@ -7,32 +7,52 @@
 #include <string>
 
 #include "note.hpp"
-#include "note_sequence.hpp"
+#include "note.hpp"
 
 namespace hautbois {
 namespace core {
 
-class GraceNote : public NoteSequence {
+class GraceNote : public Note {
+
+ private:
+
+  Pitch * _pitch;
+
+  Duration * _duration;
+  
+  Property * _property;
+
+  bool _tied;
+
+  std::vector<Pitch *> _pitchList;
+  
+  std::vector<bool> _tieList;
+  
+  std::vector<Duration *> _durationList;
+
+  std::vector<Property *> _propertyList;
 
  protected:
 
-  virtual void addPitch(Pitch *__p);
+  virtual void setNoteType(NoteType __ntype);
 
-  virtual void setPitch(Pitch * __p, int pos);
+  virtual void addPitch(Pitch * __p);
 
-  virtual void addDuration(Duration *__d);
+  virtual void setPitch(Pitch * __p, int __pos);
 
-  virtual void setDuration(Duration *__d, int pos);
+  virtual void addDuration(Duration * __d);
 
-  virtual void addProperty(Property *__p);
+  virtual void setDuration(Duration * __d, int __pos);
 
-  virtual void setProperty(Property *__p, int pos);
+  virtual void addProperty(Property * __p);
 
-  virtual Pitch * getPitchyMod(int pos);
+  virtual void setProperty(Property * __p, int __pos);
 
-  virtual Duration * getDurationMod(int pos);
+  virtual Pitch * getPitchMod(int __pos);
 
-  virtual Property * getPropertyMod(int pos);
+  virtual Duration * getDurationMod(int __pos);
+
+  virtual Property * getPropertyMod(int __pos);
 
   virtual void clearPitch();
 
@@ -44,8 +64,15 @@ class GraceNote : public NoteSequence {
 
   virtual std::string filterProperty(const std::string& __text) const;
 
+  GraceNote(NoteType __type);
+
+  GraceNote(NoteType __type, int __num, int __denom, const char * __pitch);
+
   GraceNote(NoteType __type, int __num, int __denom, const char * __pitch,
             const std::initializer_list<const char *> __args);
+
+  GraceNote(NoteType __type, int __num, int __denom, const std::string& __pitch,
+            const std::vector<std::string>& __args);
 
  public:
 

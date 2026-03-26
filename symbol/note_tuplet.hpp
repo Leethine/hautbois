@@ -7,32 +7,51 @@
 #include <string>
 #include <initializer_list>
 
-#include "note_sequence.hpp"
+#include "note.hpp"
 
 namespace hautbois {
 namespace core {
 
-class Tuplet : public NoteSequence {
+class Tuplet : public Note {
+
+ private:
+
+  Duration * _duration;
+  
+  Property * _property;
+  
+  const unsigned int _noteCount;
+
+  std::vector<Pitch *> _pitchList;
+  
+  std::vector<bool> _tieList;
+  
+  std::vector<Duration *> _durationList;
+  
+  std::vector<Property *> _propertyList;
+
 
  protected:
 
-  virtual void addPitch(Pitch *__p);
+  virtual void setNoteType(NoteType __ntype);
 
-  virtual void setPitch(Pitch * __p, int pos);
+  virtual void addPitch(Pitch * __p);
 
-  virtual void addDuration(Duration *__d);
+  virtual void setPitch(Pitch * __p, int __pos);
 
-  virtual void setDuration(Duration *__d, int pos);
+  virtual void addDuration(Duration * __d);
 
-  virtual void addProperty(Property *__p);
+  virtual void setDuration(Duration * __d, int __pos);
 
-  virtual void setProperty(Property *__p, int pos);
+  virtual void addProperty(Property * __p);
 
-  virtual Pitch * getPitchyMod(int pos);
+  virtual void setProperty(Property * __p, int __pos);
 
-  virtual Duration * getDurationMod(int pos);
+  virtual Pitch * getPitchMod(int __pos);
 
-  virtual Property * getPropertyMod(int pos);
+  virtual Duration * getDurationMod(int __pos);
+
+  virtual Property * getPropertyMod(int __pos);
 
   virtual void clearPitch();
 
@@ -45,6 +64,8 @@ class Tuplet : public NoteSequence {
   virtual std::string filterProperty(const std::string& __text) const;
 
   Tuplet(const unsigned int __count);
+
+  Tuplet(const unsigned int __count, int __num, int __denom);
 
  public:
 

@@ -51,19 +51,20 @@ PRINTL("[TEST3 PASSED]");
 class ChordTest : public Chord {
 public:
   ChordTest(const Chord& c) : Chord(c) {}
+  ChordTest(const Chord&& c) : Chord(c) {}
+  ChordTest& operator=(const ChordTest&)=delete;
+  Chord& operator=(const Chord&)=delete;
   virtual void setPitch(Pitch * __p, int pos) { Chord::setPitch(__p, pos); }
   virtual void setDuration(Duration *__d, int pos) { Chord::setDuration(__d, -1); }
   virtual void setProperty(Property *__p, int pos) { Chord::setProperty(__p, -1); }
-  virtual Pitch * getPitchyMod(int pos) { return Chord::getPitchyMod(pos); }
+  virtual Pitch * getPitchMod(int pos) { return Chord::getPitchMod(pos); }
   virtual Duration * getDurationMod(int pos) { return Chord::getDurationMod(pos); }
   virtual Property * getPropertyMod(int pos) { return Chord::getPropertyMod(pos); }
-  virtual ChordTest& operator=(const ChordTest& __n) { return *this; }
-  virtual Chord& operator=(const Chord& __n) { return *this; }
   virtual bool hasPitch() const { return Chord::hasPitch(); }
   virtual bool hasPitch(size_t __pos) const { return Chord::hasPitch(__pos); }
 };
 ChordTest c4(*c1);
-Pitch * p = c4.getPitchyMod(0);
+Pitch * p = c4.getPitchMod(0);
 assert(p->toString() == "Cn4");
 Pitch * p_new = new Pitch('G', '#', 6);
 // Setting pitch to p_new at pos == 1
