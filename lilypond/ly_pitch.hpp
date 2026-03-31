@@ -1,21 +1,21 @@
 #pragma once
 
-#include "symbol/pitch.hpp"
+#include "../symbol/pitch.hpp"
 
 #ifndef LY_PITCH_H
 #define LY_PITCH_H
 
 #include <string>
-#include <vector>
 
 namespace hautbois {
 namespace ly {
 
 class LyPitch : public core::Pitch {
 
- public:
-
+ protected:
   LyPitch();
+
+ public:
 
   LyPitch(const std::string& __pitch);
 
@@ -55,16 +55,22 @@ class LyPitch : public core::Pitch {
 
   virtual void modify(const char * __context);
 
+  using core::Pitch::operator==;
   virtual bool operator==(const LyPitch& p) const;
 
+  using core::Pitch::operator!=;
   virtual bool operator!=(const LyPitch& p) const;
 
+  using core::Pitch::operator>;
   virtual bool operator>(const LyPitch& p) const;
 
+  using core::Pitch::operator<;
   virtual bool operator<(const LyPitch& p) const;
 
+  using core::Pitch::operator>=;
   virtual bool operator>=(const LyPitch& p) const;
 
+  using core::Pitch::operator<=;
   virtual bool operator<=(const LyPitch& p) const;
 
 };

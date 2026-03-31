@@ -3,7 +3,7 @@
 #ifndef LY_DURATION_H
 #define LY_DURATION_H
 
-#include "symbol/duration.hpp"
+#include "../symbol/duration.hpp"
 
 namespace hautbois {
 namespace ly {
@@ -12,7 +12,7 @@ class LyDuration : public core::Duration {
 
  public:
 
-  LyDuration(); 
+  LyDuration();
 
   LyDuration(const int& __num, const int& __denom);
 
@@ -48,28 +48,46 @@ class LyDuration : public core::Duration {
 
   virtual core::DurationRaw getRaw() const;
 
+  using core::Duration::operator<;
   virtual bool operator<(const LyDuration& d2) const;
 
+  using core::Duration::operator>;
   virtual bool operator>(const LyDuration& d2) const;
 
+  using core::Duration::operator==;
   virtual bool operator==(const LyDuration& d2) const;
 
-  virtual bool operator==(const core::Duration& d2) const;
-
+  using core::Duration::operator!=;
   virtual bool operator!=(const LyDuration& d2) const;
 
+  using core::Duration::operator>=;
   virtual bool operator>=(const LyDuration& d2) const;
 
+  using core::Duration::operator<=;
   virtual bool operator<=(const LyDuration& d2) const;
 
+  using core::Duration::operator+;
   virtual LyDuration operator+(const LyDuration& d2) const;
 
+  using core::Duration::operator-;
   virtual LyDuration operator-(const LyDuration& d2) const;
+  
+  using core::Duration::operator*;
+  virtual Duration operator*(const int& __scale) const;
+  
+  using core::Duration::operator/;
+  virtual Duration operator/(const int& __scale) const;
 
-  virtual LyDuration& operator+=(const LyDuration& d2);
+  using core::Duration::operator+=;
+  virtual LyDuration& operator+=(const Duration& d2);
 
+  using core::Duration::operator-=;
+  virtual LyDuration& operator-=(const Duration& d2);
+  
+  using core::Duration::operator*=;
   virtual LyDuration& operator*=(const int& __scale);
-
+  
+  using core::Duration::operator/=;
   virtual LyDuration& operator/=(const int& __scale);
 
 };

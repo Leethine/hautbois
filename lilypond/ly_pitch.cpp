@@ -1,6 +1,6 @@
-#include "symbol/pitch.hpp"
 #include "ly_pitch.hpp"
-#include "utility/hbexcept.hpp"
+#include "../symbol/pitch.hpp"
+#include "../utility/hbexcept.hpp"
 #include <string>
 #include <cctype>
 #include <utility>
@@ -191,7 +191,6 @@ LyPitch::LyPitch(const LyPitch&& p) : Pitch() {
 }
 
 LyPitch::~LyPitch() {
-  core::Pitch::~Pitch();
 }
 
 LyPitch& LyPitch::operator=(const LyPitch& p) {
@@ -299,18 +298,15 @@ void LyPitch::modify(const char * __context) {
 }
 
 bool LyPitch::operator==(const LyPitch& p) const {
-  if (LyPitch::getName() == p.getName() && 
-      LyPitch::getAccidental() == p.getAccidental() &&
-      LyPitch::getOctaveInt() == p.getOctaveInt()) {
-    return true;
-  }
-  else {
-    return false;
-  }
+  return LyPitch::getName() == p.getName()
+    && LyPitch::getOctaveInt() == p.getOctaveInt()
+    && LyPitch::getAccidental() == p.getAccidental();
 }
 
 bool LyPitch::operator!=(const LyPitch& p) const {
-  return !(*this == p);
+  return LyPitch::getName() != p.getName()
+    || LyPitch::getOctaveInt() != p.getOctaveInt()
+    || LyPitch::getAccidental() != p.getAccidental();
 }
 
 bool LyPitch::operator>(const LyPitch& p) const {

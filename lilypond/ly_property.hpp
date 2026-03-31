@@ -3,7 +3,7 @@
 #ifndef LY_PROPERTY_H
 #define LY_PROPERTY_H
 
-#include "symbol/property.hpp"
+#include "../symbol/property.hpp"
 
 namespace hautbois {
 namespace ly {
@@ -28,14 +28,17 @@ class LyProperty : core::Property {
 
   virtual LyProperty& operator=(const LyProperty& p);
 
+  virtual LyProperty& operator=(const core::Property& p);
+
   virtual void modify(const char* context);
 
-  virtual void * convert(const char* context);
+  virtual void * convert(const char* context) const;
 
   virtual bool hasValue() const;
 
   virtual std::string toString() const;
 
+  using core::Property::operator==;
   virtual bool operator==(const std::string& s) const;
 
   virtual const core::PropertyRaw& raw() const;

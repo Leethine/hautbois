@@ -72,6 +72,8 @@ class Duration {
   virtual Duration operator/(const int& __scale) const;
   
   virtual Duration& operator+=(const Duration& d2);
+
+  virtual Duration& operator-=(const Duration& d2);
   
   virtual Duration& operator*=(const int& __scale);
   

@@ -1,16 +1,16 @@
 CPPSTD = c++17
 CC = g++
-CCFLAG = -std=$(CPPSTD) -g
-LINK_LIBRARY = -lboost_unit_test_framework -lboost_serialization
+CCFLAG = -std=$(CPPSTD) -g -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-sign-compare
+LINK_LIBRARY = -lboost_serialization
 INC_LIBRARY  = -I ../..
 
-all : libHbAdapter.a
+all : libHbLilypond.a
 
 clean :
 	rm -f unittest_* *.o *.a
 
-libHbAdapter.a : ly_duration.o ly_pitch.o ly_property.o
-	ar cr libHbAdapter.a ly_duration.o ly_pitch.o ly_property.o
+libHbLilypond.a : ly_duration.o ly_pitch.o ly_property.o
+	ar cr libHbLilypond.a ly_duration.o ly_pitch.o ly_property.o
 
 ly_duration.o : ly_duration.cpp ly_duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) ly_duration.cpp

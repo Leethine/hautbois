@@ -1,7 +1,6 @@
 #include "ly_duration.hpp"
-#include "utility/hbexcept.hpp"
-#include <algorithm>
-#include <array>
+#include "../utility/hbexcept.hpp"
+#include "../utility/hbmath.hpp"
 #include <cctype>
 #include <cstring>
 #include <regex>
@@ -11,11 +10,15 @@ namespace ly {
 
 LyDuration::LyDuration() : core::Duration() { }
 
-LyDuration::LyDuration(const int& __num, const int& __denom) :
-  core::Duration(__num, __denom) { }
+LyDuration::LyDuration(const int& __num, const int& __denom) : 
+  core::Duration() {
+  _raw.setNum(__num);
+  _raw.setDenom(__num);
+}
 
 LyDuration::LyDuration(const int& __value) :
-  core::Duration(__value) { }
+  core::Duration(__value) {
+}
 
 LyDuration::LyDuration(const std::string& __value) : core::Duration() {
   std::regex pattern ("^(1|2|4|8|16|32|64|128|256)(\\.{0,3})$");
@@ -102,7 +105,7 @@ std::string LyDuration::toString() const {
     return std::to_string(denom / 4) + "..";
   }
   else {
-    return "INVALID";
+    return std::to_string(num) + "/" + std::to_string(denom);
   }
 }
 
@@ -145,78 +148,98 @@ core::DurationRaw LyDuration::getRaw() const {
 }
 
 bool LyDuration::operator<(const LyDuration& d2) const {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  return d_1 < d_2;
+  return _raw.getNum() * d2.getDenom() < d2.getNum() * _raw.getDenom();
 }
 
 bool LyDuration::operator>(const LyDuration& d2) const {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  return d_1 > d_2;
+  return _raw.getNum() * d2.getDenom() > d2.getNum() * _raw.getDenom();
 }
 
 bool LyDuration::operator==(const LyDuration& d2) const {
-  return LyDuration::getNum() * d2.getDenom() == LyDuration::getDenom() * d2.getNum();
-}
-
-bool LyDuration::operator==(const core::Duration& d2) const {
-  core::Duration d1 (LyDuration::getNum(), LyDuration::getDenom());
-  return d1 == d2;
+  return _raw.getNum() * d2.getDenom() == d2.getNum() * _raw.getDenom();
 }
 
 bool LyDuration::operator!=(const LyDuration& d2) const {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  return d_1 == d_2;
+  return _raw.getNum() * d2.getDenom() != d2.getNum() * _raw.getDenom();
 }
 
 bool LyDuration::operator>=(const LyDuration& d2) const {
-  return core::Duration::operator>=(d2);
+  return _raw.getNum() * d2.getDenom() >= d2.getNum() * _raw.getDenom();
 }
 
 bool LyDuration::operator<=(const LyDuration& d2) const {
-  return core::Duration::operator<=(d2);
+  return _raw.getNum() * d2.getDenom() <= d2.getNum() * _raw.getDenom();
 }
 
 LyDuration LyDuration::operator+(const LyDuration& d2) const {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  core::Duration d = d_1 + d_2;
-  return LyDuration(d);
+  int denom = d2.getDenom() * _raw.getDenom();
+  int num = d2.getDenom() * _raw.getNum() + d2.getNum() * _raw.getDenom();
+  int gcd = HB_GCD(num, denom);
+  return LyDuration (num/gcd, denom/gcd);
 }
 
 LyDuration LyDuration::operator-(const LyDuration& d2) const {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  core::Duration d = d_1 - d_2;
-  return LyDuration(d);
+  int denom = d2.getDenom() * _raw.getDenom();
+  int num = d2.getDenom() * _raw.getNum() - d2.getNum() * _raw.getDenom();
+  int gcd = HB_GCD(num, denom);
+  if (num == 0) {
+    return LyDuration (1, denom/gcd);
+  }
+  return LyDuration (num/gcd, denom/gcd);
 }
 
-LyDuration& LyDuration::operator+=(const LyDuration& d2) {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d_2 (d2.getNum(), d2.getDenom());
-  core::Duration d = d_1 + d_2;
-  _raw.setNum(d.getNum());
-  _raw.setDenom(d.getDenom());
+core::Duration LyDuration::operator*(const int& __scale) const {
+  int denom = _raw.getDenom();
+  int num = _raw.getNum() * __scale;
+  int gcd = HB_GCD(num, denom);
+  return LyDuration (num/gcd, denom/gcd);
+}
+
+core::Duration LyDuration::operator/(const int& __scale) const {
+  int denom = _raw.getDenom();
+  int num = _raw.getNum() / __scale;
+  int gcd = HB_GCD(num, denom);
+  return LyDuration (num/gcd, denom/gcd);
+}
+
+LyDuration& LyDuration::operator+=(const Duration& d2) {
+  int denom = d2.getDenom() * _raw.getDenom();
+  int num = d2.getDenom() * _raw.getNum() + d2.getNum() * _raw.getDenom();
+  int gcd = HB_GCD(num, denom);
+  _raw.setNum(num/gcd);
+  _raw.setDenom(denom/gcd);
+  return *this;
+}
+
+LyDuration& LyDuration::operator-=(const Duration& d2) {
+  int denom = d2.getDenom() * _raw.getDenom();
+  int num = std::abs(d2.getDenom() * _raw.getNum() - d2.getNum() * _raw.getDenom());
+  if (num != 0) {
+    int gcd = HB_GCD(num, denom);
+    _raw.setNum(num/gcd);
+    _raw.setDenom(denom/gcd);
+  }
   return *this;
 }
 
 LyDuration& LyDuration::operator*=(const int& __scale) {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d = d_1 * __scale;
-  _raw.setNum(d.getNum());
-  _raw.setDenom(d.getDenom());
+  int denom = _raw.getDenom();
+  int num = _raw.getNum() * __scale;
+  int gcd = HB_GCD(num, denom);
+  _raw.setNum(num/gcd);
+  _raw.setDenom(denom/gcd);
   return *this;
 }
 
 LyDuration& LyDuration::operator/=(const int& __scale) {
-  core::Duration d_1 (LyDuration::getNum(), LyDuration::getDenom());
-  core::Duration d = d_1 / __scale;
-  _raw.setNum(d.getNum());
-  _raw.setDenom(d.getDenom());
+  int denom = _raw.getDenom() * __scale;
+  int num = _raw.getNum();
+  int gcd = HB_GCD(num, denom);
+  _raw.setNum(num/gcd);
+  _raw.setDenom(denom/gcd);
   return *this;
 }
+
 
 } // namespace core
 } // namespace hautbois

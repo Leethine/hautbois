@@ -1,7 +1,6 @@
 #include "ly_property.hpp"
 
 #include <algorithm>
-#include <cctype>
 #include <string>
 #include <vector>
 #include <array>
@@ -40,8 +39,15 @@ LyProperty::LyProperty(const LyProperty&& p) :
   
 LyProperty::~LyProperty() {
 }
-  
+
 LyProperty& LyProperty::operator=(const LyProperty& p) {
+  if (this != &p) {
+    _raw.set(p.raw().getStr());
+  }
+  return *this;
+}
+
+LyProperty& LyProperty::operator=(const core::Property& p) {
   if (this != &p) {
     _raw.set(p.raw().getStr());
   }
@@ -77,8 +83,8 @@ void LyProperty::modify(const char * context) {
   _raw.set(newtext);
 }
 
-void * LyProperty::convert(const char* context) {
-  // TODO
+void * LyProperty::convert(const char* context) const {
+  // Not supported
   return nullptr;
 }
 

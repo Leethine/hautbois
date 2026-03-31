@@ -1,26 +1,9 @@
 #include "duration.hpp"
 #include "../utility/hbexcept.hpp"
+#include "../utility/hbmath.hpp"
 
 #include <algorithm>
-#include <numeric>
 #include <array>
-
-#if __cplusplus >= 201703L
-#define HB_GCD(X, Y) std::gcd((X),(Y))
-#else
-#define HB_GCD(X, Y)    \
-[&](int x_, int y_) {   \
-  int a = std::abs(x_); \
-  int b = std::abs(y_); \
-  int remainder;        \
-  while (b != 0) {      \
-    remainder = a % b;  \
-    a = b;              \
-    b = remainder;      \
-  }                     \
-  return a;             \
-}((X),(Y))
-#endif
 
 namespace hautbois {
 namespace core {
@@ -191,6 +174,18 @@ Duration& Duration::operator+= (const Duration& d2) {
   int tGcd = HB_GCD(tNum, tDenom);
   _raw.setNum(tNum/tGcd);
   _raw.setDenom(tDenom/tGcd);
+  return *this;
+}
+
+Duration& Duration::operator-= (const Duration& d2) {
+  int tNum = std::abs(Duration::getNum() * d2.getDenom() 
+                     - d2.getNum() * Duration::getDenom());
+  int tDenom = Duration::getDenom() * d2.getDenom();
+  int tGcd = HB_GCD(tNum, tDenom);
+  if (tNum != 0) {
+    _raw.setNum(tNum/tGcd);
+    _raw.setDenom(tDenom/tGcd);
+  }
   return *this;
 }
 
