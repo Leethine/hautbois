@@ -8,7 +8,7 @@
 namespace hautbois {
 namespace ly {
 
-class LyProperty : core::Property {
+class LyProperty : public core::Property {
 
  public:
 
