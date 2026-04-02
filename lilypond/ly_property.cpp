@@ -8,16 +8,19 @@
 namespace hautbois {
 namespace ly {
 
-const static std::array<std::string, 39> LY_NOTE_PROPERTY {
+const static std::array<std::string, 46> LY_NOTE_PROPERTY {
   // dynamic marks
-  "<",">","!","p","pp","ppp","f","ff","fff","mp","mf","fp","pf","cresc","decresc",
+  "\\<","\\>","\\!","\\p","\\pp","\\ppp",
+  "\\f","\\ff","\\fff","\\mp",
+  "\\mf","\\fp","\\pf","\\cresc","\\decresc",
   // articulation marks
-  "accent", "espressivo", "marcato", "portato", "staccatissimo", "staccato", "tenuto",
-  "fermata",
-  // Ornament 
-  "prall", "prallup", "pralldown", "upprall", "downprall", "prallprall",
-  "lineprall", "prallmordent", "mordent", "upmordent", "downmordent",
-  "trill", "turn", "reverseturn", "slashturn", "haydnturn"
+  "\\accent","\\espressivo","\\marcato","\\portato","\\staccatissimo",
+  "\\staccato","\\tenuto","\\fermata",
+  "-^","-+","--","-!","->","-.","-_",
+  // Ornament
+  "\\prall","\\prallup","\\pralldown","\\upprall","\\downprall",
+  "\\prallprall","\\lineprall","\\prallmordent","\\mordent","\\upmordent",
+  "\\downmordent","\\trill","turn","\\reverseturn","\\slashturn","\\haydnturn"
 };
 
 LyProperty::LyProperty() : core::Property() { }
