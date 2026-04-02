@@ -358,12 +358,20 @@ void SingleNote::modify(const std::string& __context) { }
 
 std::string SingleNote::toString() const {
   std::string s;
-  if (Note::isSilence())   { s += "S,"; }
-  else if (Note::isRest()) { s += "R,"; }
-  else {
-    if (_pitch)  { s += _pitch->toString() + ","; }
+  if (Note::isSilence()) {
+    s += "S,";
   }
-  if (_duration) { s += _duration->toString(); }
+  else if (Note::isRest()) {
+    s += "R,";
+  }
+  else {
+    if (_pitch) {
+      s += dynamic_cast<Pitch *>(_pitch)->Pitch::toString() + ",";
+    }
+  }
+  if (_duration) {
+    s += dynamic_cast<Duration *>(_duration)->Duration::toString();
+  }
   return s;
 }
 
