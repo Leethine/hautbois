@@ -30,9 +30,9 @@ class LyProperty : public core::Property {
 
   virtual LyProperty& operator=(const core::Property& p);
 
-  virtual void modify(const char* context);
+  virtual void modify(const char* __context);
 
-  virtual void * convert(const char* context) const;
+  virtual void * convert(const char* __context) const;
 
   virtual bool hasValue() const;
 

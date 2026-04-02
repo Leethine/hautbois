@@ -54,17 +54,17 @@ LyProperty& LyProperty::operator=(const core::Property& p) {
   return *this;
 }
 
-void LyProperty::modify(const char * context) {
-  if (context == nullptr) {
+void LyProperty::modify(const char * __context) {
+  if (__context == nullptr) {
     return ;
   }
   std::vector<std::string> propertyList;
-  for (int i = 0; i<std::strlen(context); i++) {
+  for (int i = 0; i<std::strlen(__context); i++) {
     std::string s;
-    if (context[i] == '\\') {
+    if (__context[i] == '\\') {
       int j=i+1;
-      for (; context[j] != '\\' && context[j] != '\0'; j++, i++) {
-        s.push_back(context[j]);
+      for (; __context[j] != '\\' && __context[j] != '\0'; j++, i++) {
+        s.push_back(__context[j]);
       }
       i = j;
     }
@@ -83,7 +83,7 @@ void LyProperty::modify(const char * context) {
   _raw.set(newtext);
 }
 
-void * LyProperty::convert(const char* context) const {
+void * LyProperty::convert(const char* __context) const {
   // Not supported
   return nullptr;
 }
