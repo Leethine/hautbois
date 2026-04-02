@@ -1,6 +1,7 @@
 #include "ly_pitch.hpp"
 #include "../symbol/pitch.hpp"
 #include "../utility/hbexcept.hpp"
+#include <cstring>
 #include <string>
 #include <cctype>
 #include <utility>
@@ -271,10 +272,10 @@ void LyPitch::modify(const char * __context) {
   if (__context == nullptr) {
     return ;
   }
-  std::string newpitch (__context);
   int oct = _raw.getOctave();
   std::string name;
-  for (char c : newpitch) {
+  for (int i=0; i < std::strlen(__context); i++) {
+    char c = __context[i];
     if (std::isalpha(c)) {
       name.push_back(c);
     }
