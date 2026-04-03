@@ -139,27 +139,54 @@ LySingleNote::~LySingleNote() {
 }
 
 void LySingleNote::updateDuration(const std::string& __context) {
-  // TODO
+  if (!__context.empty()) {
+    HB_NESTED_THROW(std::invalid_argument,
+      LySingleNote::getDurationMod(-1)->modify(__context.c_str());
+    )
+  }
 }
 
 void LySingleNote::updateDuration(const std::string& __context, size_t __pos) {
-  // TODO
+  LySingleNote::updateDuration(__context);
 }
   
 void LySingleNote::updatePitch(const std::string& __context) {
-  // TODO
+  if (!__context.empty()) {
+    HB_NESTED_THROW(std::invalid_argument,
+      LySingleNote::getPitchMod(-1)->modify(__context.c_str());
+    )
+  }
+  if (LySingleNote::getPitch()) {
+    if (LySingleNote::getPitch()->getName() == "r") {
+      LySingleNote::setNoteType(core::NoteType::Rest);
+    }
+    else if (LySingleNote::getPitch()->getName() == "s") {
+      LySingleNote::setNoteType(core::NoteType::Silence);
+    }
+  }
 }
 
 void LySingleNote::updatePitch(const std::string& __context, size_t __pos) {
-  // TODO
+  LySingleNote::updatePitch(__context);
 }
 
 void LySingleNote::updateProperty(const std::string& __context) {
-  // TODO
+  if (__context.empty()) {
+    LySingleNote::addProperty(nullptr);
+  }
+  else {
+    if (!LySingleNote::hasProperty()) {
+      core::Property * p = new LyProperty();
+      LySingleNote::addProperty(p);
+    }
+    HB_NESTED_THROW(std::invalid_argument,
+      LySingleNote::getPropertyMod(-1)->modify(__context.c_str());
+    )
+  }
 }
 
 void LySingleNote::updateProperty(const std::string& __context, size_t __pos) {
-  // TODO
+  LySingleNote::updateProperty(__context);
 }
 
 void LySingleNote::setTied() {
@@ -296,7 +323,11 @@ const core::Property * LySingleNote::getProperty(size_t __pos) const {
 }
 
 std::string LySingleNote::getPropertyStr() const {
-  return core::SingleNote::getPropertyStr();
+  std::string s;
+  if (LySingleNote::getProperty()) {
+    s = LySingleNote::getProperty()->toString();
+  }
+  return s;
 }
 
 std::string LySingleNote::getPropertyStr(size_t __pos) const {
@@ -316,13 +347,16 @@ int LySingleNote::getPropertySize() const {
 }
 
 void LySingleNote::modify(const std::string& __context) {
-  // TODO
+  if (__context == "\\rest") {
+    LySingleNote::getPitchMod(-1)->modify("r");
+    LySingleNote::setNoteType(core::NoteType::Rest);
+  }
 }
 
 std::string LySingleNote::toString() const {
   std::string s;
-  if (Note::isSilence())   { s += "s"; }
-  else if (Note::isRest()) { s += "r"; }
+  if (LySingleNote::isSilence())   { s += "s"; }
+  else if (LySingleNote::isRest()) { s += "r"; }
   else {
     if (LySingleNote::getPitch())  {
       s += LySingleNote::getPitch()->toString();
@@ -335,7 +369,6 @@ std::string LySingleNote::toString() const {
 }
 
 void * LySingleNote::toStream(const std::string& __context, void * __ostream) const {
-  // TODO
   return nullptr;
 }
 

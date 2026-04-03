@@ -10,17 +10,17 @@ namespace ly {
 
 const static std::array<std::string, 46> LY_NOTE_PROPERTY {
   // dynamic marks
-  "\\<","\\>","\\!","\\p","\\pp","\\ppp",
-  "\\f","\\ff","\\fff","\\mp",
-  "\\mf","\\fp","\\pf","\\cresc","\\decresc",
+  "<",">","!","p","pp","ppp",
+  "f","ff","fff","mp",
+  "mf","fp","pf","cresc","decresc",
   // articulation marks
-  "\\accent","\\espressivo","\\marcato","\\portato","\\staccatissimo",
-  "\\staccato","\\tenuto","\\fermata",
+  "accent","espressivo","marcato","portato","staccatissimo",
+  "staccato","tenuto","fermata",
   "-^","-+","--","-!","->","-.","-_",
   // Ornament
-  "\\prall","\\prallup","\\pralldown","\\upprall","\\downprall",
-  "\\prallprall","\\lineprall","\\prallmordent","\\mordent","\\upmordent",
-  "\\downmordent","\\trill","turn","\\reverseturn","\\slashturn","\\haydnturn"
+  "prall","prallup","pralldown","upprall","downprall",
+  "prallprall","lineprall","prallmordent","mordent","upmordent",
+  "downmordent","trill","turn","reverseturn","slashturn","haydnturn"
 };
 
 LyProperty::LyProperty() : core::Property() { }
