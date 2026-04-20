@@ -9,8 +9,8 @@ all : libHbLilypond.a
 clean :
 	rm -f unittest_* *.o *.a
 
-libHbLilypond.a : ly_duration.o ly_pitch.o ly_property.o ly_singlenote.o
-	ar cr libHbLilypond.a ly_duration.o ly_pitch.o ly_property.o ly_singlenote.o
+libHbLilypond.a : ly_duration.o ly_pitch.o ly_property.o ly_singlenote.o ly_chord.o
+	ar cr libHbLilypond.a ly_duration.o ly_pitch.o ly_property.o ly_singlenote.o ly_chord.o
 
 ly_duration.o : ly_duration.cpp ly_duration.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) ly_duration.cpp
@@ -23,3 +23,6 @@ ly_property.o : ly_property.cpp ly_property.hpp
 
 ly_singlenote.o : ly_singlenote.cpp ly_singlenote.hpp
 	$(CC) $(CCFLAG) -c $(INC_LIBRARY) ly_singlenote.cpp
+
+ly_chord.o : ly_chord.cpp ly_chord.hpp
+	$(CC) $(CCFLAG) -c $(INC_LIBRARY) ly_chord.cpp
