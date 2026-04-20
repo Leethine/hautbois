@@ -424,12 +424,12 @@ std::string Chord::toString() const {
   std::string s;
   for (auto it = _pitchList.begin(); it != _pitchList.end(); it++) {
     if (*it) {
-      s += (*it)->toString();
+      s += (*it)->Pitch::toString();
       s.push_back(',');
     }
   }
   if (_duration) {
-    s += _duration->toString();
+    s += _duration->Duration::toString();
   }
   return s;
 }
