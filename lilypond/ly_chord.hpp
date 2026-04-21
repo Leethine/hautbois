@@ -160,7 +160,7 @@ class LyChord : public core::Chord {
 };
 
 
+} // namespace ly
 } // namespace hautbois
-} // namespace core
 
 #endif

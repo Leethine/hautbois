@@ -372,5 +372,5 @@ void * LySingleNote::toStream(const std::string& __context, void * __ostream) co
   return nullptr;
 }
 
+} // namespace ly
 } // namespace hautbois
-} // namespace core

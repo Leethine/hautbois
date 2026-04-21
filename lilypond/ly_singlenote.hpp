@@ -157,7 +157,7 @@ class LySingleNote : public core::SingleNote {
 
 };
 
+} // namespace ly
 } // namespace hautbois
-} // namespace core
 
 #endif

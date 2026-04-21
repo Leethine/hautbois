@@ -209,5 +209,5 @@ Duration& Duration::operator/= (const int& __scale) {
   return *this;
 }
 
+} // namespace core
 } // namespace hautbois
-} //namespace core

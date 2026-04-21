@@ -75,7 +75,7 @@ class LyPitch : public core::Pitch {
 
 };
 
+} // namespace ly
 } // namespace hautbois
-} // namespace core
 
 #endif

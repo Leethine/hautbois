@@ -71,5 +71,5 @@ PropertyRaw Property::getRaw() const {
 }
 
 
-} // namespace hautbois
 } // namespace core
+} // namespace hautbois

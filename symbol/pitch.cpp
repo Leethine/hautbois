@@ -200,6 +200,6 @@ bool Pitch::operator>=(const Pitch& p) const {
   }
 }
 
-} // namespace hautbois
 } // namespace core
+} // namespace hautbois
     

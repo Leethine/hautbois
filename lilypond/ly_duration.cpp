@@ -241,5 +241,5 @@ LyDuration& LyDuration::operator/=(const int& __scale) {
 }
 
 
-} // namespace core
+} // namespace ly
 } // namespace hautbois

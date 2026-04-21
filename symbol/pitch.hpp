@@ -98,7 +98,7 @@ class Pitch {
 
 };
 
-} // namespace hautbois
 } // namespace core
+} // namespace hautbois
 
 #endif
