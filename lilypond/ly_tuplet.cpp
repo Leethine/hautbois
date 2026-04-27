@@ -96,7 +96,7 @@ LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
                    const std::vector<std::string>& __args) :
   LyTuplet(__value, __fraction) {
   // read the pitch/value pair list, the total value was already handled
-  for (const auto arg : __args) {
+  for (const auto& arg : __args) {
     // find the number as separater of pitch name and value
     const auto it = std::find_if(arg.begin(), arg.end(), 
       [](const char c) {
@@ -130,7 +130,7 @@ LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
 LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
                    const std::initializer_list<const char *>& __args) :
   LyTuplet(__value, __fraction) {
-  for (const auto arg_char_array : __args) {
+  for (const auto& arg_char_array : __args) {
     std::string arg (arg_char_array); // convert const char * to str
     const auto it = std::find_if(arg.begin(), arg.end(), 
       [](const char c) {
@@ -151,6 +151,8 @@ LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
         LyTuplet::clearDuration();
         LyTuplet::clearProperty();
       )
+      LyTuplet::addPitch(p);
+      LyTuplet::addDuration(d);
     }
     else {
       HB_THROW_MSG(std::invalid_argument, "Missing value: " + arg);
