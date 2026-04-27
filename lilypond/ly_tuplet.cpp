@@ -74,8 +74,12 @@ std::string LyTuplet::filterProperty(const std::string& __text) const {
   return s;
 }
 
-LyTuplet::LyTuplet(const std::string& __value, const size_t __count, const size_t __fraction) :
-  core::Tuplet(__count), _fraction(__fraction) {
+LyTuplet::LyTuplet(const size_t __fraction) :
+  core::Tuplet(0 - __fraction) {
+}
+
+LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction) :
+  LyTuplet(__fraction) {
   // set the total value of the note
   core::Duration * d_main = nullptr;
   HB_NESTED_THROW_ACTION(std::invalid_argument,
@@ -88,9 +92,9 @@ LyTuplet::LyTuplet(const std::string& __value, const size_t __count, const size_
   LyTuplet::setDuration(d_main, -1);
 }
 
-LyTuplet::LyTuplet(const std::string& __value, const std::vector<std::string>& __args,
-                   const size_t __count, const size_t __fraction) :
-  LyTuplet(__value, __count, __fraction) {
+LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
+                   const std::vector<std::string>& __args) :
+  LyTuplet(__value, __fraction) {
   // read the pitch/value pair list, the total value was already handled
   for (const auto arg : __args) {
     // find the number as separater of pitch name and value
@@ -123,10 +127,9 @@ LyTuplet::LyTuplet(const std::string& __value, const std::vector<std::string>& _
   }
 }
 
-LyTuplet::LyTuplet(const std::string& __value,
-                   const std::initializer_list<const char *>& __args,
-                   const size_t __count, const size_t __fraction) :
-  LyTuplet(__value, __count, __fraction) {
+LyTuplet::LyTuplet(const std::string& __value, const size_t __fraction,
+                   const std::initializer_list<const char *>& __args) :
+  LyTuplet(__value, __fraction) {
   for (const auto arg_char_array : __args) {
     std::string arg (arg_char_array); // convert const char * to str
     const auto it = std::find_if(arg.begin(), arg.end(), 
@@ -155,25 +158,103 @@ LyTuplet::LyTuplet(const std::string& __value,
   }
 }
 
-LyTuplet::LyTuplet(const std::string& __value, 
-                   const std::vector<std::string>& __args,
-                   const size_t __count) :
-  LyTuplet(__value, __args, __count, 2) {
+LyTuplet::LyTuplet(const LyTuplet& __note) : 
+  LyTuplet(std::forward<const LyTuplet>(__note)) {
 }
 
-LyTuplet::LyTuplet(const std::string& __value,
-                   const std::initializer_list<const char *>& __args,
-                   const size_t __count) :
-  LyTuplet(__value, __args, __count, 2) {
+LyTuplet::LyTuplet(const LyTuplet&& __note) : LyTuplet(0 - __note.getSize()) {
+  if (__note.getDuration()) {
+    core::Duration * d = nullptr;
+    HB_NESTED_THROW_ACTION(std::invalid_argument,
+      d = new LyDuration(*__note.getDuration());
+      ,
+      LyTuplet::clearDuration();
+      LyTuplet::clearPitch();
+      LyTuplet::clearProperty();
+    )
+    LyTuplet::setDuration(d, -1);
+  }
+  for (int i=0; i < __note.getPitchSize(); i++) {
+    if (__note.hasPitch(i) && __note.hasDuration(i)) {
+      core::Pitch * p = nullptr;
+      core::Duration * d = nullptr;
+      HB_NESTED_THROW_ACTION(std::invalid_argument,
+        p = new LyPitch(*__note.getPitch(i));
+        d = new LyDuration(* __note.getDuration(i));
+        ,
+        LyTuplet::clearDuration();
+        LyTuplet::clearPitch();
+        LyTuplet::clearProperty();
+      )
+      LyTuplet::addPitch(p);
+      LyTuplet::addDuration(d);
+    }
+    // process property of each note
+    if (__note.hasProperty(i)) {
+      core::Property * pr = nullptr;
+      HB_NESTED_THROW_ACTION(std::invalid_argument,
+        pr = new LyProperty(*__note.getProperty(i));
+        ,
+        LyTuplet::clearDuration();
+        LyTuplet::clearPitch();
+        LyTuplet::clearProperty();
+      )
+      LyTuplet::addProperty(pr);
+    }
+    else {
+      LyTuplet::addProperty(nullptr);
+    }
+  }
 }
 
-//LyTuplet::LyTuplet(const LyTuplet& __note);
+LyTuplet::LyTuplet(const core::Tuplet& __note) :
+  LyTuplet(std::forward<const core::Tuplet>(__note)) {
+}
 
-//LyTuplet::LyTuplet(const LyTuplet&& __note);
-
-//LyTuplet::LyTuplet(const core::Tuplet& __note);
-
-//LyTuplet::LyTuplet(const core::Tuplet&& __note);
+LyTuplet::LyTuplet(const core::Tuplet&& __note) : LyTuplet(__note.getSize()) {
+  if (__note.getDuration()) {
+    core::Duration * d = nullptr;
+    HB_NESTED_THROW_ACTION(std::invalid_argument,
+      d = new LyDuration(*__note.getDuration());
+      ,
+      LyTuplet::clearDuration();
+      LyTuplet::clearPitch();
+      LyTuplet::clearProperty();
+    )
+    LyTuplet::setDuration(d, -1);
+  }
+  for (int i=0; i < __note.getPitchSize(); i++) {
+    if (__note.hasPitch(i) && __note.hasDuration(i)) {
+      core::Pitch * p = nullptr;
+      core::Duration * d = nullptr;
+      HB_NESTED_THROW_ACTION(std::invalid_argument,
+        p = new LyPitch(*__note.getPitch(i));
+        d = new LyDuration(* __note.getDuration(i));
+        ,
+        LyTuplet::clearDuration();
+        LyTuplet::clearPitch();
+        LyTuplet::clearProperty();
+      )
+      LyTuplet::addPitch(p);
+      LyTuplet::addDuration(d);
+    }
+    // process property of each note
+    if (__note.hasProperty(i)) {
+      core::Property * pr = nullptr;
+      HB_NESTED_THROW_ACTION(std::invalid_argument,
+        pr = new LyProperty(*__note.getProperty(i));
+        ,
+        LyTuplet::clearDuration();
+        LyTuplet::clearPitch();
+        LyTuplet::clearProperty();
+      )
+      LyTuplet::addProperty(pr);
+    }
+    else {
+      LyTuplet::addProperty(nullptr);
+    }
+  }
+}
 
 LyTuplet::~LyTuplet() {
   LyTuplet::clearPitch();
@@ -392,7 +473,16 @@ void LyTuplet::modify(const std::string& __context) {
 }
 
 std::string LyTuplet::toString() const {
-  std::string s = "\\tuplet " + std::to_string(LyTuplet::getSize()) + "/" + std::to_string(_fraction);
+  std::string s = "\\tuplet ";
+  if (LyTuplet::getSize() > 0) { // fraction notation
+    std::string tuplet_num = std::to_string(LyTuplet::getSize());
+    std::string tuplet_denom(tuplet_num.back(), 1);
+    tuplet_num.pop_back();
+    s += tuplet_num + "/" + tuplet_denom;
+  }
+  else { // simple notation
+    s += std::to_string(0 - LyTuplet::getSize()) + "/2";
+  }
   s += " { ";
   for (int i = 0; i < LyTuplet::getPitchSize(); i++) {
     if (LyTuplet::getPitch(i)) {

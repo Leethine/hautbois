@@ -12,8 +12,6 @@ class LyTuplet : public core::Tuplet {
 
  protected:
   
-  const unsigned int _fraction;
-
   virtual void setNoteType(core::NoteType __ntype);
 
   virtual void addPitch(core::Pitch * __p);
@@ -44,33 +42,25 @@ class LyTuplet : public core::Tuplet {
 
   virtual std::string filterProperty(const std::string& __text) const;
 
-  LyTuplet(const std::string& __value, const size_t __count, const size_t __fraction);
+  LyTuplet(const size_t __fraction);
+
+  LyTuplet(const std::string& __value, const size_t __fraction);
 
  public:
 
-  LyTuplet(const std::string& __value,
-           const std::vector<std::string>& __args,
-           const size_t __count, const size_t __fraction);
+  LyTuplet(const std::string& __value, const size_t __fraction,
+           const std::vector<std::string>& __args);
 
-  LyTuplet(const std::string& __value,
-           const std::initializer_list<const char *>& __args,
-           const size_t __count, const size_t __fraction);
+  LyTuplet(const std::string& __value, const size_t __fraction,
+           const std::initializer_list<const char *>& __args);
 
-  LyTuplet(const std::string& __value, 
-           const std::vector<std::string>& __args,
-           const size_t __count);
+  LyTuplet(const LyTuplet& __note);
 
-  LyTuplet(const std::string& __value,
-           const std::initializer_list<const char *>& __args,
-           const size_t __count);
+  LyTuplet(const LyTuplet&& __note);
 
-  //LyTuplet(const LyTuplet& __note);
+  LyTuplet(const core::Tuplet& __note);
 
-  //LyTuplet(const LyTuplet&& __note);
-
-  //LyTuplet(const core::Tuplet& __note);
-
-  //LyTuplet(const core::Tuplet&& __note);
+  LyTuplet(const core::Tuplet&& __note);
 
   using core::Tuplet::operator=;
   virtual LyTuplet& operator=(const LyTuplet& __n)=delete;
