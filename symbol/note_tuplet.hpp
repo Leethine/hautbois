@@ -20,7 +20,7 @@ class Tuplet : public Note {
   
   Property * _property;
   
-  const unsigned int _noteCount;
+  const int _noteCount;
 
   std::vector<Pitch *> _pitchList;
   
