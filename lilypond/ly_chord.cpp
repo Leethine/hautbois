@@ -197,7 +197,7 @@ LyChord::~LyChord() {
 }
 
 void LyChord::updateDuration(const std::string& __context) {
-  if (!__context.empty()) {
+  if (!__context.empty() && LyChord::getDurationMod(-1)) {
     HB_NESTED_THROW(std::invalid_argument,
       LyChord::getDurationMod(-1)->modify(__context.c_str());
     )
@@ -213,12 +213,10 @@ void LyChord::updatePitch(const std::string& __context) {
 }
 
 void LyChord::updatePitch(const std::string& __context, size_t __pos) {
-  if (__pos < LyChord::getPitchSize()) {
-    if (LyChord::getPropertyMod(__pos)) {
-      HB_NESTED_THROW(std::invalid_argument,
-        LyChord::getPitchMod(-1)->modify(__context.c_str());
-      )
-    }
+  if (__pos < LyChord::getPitchSize() && LyChord::getPitchMod(__pos)) {
+    HB_NESTED_THROW(std::invalid_argument,
+      LyChord::getPitchMod(-1)->modify(__context.c_str());
+    )
   }
 }
 

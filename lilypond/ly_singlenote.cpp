@@ -139,7 +139,7 @@ LySingleNote::~LySingleNote() {
 }
 
 void LySingleNote::updateDuration(const std::string& __context) {
-  if (!__context.empty()) {
+  if (!__context.empty() && LySingleNote::getDurationMod(-1)) {
     HB_NESTED_THROW(std::invalid_argument,
       LySingleNote::getDurationMod(-1)->modify(__context.c_str());
     )
@@ -151,7 +151,7 @@ void LySingleNote::updateDuration(const std::string& __context, size_t __pos) {
 }
   
 void LySingleNote::updatePitch(const std::string& __context) {
-  if (!__context.empty()) {
+  if (!__context.empty() && LySingleNote::getPitchMod(-1)) {
     HB_NESTED_THROW(std::invalid_argument,
       LySingleNote::getPitchMod(-1)->modify(__context.c_str());
     )
