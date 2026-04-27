@@ -396,6 +396,9 @@ std::string LyChord::toString() const {
   for (int i = 0; i < LyChord::getPitchSize(); i++) {
     if (LyChord::getPitch(i)) {
       s += LyChord::getPitch(i)->toString();
+      if (LyChord::isTied(i)) {
+        s += "~";
+      }
       s += " ";
     }
   }

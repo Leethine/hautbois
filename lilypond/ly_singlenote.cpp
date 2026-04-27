@@ -365,6 +365,9 @@ std::string LySingleNote::toString() const {
   if (LySingleNote::getDuration()) {
     s += LySingleNote::getDuration()->toString();
   }
+  if (LySingleNote::isTied()) {
+    s += "~";
+  }
   return s;
 }
 
