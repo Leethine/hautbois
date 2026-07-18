@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#define EXCEPTION_CAUGHT() ( assert("Exception Caught" == nullptr) )
+
 using namespace hautbois;
 
 int main() {
@@ -44,6 +46,7 @@ int main() {
   // Constructor throw exception
   try {
     Duration d(3);
+    EXCEPTION_CAUGHT();
   }
   catch (std::invalid_argument& e) {
     assert(e.what());
@@ -52,6 +55,7 @@ int main() {
   
   try {
     Duration d(4, "....");
+    EXCEPTION_CAUGHT();
   }
   catch (std::invalid_argument& e) {
     assert(e.what());
@@ -60,6 +64,7 @@ int main() {
 
   try {
     Duration d("SFZ");
+    EXCEPTION_CAUGHT();
   }
   catch (std::invalid_argument& e) {
     assert(e.what());
@@ -68,6 +73,7 @@ int main() {
 
   try {
     Duration d("3.");
+    EXCEPTION_CAUGHT();
   }
   catch (std::invalid_argument& e) {
     assert(e.what());
@@ -76,6 +82,7 @@ int main() {
 
   try {
     Duration d("123456453412342534253435654312345642534324253634232534231");
+    EXCEPTION_CAUGHT();
   }
   catch (std::out_of_range& e) {
     assert(e.what());
