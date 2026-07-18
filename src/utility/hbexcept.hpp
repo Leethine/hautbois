@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef HBEXCEPT_HPP
+#define HBEXCEPT_HPP
+
 #include <stdexcept>
 #include <string>
 
@@ -108,4 +111,5 @@
       "\nUpper-level exception:\n" + e.what() ) ;    \
 }
 
+#endif
 #endif
