@@ -1,8 +1,10 @@
 #include "duration.hpp"
 #include "../utility/hbexcept.hpp"
+#include "../hbtype/hbconst.hpp"
 
 #include <algorithm>
 #include <cstdint>
+#include <cctype>
 #include <numeric>
 #include <array>
 #include <stdexcept>
@@ -115,30 +117,60 @@ Duration::Duration(const uint32_t __num, const uint32_t __denom) :
 
 Duration::Duration(const uint32_t __value, const std::string& __dots) :
   _n_value(__dots.size()), _d_value(__value), _is_dot_notation(true) {
+  const auto& vnv = hbconst::VALID_NOTE_VALUE;
+  if (std::find(vnv.cbegin(), vnv.cend(), __value) == vnv.cend()) {
+    HB_THROW_MSG(std::invalid_argument, "Invalid note value: " + std::to_string(__value));
+  }
   if (_n_value > 3) {
     HB_THROW_MSG(std::invalid_argument, "Too many dots: " + std::to_string(_n_value));
-  }
-  std::array<uint32_t, 8> validValue {1,2,4,8,16,32,64,128};
-  if (std::find(validValue.begin(), validValue.end(), __value) == validValue.end()) {
-    HB_THROW_MSG(std::invalid_argument, "Invalid note value: " + std::to_string(__value));
   }
 }
 
 Duration::Duration(const uint32_t __value) : Duration(__value, "") {
 }
 
-Duration::Duration(const Duration& d) : Duration(std::forward<const Duration&&>(d)) { 
+Duration::Duration(const std::string& __value) : Duration() {
+  _is_dot_notation = true;
+
+  std::string dots = __value;
+  std::string value = __value;
+  value.erase(std::remove_if(value.begin(), value.end(), 
+    [](char c) {
+      return !std::isdigit(c);
+    } ), value.end());
+  dots.erase(std::remove_if(dots.begin(), dots.end(),
+  [](char c) {
+    return c != '.';
+  } ), dots.end());
+
+  if (value.size() + dots.size() != __value.size()) {
+    HB_THROW_MSG(std::invalid_argument, "Invalid note value str: " + __value);
+  }
+
+  HB_NESTED_THROW_MSG(std::out_of_range, "Invalid note value: " + __value,
+    _d_value = std::stoi(value); )
+  _n_value = dots.size();
+  const auto& vnv = hbconst::VALID_NOTE_VALUE;
+  if (std::find(vnv.cbegin(), vnv.cend(), _d_value) == vnv.cend()) {
+    HB_THROW_MSG(std::invalid_argument, "Invalid note value: " + std::to_string(_d_value));
+  }
+  if (_n_value > 3) {
+    HB_THROW_MSG(std::invalid_argument, "Too many dots: " + std::to_string(_n_value));
+  }
 }
 
-Duration::Duration(const Duration&& d) : Duration() {
-  if (d.isMeter()) {
-    _n_value = (uint32_t) d.getNum();
-    _d_value = (uint32_t) d.getDenom();
+Duration::Duration(const Duration& __d) : Duration(std::forward<const Duration&&>(__d)) { 
+}
+
+Duration::Duration(const Duration&& __d) : Duration() {
+  if (__d.isMeter()) {
+    _n_value = (uint32_t) __d.getNum();
+    _d_value = (uint32_t) __d.getDenom();
     _is_dot_notation = false;
   }
   else {
-    _n_value = (uint32_t) d.getValue();
-    _d_value = (uint32_t) d.getDots().size();
+    _n_value = (uint32_t) __d.getValue();
+    _d_value = (uint32_t) __d.getDots().size();
     _is_dot_notation = true;
   }
 }

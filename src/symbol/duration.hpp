@@ -52,9 +52,11 @@ public:
 
   Duration(const uint32_t __value);
 
-  Duration(const Duration& d);
+  Duration(const std::string& __value);
 
-  Duration(const Duration&& d);
+  Duration(const Duration& __d);
+
+  Duration(const Duration&& __d);
 
   virtual ~Duration();
 
