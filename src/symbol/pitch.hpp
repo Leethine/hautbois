@@ -5,7 +5,6 @@
 
 #include <string>
 #include <cstdint>
-#include "../hbtype/hbdefs.hpp"
 
 namespace hautbois {
 
@@ -23,9 +22,9 @@ protected:
 
   virtual void setName(const char __name);
 
-  virtual void setAccidental(const char __acc);
-
   virtual void setName(const std::string& __name);
+
+  virtual void setAccidental(const char __acc);
 
   virtual void setAccidental(const std::string& __acc);
 
@@ -39,9 +38,11 @@ protected:
 
   virtual void transpose(const int __degree, const std::string& __tonality, const std::string& __mode);
 
-  Pitch();
+  virtual double toFrequency(const uint32_t __base, const int __temperament) const;
 
 public:
+
+  Pitch();
 
   Pitch(const char __name, const char __acc, const uint8_t __oct);
 
@@ -65,7 +66,13 @@ public:
 
   virtual int toIndex() const;
 
-  virtual double toFrequency(const uint32_t __base, const int __temperament = TEMPERAMENT_EQUAL) const;
+  bool isValid() const;
+
+  bool isRest() const;
+
+  bool isSilence() const;
+  
+  bool isPitch() const;
 
 };
 
