@@ -24,7 +24,7 @@
 
 #define INT_OCTAVE_DEFAULT    4
 #define INT_OCTAVE_LOWEST     0
-#define INT_OCTAVE_HIGHEST    8
+#define INT_OCTAVE_HIGHEST    8 
 
 #define CHAR_SINGLENOTE_TYPE   'N'
 #define CHAR_CHORD_TYPE        'C'
