@@ -57,15 +57,15 @@ public:
     return Note::getType();
   }
 
-  inline virtual void makeTie(const size_t __pos) {
+  inline virtual void makeTie(const size_t __pos = 0) {
     Note::makeTie(0);
   }
 
-  inline virtual void makeUntie(const size_t __pos) {
+  inline virtual void makeUntie(const size_t __pos = 0) {
     Note::makeUntie(0);
   }
 
-  inline virtual bool isTied(const size_t __pos) {
+  inline virtual bool isTied(const size_t __pos = 0) const {
     return Note::isTied(0);
   }
 
@@ -86,8 +86,14 @@ public:
   }
 
   SingleNote(const std::string& __pitch, const std::string& __value);
+  
+  SingleNote(const SingleNote& __other);
+
+  SingleNote(const SingleNote&& __other);
 
   // was declared abstract
+  virtual void addProperty(const std::string& __property, const int __pos = 0);
+
   virtual int getSize() const;
 
   virtual bool isValid() const;

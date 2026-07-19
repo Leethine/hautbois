@@ -5,11 +5,11 @@ namespace hautbois {
 
 void Note::setNote(Note * __ptr, const int __pos) {
   auto& elems = _tuplet_notes;
-  if (__pos >= 0 && __pos < elems.size() && __ptr) {
+  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
     delete elems[__pos];
     elems[__pos] = __ptr;
   }
-  else if (__pos >= 0 && __pos < elems.size() && __ptr == nullptr) {
+  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
     delete elems[__pos];
     elems.erase(elems.begin() + __pos);
   }
@@ -20,26 +20,28 @@ void Note::setNote(Note * __ptr, const int __pos) {
 
 void Note::setPitch(Pitch * __ptr, const int __pos) {
   auto& elems = _pitch;
-  if (__pos >= 0 && __pos < elems.size() && __ptr) {
+  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
     delete elems[__pos];
     elems[__pos] = __ptr;
   }
-  else if (__pos >= 0 && __pos < elems.size() && __ptr == nullptr) {
+  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
     delete elems[__pos];
     elems.erase(elems.begin() + __pos);
+    _tied.erase(_tied.begin() + __pos);
   }
   else if (__pos < 0 && __ptr) {
     elems.push_back(__ptr);
+    _tied.push_back(false);
   }
 }
 
 void Note::setDuration(Duration * __ptr, const int __pos) {
   auto& elems = _duration;
-  if (__pos >= 0 && __pos < elems.size() && __ptr) {
+  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
     delete elems[__pos];
     elems[__pos] = __ptr;
   }
-  else if (__pos >= 0 && __pos < elems.size() && __ptr == nullptr) {
+  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
     delete elems[__pos];
     elems.erase(elems.begin() + __pos);
   }
@@ -50,7 +52,7 @@ void Note::setDuration(Duration * __ptr, const int __pos) {
 
 void Note::setProperty(Property * __ptr, const int __pos) {
   auto& elems = _property;
-  if (__pos >= 0 && __pos < elems.size() && __ptr) {
+  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
     delete elems[__pos];
     if (__ptr->toList().empty()) {
       elems[__pos] = nullptr;
@@ -59,7 +61,7 @@ void Note::setProperty(Property * __ptr, const int __pos) {
       elems[__pos] = __ptr;
     }
   }
-  else if (__pos >= 0 && __pos < elems.size() && __ptr == nullptr) {
+  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
     delete elems[__pos];
     elems.erase(elems.begin() + __pos);
   }
@@ -148,7 +150,7 @@ void Note::makeUntie(const size_t __pos) {
   }
 }
 
-bool Note::isTied(const size_t __pos) {
+bool Note::isTied(const size_t __pos) const {
   if (__pos < _tied.size()) {
     return _tied[__pos];
   }

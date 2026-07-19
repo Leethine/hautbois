@@ -64,11 +64,11 @@ public:
 
   virtual char getType() const;
 
-  virtual void makeTie(const size_t __pos);
+  virtual void makeTie(const size_t __pos = 0);
 
-  virtual void makeUntie(const size_t __pos);
+  virtual void makeUntie(const size_t __pos = 0);
 
-  virtual bool isTied(const size_t __pos);
+  virtual bool isTied(const size_t __pos = 0) const;
 
   virtual const Pitch * getPitch(const size_t __pos = 0) const;
 
@@ -79,6 +79,8 @@ public:
   virtual const Note * getNote(const size_t __pos = 0) const;
 
   /* Methods to be implemented in derived classes */
+
+  virtual void addProperty(const std::string& __property, const int __pos = 0) = 0;
 
   virtual int getSize() const = 0;
 
