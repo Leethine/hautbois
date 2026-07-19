@@ -84,7 +84,7 @@ int main() {
     Duration d("123456453412342534253435654312345642534324253634232534231");
     EXCEPTION_CAUGHT();
   }
-  catch (std::out_of_range& e) {
+  catch (std::invalid_argument& e) {
     assert(e.what());
     std::cout << e.what() << "\n";
   }

@@ -94,13 +94,13 @@ Duration::Duration(const std::string& __value) : Duration() {
     return c != '.';
   } ), dots.end());
 
-  if (value.size() + dots.size() != __value.size()) {
-    HB_THROW_MSG(std::invalid_argument, "Invalid note value str: " + __value);
+  if (value.size() + dots.size() != __value.size() || value.size() > 3) {
+    HB_THROW_MSG(std::invalid_argument, "Invalid note value or value too big: " + __value);
   }
 
-  HB_NESTED_THROW_MSG(std::out_of_range, "Invalid note value: " + __value,
-    _d_value = std::stoi(value); )
+  _d_value = std::stoi(value);
   _n_value = dots.size();
+
   const auto& vnv = hbconst::VALID_NOTE_VALUE;
   if (std::find(vnv.cbegin(), vnv.cend(), _d_value) == vnv.cend()) {
     HB_THROW_MSG(std::invalid_argument, "Invalid note value: " + std::to_string(_d_value));
