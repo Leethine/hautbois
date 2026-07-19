@@ -47,54 +47,6 @@ void Pitch::setOctave(const uint8_t __oct) {
   }
 }
 
-bool Pitch::equals(const Pitch * const __other) const {
-  if (_name == __other->getName()       &&
-      _acc  == __other->getAccidental() && 
-      _oct  == __other->getOctave()) {
-    return true;
-  }
-  return false;
-}
-
-bool Pitch::higher_than(const Pitch * const __other) const {
-  if (_oct > __other->getOctave()) {
-    return true;
-  }
-  else if (_oct < __other->getOctave()) {
-    return false;
-  }
-  else {
-    if (Pitch::toIndex() > __other->toIndex()) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool Pitch::lower_than(const Pitch * const __other) const {
-  if (__other->getOctave() > _oct) {
-    return true;
-  }
-  else if (__other->getOctave() < _oct) {
-    return false;
-  }
-  else {
-    if (Pitch::toIndex() < __other->toIndex()) {
-      return true;
-    }
-  }
-  return false;
-}
-
-void Pitch::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
-  // Not supported in base class
-}
-
-double Pitch::toFrequency(const uint32_t __base, const int __temperament) const {
-  // Not supported in base class
-  return .0;
-}
-
 Pitch::Pitch() :
   _name (CHAR_PITCHNAME_A), _acc (CHAR_ACCIDENTAL_NATURAL), _oct (INT_OCTAVE_DEFAULT) {
 }
@@ -228,6 +180,54 @@ bool Pitch::isSilence() const {
   
 bool Pitch::isPitch() const {
   return (_name != CHAR_PITCHNAME_REST && _name != CHAR_PITCHNAME_SILENCE);
+}
+
+bool Pitch::equals(const Pitch * const __other) const {
+  if (_name == __other->getName()       &&
+      _acc  == __other->getAccidental() && 
+      _oct  == __other->getOctave()) {
+    return true;
+  }
+  return false;
+}
+
+bool Pitch::higher_than(const Pitch * const __other) const {
+  if (_oct > __other->getOctave()) {
+    return true;
+  }
+  else if (_oct < __other->getOctave()) {
+    return false;
+  }
+  else {
+    if (Pitch::toIndex() > __other->toIndex()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool Pitch::lower_than(const Pitch * const __other) const {
+  if (__other->getOctave() > _oct) {
+    return true;
+  }
+  else if (__other->getOctave() < _oct) {
+    return false;
+  }
+  else {
+    if (Pitch::toIndex() < __other->toIndex()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void Pitch::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
+  // TODO to be implemented
+}
+
+double Pitch::toFrequency(const uint32_t __base, const int __temperament) const {
+  // TODO to be implemented
+  return .0;
 }
 
 } // namespace hautbois

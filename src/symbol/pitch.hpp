@@ -30,16 +30,6 @@ protected:
 
   virtual void setOctave(const uint8_t __oct);
 
-  virtual bool equals(const Pitch * const __other) const;
-
-  virtual bool higher_than(const Pitch * const __other) const;
-
-  virtual bool lower_than(const Pitch * const __other) const;
-
-  virtual void transpose(const int __degree, const std::string& __tonality, const std::string& __mode);
-
-  virtual double toFrequency(const uint32_t __base, const int __temperament) const;
-
 public:
 
   Pitch();
@@ -66,13 +56,23 @@ public:
 
   virtual int toIndex() const;
 
-  bool isValid() const;
+  virtual bool isValid() const;
 
-  bool isRest() const;
+  virtual bool isRest() const;
 
-  bool isSilence() const;
+  virtual bool isSilence() const;
   
-  bool isPitch() const;
+  virtual bool isPitch() const;
+
+  virtual bool equals(const Pitch * const __other) const;
+
+  virtual bool higher_than(const Pitch * const __other) const;
+
+  virtual bool lower_than(const Pitch * const __other) const;
+
+  virtual void transpose(const int __degree, const std::string& __tonality, const std::string& __mode);
+
+  virtual double toFrequency(const uint32_t __base, const int __temperament) const;
 
 };
 

@@ -32,16 +32,6 @@ protected:
 
   virtual void setMeterNotation();
 
-  virtual void plus(const Duration * const __other);
-
-  virtual void minus(const Duration * const __other);
-
-  virtual void divide(const uint32_t __factor);
-
-  virtual void multiply(const uint32_t __factor);
-
-  virtual bool equals(const Duration * const __other) const;
-
 public:
 
   Duration();
@@ -78,6 +68,15 @@ public:
 
   virtual bool isValid() const;
 
+  virtual void plus(const Duration * const __other);
+
+  virtual void minus(const Duration * const __other);
+
+  virtual void divide(const uint32_t __factor);
+
+  virtual void multiply(const uint32_t __factor);
+
+  virtual bool equals(const Duration * const __other) const;
 };
 
 } // namespace hautbois

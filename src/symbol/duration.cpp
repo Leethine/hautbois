@@ -61,55 +61,6 @@ void Duration::setMeterNotation() {
   _is_dot_notation = false;
 }
 
-void Duration::plus(const Duration * const __other) {
-  if (__other) {
-    int newNum = __other->getNum() * Duration::getDenom() + __other->getDenom() * Duration::getNum();
-    int newDenom = __other->getDenom() * Duration::getDenom();
-    _is_dot_notation = false;
-    int ngcd = std::gcd(newNum, newDenom);
-    _n_value = (uint32_t) (newNum / ngcd);
-    _d_value = (uint32_t) (newDenom / ngcd);
-  }
-}
-
-void Duration::minus(const Duration * const __other) {
-  if (__other) {
-    int newNum = __other->getNum() * Duration::getDenom() - __other->getDenom() * Duration::getNum();
-    int newDenom = __other->getDenom() * Duration::getDenom();
-    _is_dot_notation = false;
-    int ngcd = std::gcd(newNum, newDenom);
-    _n_value = (uint32_t) std::abs(newNum / ngcd);
-    _d_value = (uint32_t) std::abs(newDenom / ngcd);
-  }
-}
-
-void Duration::divide(const uint32_t __factor) {
-  int newNum = Duration::getNum();
-  int newDenom = Duration::getDenom() * (int) __factor;
-  _is_dot_notation = false;
-  int ngcd = std::gcd(newNum, newDenom);
-  _n_value = (uint32_t) (newNum / ngcd);
-  _d_value = (uint32_t) (newDenom / ngcd);
-}
-
-void Duration::multiply(const uint32_t __factor) {
-  int newNum = Duration::getNum() * (int) __factor;
-  int newDenom = Duration::getDenom();
-  _is_dot_notation = false;
-  int ngcd = std::gcd(newNum, newDenom);
-  _n_value = (uint32_t) (newNum / ngcd);
-  _d_value = (uint32_t) (newDenom / ngcd);
-}
-
-bool Duration::equals(const Duration * const __other) const {
-  if (__other) {
-    if (__other->getNum() * Duration::getDenom() == __other->getDenom() * Duration::getNum()) {
-      return true;
-    }
-  }
-  return false;
-}
-
 Duration::Duration() : _n_value(1), _d_value(1), _is_dot_notation(false) {}
 
 Duration::Duration(const uint32_t __num, const uint32_t __denom) : 
@@ -279,6 +230,55 @@ bool Duration::isValid() const {
     }
   }
   return true;
+}
+
+void Duration::plus(const Duration * const __other) {
+  if (__other) {
+    int newNum = __other->getNum() * Duration::getDenom() + __other->getDenom() * Duration::getNum();
+    int newDenom = __other->getDenom() * Duration::getDenom();
+    _is_dot_notation = false;
+    int ngcd = std::gcd(newNum, newDenom);
+    _n_value = (uint32_t) (newNum / ngcd);
+    _d_value = (uint32_t) (newDenom / ngcd);
+  }
+}
+
+void Duration::minus(const Duration * const __other) {
+  if (__other) {
+    int newNum = __other->getNum() * Duration::getDenom() - __other->getDenom() * Duration::getNum();
+    int newDenom = __other->getDenom() * Duration::getDenom();
+    _is_dot_notation = false;
+    int ngcd = std::gcd(newNum, newDenom);
+    _n_value = (uint32_t) std::abs(newNum / ngcd);
+    _d_value = (uint32_t) std::abs(newDenom / ngcd);
+  }
+}
+
+void Duration::divide(const uint32_t __factor) {
+  int newNum = Duration::getNum();
+  int newDenom = Duration::getDenom() * (int) __factor;
+  _is_dot_notation = false;
+  int ngcd = std::gcd(newNum, newDenom);
+  _n_value = (uint32_t) (newNum / ngcd);
+  _d_value = (uint32_t) (newDenom / ngcd);
+}
+
+void Duration::multiply(const uint32_t __factor) {
+  int newNum = Duration::getNum() * (int) __factor;
+  int newDenom = Duration::getDenom();
+  _is_dot_notation = false;
+  int ngcd = std::gcd(newNum, newDenom);
+  _n_value = (uint32_t) (newNum / ngcd);
+  _d_value = (uint32_t) (newDenom / ngcd);
+}
+
+bool Duration::equals(const Duration * const __other) const {
+  if (__other) {
+    if (__other->getNum() * Duration::getDenom() == __other->getDenom() * Duration::getNum()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 } // namespace hautbois
