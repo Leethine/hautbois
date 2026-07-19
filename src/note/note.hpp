@@ -11,7 +11,7 @@
 #include "../symbol/property.hpp"
 #include "../symbol/pitch.hpp"
 
-#define POS_SET_APPEND -1
+#define NOTE_SET_METHOD_APPEND_POS -1
 
 namespace hautbois {
 
@@ -70,15 +70,15 @@ public:
 
   virtual bool isTied(const size_t __pos);
 
+  virtual const Pitch * getPitch(const size_t __pos = 0) const;
+
+  virtual const Duration * getDuration(const size_t __pos = 0) const;
+
+  virtual const Property * getProperty(const size_t __pos = 0) const;
+
+  virtual const Note * getNote(const size_t __pos = 0) const;
+
   /* Methods to be implemented in derived classes */
-
-  virtual const Pitch * getPitch(const size_t __pos = 0) const = 0;
-
-  virtual const Duration * getDuration(const size_t __pos = 0) const = 0;
-
-  virtual const Property * getProperty(const size_t __pos = 0) const = 0;
-
-  virtual const Note * getNote(const size_t __pos = 0) const = 0;
 
   virtual int getSize() const = 0;
 

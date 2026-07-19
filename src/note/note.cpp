@@ -155,4 +155,32 @@ bool Note::isTied(const size_t __pos) {
   return false;
 }
 
+const Pitch * Note::getPitch(const size_t __pos) const {
+  if (__pos < _pitch.size()) {
+    return _pitch[__pos];
+  }
+  return nullptr;
+}
+
+const Duration * Note::getDuration(const size_t __pos) const {
+  if (__pos < _duration.size()) {
+    return _duration[__pos];
+  }
+  return nullptr;
+}
+
+const Property * Note::getProperty(const size_t __pos) const {
+  if (__pos < _property.size()) {
+    return _property[__pos];
+  }
+  return nullptr;
+}
+
+const Note * Note::getNote(const size_t __pos) const {
+  if (__pos < _tuplet_notes.size()) {
+    return _tuplet_notes[__pos];
+  }
+  return nullptr;
+}
+
 } // namespace hautbois
