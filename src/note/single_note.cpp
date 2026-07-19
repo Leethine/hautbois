@@ -2,7 +2,6 @@
 #include "note.hpp"
 #include "../hbtype/hbdefs.hpp"
 #include "../utility/hbexcept.hpp"
-#include <cstddef>
 #include <stdexcept>
 #include <utility>
 
