@@ -92,8 +92,6 @@ public:
 
   virtual void reduce(const int __factor) = 0;
 
-  virtual void expand(const void * __param) = 0;
-
   virtual std::string toString() const = 0;
 
   virtual void * toStream(void * __output, void * __param) const = 0;

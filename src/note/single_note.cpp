@@ -110,19 +110,21 @@ bool SingleNote::isValid() const {
 }
 
 void SingleNote::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
-  // TODO
+  if (SingleNote::getPitchModify(0)) {
+    SingleNote::getPitchModify(0)->transpose(__degree, __tonality, __mode);
+  }
 }
 
 void SingleNote::enlarge(const int __factor) {
-  // TODO
+  if (SingleNote::getDurationModify(0)) {
+    SingleNote::getDurationModify(0)->multiply(__factor);
+  }
 }
 
 void SingleNote::reduce(const int __factor) {
-  // TODO
-}
-
-void SingleNote::expand(const void * __param) {
-  // TODO
+  if (SingleNote::getDurationModify(0)) {
+    SingleNote::getDurationModify(0)->divide(__factor);
+  }
 }
 
 std::string SingleNote::toString() const {

@@ -104,8 +104,6 @@ public:
 
   virtual void reduce(const int __factor);
 
-  virtual void expand(const void * __param);
-
   virtual std::string toString() const;
 
   virtual void * toStream(void * __output, void * __param) const;
