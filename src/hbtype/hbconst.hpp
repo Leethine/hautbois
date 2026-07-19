@@ -56,8 +56,9 @@ const static std::array<std::string, 7> VALID_PROPERTY_DYNAMIC {
   "p", "pp", "ppp", "mf", "f", "ff", "fff"
 };
 
-const static std::array<std::string, 8> VALID_PROPERTY_CONTROL {
-  "<", ">", "!", "cresc.", "decresc.", "rit.", "ral.", "a-tempo"
+const static std::array<std::string, 10> VALID_PROPERTY_CONTROL {
+  "<", ">", "!", "cresc.", "decresc.", "rit.", "ral.", "a-tempo",
+  "(", ")"
 };
 
 } // namespace hbconst

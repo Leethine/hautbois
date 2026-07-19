@@ -26,14 +26,14 @@
 #define INT_OCTAVE_LOWEST     0
 #define INT_OCTAVE_HIGHEST    8 
 
-#define CHAR_SINGLENOTE_TYPE   'N'
-#define CHAR_CHORD_TYPE        'C'
-#define CHAR_TUPLET_TYPE       'T'
-#define CHAR_RESTNOTE_TYPE     'R'
-#define CHAR_SILENCENOTE_TYPE  'S'
-#define CHAR_GRACENOTE_TYPE    'G'
-#define CHAR_APPOGGIATURA_TYPE 'P'
-#define CHAR_ACCIACCATURA_TYPE 'A'
+#define CHAR_NOTETYPE_SINGLE       'N'
+#define CHAR_NOTETYPE_CHORD        'C'
+#define CHAR_NOTETYPE_TUPLET       'T'
+#define CHAR_NOTETYPE_REST         'R'
+#define CHAR_NOTETYPE_SILENCE      'S'
+#define CHAR_NOTETYPE_GRACE        'G'
+#define CHAR_NOTETYPE_APPOGGIATURA 'P'
+#define CHAR_NOTETYPE_ACCIACCATURA 'A'
 
 #define TEMPERAMENT_EQUAL        0
 #define TEMPERAMENT_MEANTONE     1
