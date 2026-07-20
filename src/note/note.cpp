@@ -56,6 +56,7 @@ void Note::setProperty(Property * __ptr, const int __pos) {
     delete elems[__pos];
     if (__ptr->toList().empty()) {
       elems[__pos] = nullptr;
+      delete __ptr;
     }
     else {
       elems[__pos] = __ptr;
@@ -68,6 +69,7 @@ void Note::setProperty(Property * __ptr, const int __pos) {
   else if (__pos < 0) {
     if (__ptr && __ptr->toList().empty()) {
       elems.push_back(nullptr);
+      delete __ptr;
     }
     else {
       elems.push_back(__ptr);
