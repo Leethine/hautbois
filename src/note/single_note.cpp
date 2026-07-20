@@ -1,5 +1,4 @@
 #include "single_note.hpp"
-#include "note.hpp"
 #include "../hbtype/hbdefs.hpp"
 #include "../utility/hbexcept.hpp"
 #include <stdexcept>
