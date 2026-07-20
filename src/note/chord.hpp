@@ -9,42 +9,6 @@ namespace hautbois {
 
 class Chord : public Note {
 
-protected:
-
-  inline virtual void setNote(Note * __ptr, const int __pos) {
-    Note::setNote(__ptr, __pos);
-  }
-
-  inline virtual void setPitch(Pitch * __ptr, const int __pos) {
-    Note::setPitch(__ptr, __pos);
-  }
-
-  inline virtual void setDuration(Duration * __ptr, const int __pos) {
-    Note::setDuration(__ptr, __pos);
-  }
-
-  inline virtual void setProperty(Property * __ptr, const int __pos) {
-    Note::setProperty(__ptr, __pos);
-  }
-
-  inline virtual Pitch * getPitchModify(const size_t __pos) {
-    return Note::getPitchModify(__pos);
-  }
-
-  inline virtual Duration * getDurationModify(const size_t __pos) {
-    return Note::getDurationModify(__pos);
-  }
-
-  inline virtual Property * getPropertyModify(const size_t __pos) {
-    return Note::getPropertyModify(__pos);
-  }
-
-  inline virtual Note * getNoteModify(const size_t __pos) {
-    return Note::getNoteModify(__pos);
-  }
-
-  virtual void setNoteType(const char __note_type);
-
 public:
 
   inline virtual ~Chord() {}

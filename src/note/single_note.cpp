@@ -5,15 +5,7 @@
 #include <utility>
 
 namespace hautbois {
-
-void SingleNote::setNoteType(const char __note_type) {
-  if (__note_type == CHAR_NOTETYPE_SINGLE ||
-      __note_type == CHAR_NOTETYPE_REST ||
-      __note_type == CHAR_NOTETYPE_SILENCE) {
-    Note::setNoteType(__note_type);
-  }
-}
-
+SingleNote::
 SingleNote::SingleNote(const std::string& __pitch, const std::string& __value) :
   Note(CHAR_NOTETYPE_SINGLE) {
 
@@ -23,27 +15,27 @@ SingleNote::SingleNote(const std::string& __pitch, const std::string& __value) :
     std::string("Failed to create note.") ,
     ptr1 = new Duration(__value);
   )
-  SingleNote::setDuration(ptr1, NOTE_SET_METHOD_APPEND_POS);
+  Note::setDuration(ptr1, NOTE_SET_METHOD_APPEND_POS);
 
   // create pitch
   if (__pitch == "R") {
-    SingleNote::setNoteType(CHAR_NOTETYPE_REST);
+    Note::setNoteType(CHAR_NOTETYPE_REST);
   }
   else if (__pitch == "S") {
-    SingleNote::setNoteType(CHAR_NOTETYPE_SILENCE);
+    Note::setNoteType(CHAR_NOTETYPE_SILENCE);
   }
   else {
     Pitch * ptr2 = nullptr;
     HB_NESTED_THROW_MSG_ACTION(std::invalid_argument  ,
       std::string("Failed to created note.") ,
       ptr2 = new Pitch(__pitch); ,
-      SingleNote::setDuration(nullptr, 0);
+      Note::setDuration(nullptr, 0);
     )
-    SingleNote::setPitch(ptr2, NOTE_SET_METHOD_APPEND_POS);
+    Note::setPitch(ptr2, NOTE_SET_METHOD_APPEND_POS);
   }
 
   // create empty property
-  SingleNote::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
+  Note::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
 }
 
 SingleNote::SingleNote(const SingleNote& __other) :
@@ -58,7 +50,7 @@ SingleNote::SingleNote(const SingleNote&& __other) : Note(CHAR_NOTETYPE_SINGLE) 
       std::string("Failed to call copy constructor.") ,
       ptr = new Duration(__other.getDuration()->toString());
     )
-    SingleNote::setDuration(ptr, NOTE_SET_METHOD_APPEND_POS);
+    Note::setDuration(ptr, NOTE_SET_METHOD_APPEND_POS);
   }
   // Process Pitch
   if (__other.getPitch()) {
@@ -67,13 +59,13 @@ SingleNote::SingleNote(const SingleNote&& __other) : Note(CHAR_NOTETYPE_SINGLE) 
       std::string("Failed to call copy constructor.") ,
       ptr = new Pitch(__other.getPitch()->toString());
     )
-    SingleNote::setPitch(ptr, NOTE_SET_METHOD_APPEND_POS);
+    Note::setPitch(ptr, NOTE_SET_METHOD_APPEND_POS);
     if (__other.isTied()) {
       SingleNote::makeTie();
     }
   }
   else if (__other.isType(CHAR_NOTETYPE_REST) || __other.isType(CHAR_NOTETYPE_SILENCE)) {
-    SingleNote::setNoteType(__other.getType());
+    Note::setNoteType(__other.getType());
   }
   else {
     HB_THROW_MSG(std::runtime_error, "Error occurred while processing pitch, failed to copy note.");
@@ -83,12 +75,12 @@ SingleNote::SingleNote(const SingleNote&& __other) : Note(CHAR_NOTETYPE_SINGLE) 
   if (__other.getProperty()) {
     ptr = new Property(__other.getProperty()->toString());  
   }
-  SingleNote::setProperty(ptr, NOTE_SET_METHOD_APPEND_POS);
+  Note::setProperty(ptr, NOTE_SET_METHOD_APPEND_POS);
 }
 
 void SingleNote::addProperty(const std::string& __property, const int __pos) {
   Property * ptr = new Property(__property);
-  SingleNote::setProperty(ptr, 0);
+  Note::setProperty(ptr, 0);
 }
 
 int SingleNote::getSize() const {
@@ -109,20 +101,20 @@ bool SingleNote::isValid() const {
 }
 
 void SingleNote::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
-  if (SingleNote::getPitchModify(0)) {
-    SingleNote::getPitchModify(0)->transpose(__degree, __tonality, __mode);
+  if (Note::getPitchModify(0)) {
+    Note::getPitchModify(0)->transpose(__degree, __tonality, __mode);
   }
 }
 
 void SingleNote::enlarge(const int __factor) {
-  if (SingleNote::getDurationModify(0)) {
-    SingleNote::getDurationModify(0)->multiply(__factor);
+  if (Note::getDurationModify(0)) {
+    Note::getDurationModify(0)->multiply(__factor);
   }
 }
 
 void SingleNote::reduce(const int __factor) {
-  if (SingleNote::getDurationModify(0)) {
-    SingleNote::getDurationModify(0)->divide(__factor);
+  if (Note::getDurationModify(0)) {
+    Note::getDurationModify(0)->divide(__factor);
   }
 }
 

@@ -7,12 +7,6 @@
 
 namespace hautbois {
 
-void Chord::setNoteType(const char __note_type) {
-  if (__note_type == CHAR_NOTETYPE_CHORD) {
-    Note::setNoteType(CHAR_NOTETYPE_CHORD);
-  }
-}
-
 Chord::Chord(const std::vector<std::string>& __pitch, const std::string& __value) :
   Note(CHAR_NOTETYPE_CHORD) {
 
@@ -21,7 +15,7 @@ Chord::Chord(const std::vector<std::string>& __pitch, const std::string& __value
     std::string("Failed to create chord") ,
     d_ptr = new Duration(__value);
   )
-  Chord::setDuration(d_ptr, NOTE_SET_METHOD_APPEND_POS);
+  Note::setDuration(d_ptr, NOTE_SET_METHOD_APPEND_POS);
 
   std::vector<Pitch *> temp_pitch;
   for (auto& str: __pitch) {
@@ -35,8 +29,8 @@ Chord::Chord(const std::vector<std::string>& __pitch, const std::string& __value
   }
   // Call addPitch method
   for (Pitch * p : temp_pitch) {
-    Chord::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
-    Chord::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
+    Note::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
+    Note::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
   }
 }
 
@@ -51,7 +45,7 @@ Chord::Chord(const Chord&& __other) : Note(CHAR_NOTETYPE_CHORD) {
       std::string("Failed to copy construct chord") ,
       d_ptr = new Duration(__other.getDuration()->toString());
     )
-    Chord::setDuration(d_ptr, NOTE_SET_METHOD_APPEND_POS);
+    Note::setDuration(d_ptr, NOTE_SET_METHOD_APPEND_POS);
   }
 
   // process pitch
@@ -73,7 +67,7 @@ Chord::Chord(const Chord&& __other) : Note(CHAR_NOTETYPE_CHORD) {
   }
   // Call addPitch method
   for (Pitch * p : temp_pitch) {
-    Chord::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
+    Note::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
   }
   // process ties
   for (int i = 0; i < __other.getSize(); i++) {
@@ -85,17 +79,17 @@ Chord::Chord(const Chord&& __other) : Note(CHAR_NOTETYPE_CHORD) {
   // Process property
   for (int i = 0; i < Chord::getSize(); i++) {
     if (__other.getProperty(i)) {
-      Chord::setProperty(new Property(__other.getProperty(i)->toString()), NOTE_SET_METHOD_APPEND_POS);
+      Note::setProperty(new Property(__other.getProperty(i)->toString()), NOTE_SET_METHOD_APPEND_POS);
     }
     else {
-      Chord::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
+      Note::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
     }
   }
 }
 
 void Chord::addProperty(const std::string& __property, const int __pos) {
   Property * ptr = new Property(__property);
-  Chord::setProperty(ptr, __pos);
+  Note::setProperty(ptr, __pos);
 }
 
 int Chord::getSize() const {
@@ -122,21 +116,21 @@ bool Chord::isValid() const {
 void Chord::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
   int s = Chord::getSize();
   for (int i = 0; i < s; i++) {
-    if (Chord::getPitchModify(i)) {
-      Chord::getPitchModify(i)->transpose(__degree, __tonality, __mode);
+    if (Note::getPitchModify(i)) {
+      Note::getPitchModify(i)->transpose(__degree, __tonality, __mode);
     }
   }
 }
 
 void Chord::enlarge(const int __factor) {
-  if (Chord::getDurationModify(0)) {
-    Chord::getDurationModify(0)->multiply(__factor);
+  if (Note::getDurationModify(0)) {
+    Note::getDurationModify(0)->multiply(__factor);
   }
 }
 
 void Chord::reduce(const int __factor) {
-  if (Chord::getDurationModify(0)) {
-    Chord::getDurationModify(0)->divide(__factor);
+  if (Note::getDurationModify(0)) {
+    Note::getDurationModify(0)->divide(__factor);
   }
 }
 
