@@ -35,7 +35,9 @@ protected:
 
   /* If __pos < 0 append __ptr at the end of the vector
    * Otherwise, replace ptr at __pos.
-   * Out-of-range __pos will be ignored and nothing is done. */
+   * Out-of-range __pos will be ignored and nothing is done.
+   * If the provided __ptr is nullptr, the element at __pos will be removed (freed + erased). 
+   */
   virtual void setNote(Note * __ptr, const int __pos);
 
   virtual void setPitch(Pitch * __ptr, const int __pos);
