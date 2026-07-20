@@ -36,6 +36,7 @@ Chord::Chord(const std::vector<std::string>& __pitch, const std::string& __value
   // Call addPitch method
   for (Pitch * p : temp_pitch) {
     Chord::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
+    Chord::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
   }
 }
 
@@ -45,21 +46,21 @@ Chord::Chord(const Chord& __other) : Chord(std::forward<const Chord&&>(__other))
 Chord::Chord(const Chord&& __other) : Note(CHAR_NOTETYPE_CHORD) {
   // Process note value
   Duration * d_ptr = nullptr;
-  if (Chord::getDuration()) {
+  if (__other.getDuration()) {
     HB_NESTED_THROW_MSG(std::invalid_argument,
       std::string("Failed to copy construct chord") ,
-      d_ptr = new Duration(Chord::getDuration()->toString());
+      d_ptr = new Duration(__other.getDuration()->toString());
     )
     Chord::setDuration(d_ptr, NOTE_SET_METHOD_APPEND_POS);
   }
 
   // process pitch
   std::vector<Pitch *> temp_pitch;
-  for (int i = 0; i < Chord::getSize(); i++) {
-    if (Chord::getPitch(i)) {
+  for (int i = 0; i < __other.getSize(); i++) {
+    if (__other.getPitch(i)) {
       HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
         std::string("Failed to copy construct chord.") ,
-        temp_pitch.push_back(new Pitch(Chord::getPitch(i)->toString())); ,
+        temp_pitch.push_back(new Pitch(__other.getPitch(i)->toString())); ,
         for (Pitch * p : temp_pitch) {
           delete p;
         }
@@ -75,16 +76,16 @@ Chord::Chord(const Chord&& __other) : Note(CHAR_NOTETYPE_CHORD) {
     Chord::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
   }
   // process ties
-  for (int i = 0; i < Chord::getSize(); i++) {
-    if (Chord::isTied(i)) {
+  for (int i = 0; i < __other.getSize(); i++) {
+    if (__other.isTied(i)) {
       Chord::makeTie(i);
     }
   }
 
   // Process property
   for (int i = 0; i < Chord::getSize(); i++) {
-    if (Chord::getProperty(i)) {
-      Chord::setProperty(new Property(Chord::getProperty(i)->toString()), NOTE_SET_METHOD_APPEND_POS);
+    if (__other.getProperty(i)) {
+      Chord::setProperty(new Property(__other.getProperty(i)->toString()), NOTE_SET_METHOD_APPEND_POS);
     }
     else {
       Chord::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
@@ -99,7 +100,8 @@ void Chord::addProperty(const std::string& __property, const int __pos) {
 
 int Chord::getSize() const {
   int count = 0;
-  while(Chord::getPitch(count++)) {
+  while(Chord::getPitch(count)) {
+    count++;
   }
   return count;
 }
@@ -144,6 +146,9 @@ std::string Chord::toString() const {
   for (int i = 0; i < s; i++) {
     if (Chord::getPitch(i)) {
       out.append(Chord::getPitch(i)->toString());
+      if (Chord::isTied(i)) {
+        out.push_back('~');
+      }
     }
     else {
       out.push_back('?');
@@ -160,6 +165,26 @@ std::string Chord::toString() const {
   else {
     out.push_back('?');
   }
+
+  bool hasProperty = false;
+  std::string propertyStr;
+  for (int i = 0; i < s; i++) {
+    if (Chord::getProperty(i)) {
+      propertyStr.append(Chord::getProperty(i)->toString());
+      hasProperty = true;
+    }
+    propertyStr.push_back(',');
+  }
+  if (!propertyStr.empty() && propertyStr.back() == ',') {
+    propertyStr.pop_back();
+  }
+
+  if (hasProperty) {
+    out.append(",[");
+    out.append(propertyStr);
+    out.push_back(']');
+  }
+
   return out;
 }
 
