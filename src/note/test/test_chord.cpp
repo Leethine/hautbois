@@ -1,5 +1,4 @@
 #include "../chord.hpp"
-#include "../../hbtype/hbdefs.hpp"
 #include <cassert>
 #include <iostream>
 

@@ -28,6 +28,10 @@ int main() {
   SingleNote n3 (n1);
   assert(n3.isTied());
   assert(n3.toString() == "Cn4~,4.");
+
+  // TODO 
+  // Test exception
+
   return 0;
 
 }
