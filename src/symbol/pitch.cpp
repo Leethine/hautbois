@@ -2,6 +2,8 @@
 #include "../utility/hbexcept.hpp"
 #include "../hbtype/hbconst.hpp"
 #include "../hbtype/hbdefs.hpp"
+#include "../theory/tuning.hpp"
+#include "../theory/transpose.hpp"
 
 #include <unordered_map>
 #include <stdexcept>
@@ -225,8 +227,12 @@ void Pitch::transpose(const int __degree, const std::string& __tonality, const s
   // TODO to be implemented
 }
 
-double Pitch::toFrequency(const uint32_t __base, const int __temperament) const {
-  // TODO to be implemented
+double Pitch::toFrequency(const uint32_t __base_freq, const int __temperament) const {
+  if (__temperament == TEMPERAMENT_EQUAL) {
+    int n = Pitch::toIndex() - 49;
+    return tuning::calculateEqualTemperament(__base_freq, n);
+  }
+
   return .0;
 }
 
