@@ -44,7 +44,7 @@ void Pitch::setAccidental(const std::string& __acc) {
 }
 
 void Pitch::setOctave(const uint8_t __oct) {
-  if (__oct >= INT_OCTAVE_LOWEST && __oct <= INT_OCTAVE_HIGHEST) {
+  if (__oct <= INT_OCTAVE_HIGHEST) {
     _oct = __oct;
   }
 }
@@ -63,7 +63,7 @@ Pitch::Pitch(const char __name, const char __acc, const uint8_t __oct) :
   if (std::find(vld_acc.cbegin(), vld_acc.cend(), __acc) == vld_acc.cend()) {
     HB_THROW_MSG(std::invalid_argument, "Invalid pitch accidental: " + std::string(1, __acc));
   }
-  if (__oct > INT_OCTAVE_HIGHEST || __oct < INT_OCTAVE_LOWEST) {
+  if (__oct > INT_OCTAVE_HIGHEST) {
     HB_THROW_MSG(std::invalid_argument, "Invalid pitch octave: " + std::to_string(__oct));
   }
 }
@@ -97,7 +97,7 @@ Pitch::Pitch(const std::string& __p) {
   if (std::find(vld_acc.cbegin(), vld_acc.cend(), _acc) == vld_acc.cend()) {
     HB_THROW_MSG(std::invalid_argument, "Invalid pitch: " + __p);
   }
-  if (_oct > INT_OCTAVE_HIGHEST || _oct < INT_OCTAVE_LOWEST) {
+  if (_oct > INT_OCTAVE_HIGHEST) {
     HB_THROW_MSG(std::invalid_argument, "Invalid pitch: " + __p);
   }
 }
@@ -166,7 +166,7 @@ bool Pitch::isValid() const {
   if (std::find(vld_acc.cbegin(), vld_acc.cend(), _acc) == vld_acc.cend()) {
     isvalid = false;
   }
-  if (_oct > INT_OCTAVE_HIGHEST || _oct < INT_OCTAVE_LOWEST) {
+  if (_oct > INT_OCTAVE_HIGHEST) {
     isvalid = false;
   }
   return isvalid;
