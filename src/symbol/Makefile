@@ -1,22 +1,20 @@
-CPPSTD = c++17
 CC = g++
-CCFLAG = -std=$(CPPSTD) -g -Wall
-LINK_LIBRARY = 
-INC_LIBRARY  = 
+CPPSTD = c++17
+CCFLAGS = -std=$(CPPSTD) -g -Wall -Wextra -Wno-unused-parameter -O2
+DEPFLAGS = 
 
-all : libHbSymbol.a
+SRCS := $(wildcard *.cpp)
+OBJS := $(SRCS:%.cpp=%.o)
+DEPS := $(OBJS:.o=.d)
+
+TARGET := $(OBJS)
+
+.PHONY: all clean
+
+all : $(OBJS)
+
+%.o: %.cpp
+	$(CC) $(CCFLAGS) $(DEPFLAGS) -c $< -o $@
 
 clean :
-	rm -f *.o *.a
-
-libHbSymbol.a : duration.o pitch.o property.o
-	ar cr libHbSymbol.a duration.o pitch.o property.o
-
-duration.o : duration.cpp duration.hpp
-	$(CC) $(CCFLAG) -c $(INC_LIBRARY) duration.cpp
-
-pitch.o : pitch.cpp pitch.hpp
-	$(CC) $(CCFLAG) -c $(INC_LIBRARY) pitch.cpp
-
-property.o : property.cpp property.hpp
-	$(CC) $(CCFLAG) -c $(INC_LIBRARY) property.cpp
+	rm -f *.o
