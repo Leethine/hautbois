@@ -1,4 +1,4 @@
-#include "../pitch.hpp"
+#include "symbol/pitch.hpp"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>

@@ -1,4 +1,4 @@
-#include "../chord.hpp"
+#include "note/chord.hpp"
 #include <cassert>
 #include <iostream>
 

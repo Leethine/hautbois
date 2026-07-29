@@ -1,4 +1,4 @@
-#include "../grace_note.hpp"
+#include "note/grace_note.hpp"
 #include <cassert>
 #include <iostream>
 

@@ -1,5 +1,5 @@
-#include "../single_note.hpp"
-#include "../../hbtype/hbdefs.hpp"
+#include "note/single_note.hpp"
+#include "hbtype/hbdefs.hpp"
 #include <cassert>
 #include <iostream>
 

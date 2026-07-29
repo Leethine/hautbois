@@ -1,4 +1,4 @@
-#include "../property.hpp"
+#include "symbol/property.hpp"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>

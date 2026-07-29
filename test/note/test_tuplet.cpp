@@ -1,4 +1,4 @@
-#include "../tuplet.hpp"
+#include "note/tuplet.hpp"
 #include <cassert>
 #include <iostream>
 

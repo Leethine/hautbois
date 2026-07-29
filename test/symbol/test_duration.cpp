@@ -1,4 +1,4 @@
-#include "../duration.hpp"
+#include "symbol/duration.hpp"
 #include <cassert>
 #include <stdexcept>
 #include <iostream>
