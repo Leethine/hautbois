@@ -22,5 +22,4 @@ int main() {
   // test reduce() enlarge() isValid()
 
   return 0;
-
 }
