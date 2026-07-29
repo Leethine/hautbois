@@ -1,9 +1,7 @@
-# ignore raw drawings
-icon.svg
 */a.out
-*/test
 */*.o
 */*.a
 */*.so
+*/bin_*
 .vscode
 src/*/.vscode
