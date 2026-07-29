@@ -1,5 +1,5 @@
 #include "note.hpp"
-#include <cstddef>
+#include "../hbtype/hbdefs.hpp"
 
 namespace hautbois {
 
@@ -115,6 +115,19 @@ void Note::setNoteType(const char __note_type) {
 
 Note::Note(const char __note_type) :
   _type (__note_type), _duration (), _pitch (), _property (), _tuplet_notes (), _tied() {
+  if (__note_type == CHAR_NOTETYPE_SINGLE) {
+    _duration.reserve(1);
+    _pitch.reserve(1);
+    _property.reserve(1);
+  }
+  else if (__note_type == CHAR_NOTETYPE_CHORD || __note_type == CHAR_NOTETYPE_GRACE) {
+    _duration.reserve(4);
+    _pitch.reserve(4);
+    _property.reserve(4);
+  }
+  else if (__note_type == CHAR_NOTETYPE_TUPLET) {
+    _tuplet_notes.reserve(3);
+  }
 }
 
 Note::~Note() {
@@ -134,6 +147,10 @@ Note::~Note() {
 
 bool Note::isType(const char __note_type) const {
   return (_type == __note_type);
+}
+
+bool Note::isMute() const {
+  return (_type == CHAR_NOTETYPE_REST || _type == CHAR_NOTETYPE_SILENCE);
 }
 
 char Note::getType() const {

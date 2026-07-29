@@ -17,6 +17,10 @@ public:
     return Note::isType(__note_type);
   }
 
+  inline virtual bool isMute() const {
+    return Note::isMute();
+  }
+
   inline virtual char getType() const {
     return Note::getType();
   }

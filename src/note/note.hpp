@@ -64,6 +64,8 @@ public:
 
   virtual bool isType(const char __note_type) const;
 
+  virtual bool isMute() const;
+
   virtual char getType() const;
 
   virtual void makeTie(const size_t __pos = 0);
