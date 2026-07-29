@@ -223,9 +223,8 @@ std::string GraceNote::toString() const {
   return out;
 }
 
-void * GraceNote::toStream(void * __output, void * __param) const {
-  // TODO
-  return nullptr;
+void GraceNote::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  // Not implemented in base class
 }
 
 void * GraceNote::serialize(const int __version, void * __param) const {

@@ -151,9 +151,8 @@ std::string SingleNote::toString() const {
   return out;
 }
 
-void * SingleNote::toStream(void * __output, void * __param) const {
-  // TODO
-  return nullptr;
+void SingleNote::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  // Not implemented in base class
 }
 
 void * SingleNote::serialize(const int __version, void * __param) const {

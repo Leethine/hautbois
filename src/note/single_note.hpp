@@ -74,7 +74,7 @@ public:
 
   virtual std::string toString() const;
 
-  virtual void * toStream(void * __output, void * __param) const;
+  virtual void toStream(void * __output, void * __param1, void * __param2, void * __param3) const;
 
   virtual void * serialize(const int __version, void * __param) const;
 

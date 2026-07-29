@@ -227,9 +227,8 @@ std::string Tuplet::toString() const {
   return out;
 }
 
-void * Tuplet::toStream(void * __output, void * __param) const {
-  // TODO
-  return nullptr;
+void Tuplet::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  // Not implemented in base class
 }
 
 void * Tuplet::serialize(const int __version, void * __param) const {

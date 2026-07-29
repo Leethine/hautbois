@@ -182,9 +182,8 @@ std::string Chord::toString() const {
   return out;
 }
 
-void * Chord::toStream(void * __output, void * __param) const {
-  // TODO
-  return nullptr;
+void Chord::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  // Not implemented in base class
 }
 
 void * Chord::serialize(const int __version, void * __param) const {
