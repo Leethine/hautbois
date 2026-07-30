@@ -70,12 +70,17 @@ void SingleNoteStkMandolin::toStream(void * __output, void * __param1, void * __
     HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
   }
 
-  stk::Mandolin * __instr = nullptr;
+  // process note value 
   int tempo = * ((int *)__param1);
   double seconds = 0. ;
-  double freq = 0. ;
+  if (SingleNote::getDuration()) {
+    seconds = (double) SingleNote::getDuration()->getNum() / (double) SingleNote::getDuration()->getDenom();
+    seconds *= tempo / 60.;
+    seconds *= 4.;
+  }
 
   if (SingleNote::isMute()) {
+    // write empty data to output
     for (int i = 0; i < int(std::round(STK_DEFAULT_SAMPLE_RATE * seconds)); i++) {
       try {
         __out->tick(0.);
@@ -86,17 +91,12 @@ void SingleNoteStkMandolin::toStream(void * __output, void * __param1, void * __
     }
   }
   else {
+    double freq = 0. ;
     if (SingleNote::getPitch()) {
       freq = SingleNote::getPitch()->toFrequency();
     }
-    __instr = mandolin_stk::selectInstrument(freq);
-
-    if (SingleNote::getDuration()) {
-      seconds = (double) SingleNote::getDuration()->getNum() / (double) SingleNote::getDuration()->getDenom();
-      seconds *= tempo / 60.;
-      seconds *= 4.;
-    }
-
+    stk::Mandolin *  __instr = mandolin_stk::selectInstrument(freq);
+    // write sample to output
     __instr->noteOn(freq , 0.8);
     for (int i = 0; i < int(std::round(STK_DEFAULT_SAMPLE_RATE * seconds)); i++) {
       try {
