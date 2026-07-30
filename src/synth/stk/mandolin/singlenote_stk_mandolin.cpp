@@ -2,10 +2,13 @@
 
 #include "../../../note/pitch.hpp"
 #include "../../../note/duration.hpp"
+#include "../../../utility/hbexcept.hpp"
+#include "../hb_stk_defs.hpp"
 
 #include "stk/FileWvOut.h"
 #include <stk/Instrmnt.h>
 #include <stk/Mandolin.h>
+#include <cmath>
 
 namespace hautbois {
 namespace synth {
@@ -18,7 +21,7 @@ static stk::Mandolin MandolinAlto(440.);
 static stk::Mandolin MandolinSopran(880.);
 static stk::Mandolin MandolinSopranissimo(1760.);
 
-stk::Mandolin * selectInstrument(double __frequency) {
+static stk::Mandolin * selectInstrument(double __frequency) {
   stk::Mandolin * ptr;
   if (__frequency < 110.) {
     ptr = &MandolinContraBass;
@@ -62,31 +65,49 @@ SingleNoteStkMandolin::~SingleNoteStkMandolin() {
 
 void SingleNoteStkMandolin::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
+  int * tempo_ptr = (int *) __param1;
+  if (!(__out && tempo_ptr)) {
+    HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
+  }
+
   stk::Mandolin * __instr = nullptr;
   int tempo = * ((int *)__param1);
   double seconds = 0. ;
   double freq = 0. ;
-  if (SingleNote::getPitch()) {
-    freq = SingleNote::getPitch()->toFrequency();
-  }
-  __instr = mandolin_stk::selectInstrument(freq);
 
-  if (SingleNote::getDuration()) {
-    seconds = (double) SingleNote::getDuration()->getNum() / (double) SingleNote::getDuration()->getDenom();
-    seconds *= tempo / 60.;
-    seconds *= 4.;
-  }
-
-  __instr->noteOn( freq , 0.8 );
-  for ( int i=0; i< int(44100 * seconds); i++ ) {
-    try {
-      __out->tick( __instr->tick() );
-    }
-    catch ( stk::StkError & ) {
-      exit( 1 );
+  if (SingleNote::isMute()) {
+    for (int i = 0; i < int(std::round(STK_DEFAULT_SAMPLE_RATE * seconds)); i++) {
+      try {
+        __out->tick(0.);
+      }
+      catch (stk::StkError& e) {
+        HB_THROW_MSG(std::runtime_error, e.getMessage());
+      }
     }
   }
-  __instr->noteOff(0.5);
+  else {
+    if (SingleNote::getPitch()) {
+      freq = SingleNote::getPitch()->toFrequency();
+    }
+    __instr = mandolin_stk::selectInstrument(freq);
+
+    if (SingleNote::getDuration()) {
+      seconds = (double) SingleNote::getDuration()->getNum() / (double) SingleNote::getDuration()->getDenom();
+      seconds *= tempo / 60.;
+      seconds *= 4.;
+    }
+
+    __instr->noteOn(freq , 0.8);
+    for (int i = 0; i < int(std::round(STK_DEFAULT_SAMPLE_RATE * seconds)); i++) {
+      try {
+        __out->tick( __instr->tick() );
+      }
+      catch (stk::StkError& e) {
+        HB_THROW_MSG(std::runtime_error, e.getMessage());
+      }
+    }
+    __instr->noteOff(0.8);
+  }
 }
 
 

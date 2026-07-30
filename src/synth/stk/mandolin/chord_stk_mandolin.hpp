@@ -1,5 +1,5 @@
-#ifndef SINGLE_NOTE_STK_MANDOLIN_HPP
-#define SINGLE_NOTE_STK_MANDOLIN_HPP
+#ifndef CHORD_STK_MANDOLIN_HPP
+#define CHORD_STK_MANDOLIN_HPP
 
 #include "../../../note/chord.hpp"
 
