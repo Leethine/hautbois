@@ -7,9 +7,9 @@
 #include <vector>
 #include <string>
 
-#include "../symbol/duration.hpp"
-#include "../symbol/property.hpp"
-#include "../symbol/pitch.hpp"
+#include "duration.hpp"
+#include "property.hpp"
+#include "pitch.hpp"
 
 #define NOTE_SET_METHOD_APPEND_POS -1
 

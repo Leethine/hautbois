@@ -1,4 +1,4 @@
-SUBDIRS := note symbol
+SUBDIRS := note
 
 .PHONY: all clean test $(SUBDIRS)
 

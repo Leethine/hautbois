@@ -1,17 +1,17 @@
-SUBDIRS := note symbol
+SUBDIRS := note synth
 
 .PHONY: all clean $(SUBDIRS)
 
 TARGET := libHb.a
-OBJS := $(shell find ./ -name '*.o')
 
-all : $(TARGET)
-
-$(TARGET) : $(SUBDIRS)
-	ar cr $(TARGET) $(OBJS)
+all : $(SUBDIRS)
+	ar cr $(TARGET) $(shell find ./ -name '*.o')
 
 $(SUBDIRS) :
 	$(MAKE) -C $@
+
+$(TARGET) : $(SUBDIRS)
+	ar cr $(TARGET) $(OBJS)
 
 clean :
 	for dir in $(SUBDIRS); do \
