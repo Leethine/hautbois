@@ -1,4 +1,5 @@
 #include "tuplet.hpp"
+#include "duration.hpp"
 #include "single_note.hpp"
 #include "chord.hpp"
 #include "../hbtype/hbdefs.hpp"
@@ -15,59 +16,64 @@ namespace hautbois {
 Tuplet::Tuplet(const size_t __total, const size_t __value,
   const std::vector<std::string>& __notes) : Note(CHAR_NOTETYPE_TUPLET) {
 
-  // set Tuplet size
-  Note::setDuration(new Duration(__total, __value), NOTE_SET_METHOD_APPEND_POS);
   // process notes
   bool __switch = true;
-  std::vector<std::string> pitch;
-  std::vector<std::vector<std::string>> pitch_list;
-  std::vector<std::string> notevalue_list;
+  std::vector<std::string> tmp_pitch;
+  std::vector<std::vector<std::string>> tmp_pitch_list;
+  std::vector<std::string> tmp_duration_list;
   for (const auto& str : __notes) {
     if (__switch) {
-      tools::splitstring(pitch, str, '+');
-      if (pitch.empty()) {
+      tools::splitstring(tmp_pitch, str, '+');
+      if (tmp_pitch.empty()) {
         HB_THROW_MSG(
           std::invalid_argument,
-          std::string("Cannot create Tuplet with empty input string"));
+          std::string("Failed to create Tuplet: empty input string"));
       }
       else {
-        pitch_list.push_back(pitch);
+        tmp_pitch_list.push_back(tmp_pitch);
         __switch = false;
       }
     }
     else {
-      notevalue_list.push_back(str);
+      tmp_duration_list.push_back(str);
       __switch = true;
     }
   }
 
   // call set method
-  if (notevalue_list.size() != pitch_list.size()) {
+  if (tmp_duration_list.size() != tmp_pitch_list.size()) {
     HB_THROW_MSG(
       std::invalid_argument,
-      std::string("Cannot create Tuplet with input string, must follow this pattern: {PITCH,VALUE,PITCH,VALUE,...}"));
+      std::string("Failed to create Tuplet, input must follow this pattern: {PITCH,VALUE,PITCH,VALUE,...}"));
   }
-  else {
-    std::vector<Note *> notes;
-    for (size_t i = 0; i < notevalue_list.size(); i++) {
-      if (pitch_list[i].size() == 1) {
-        HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-          "Failed to create Tuplet, invalid input encountered: " + pitch_list[i][0] ,
-          notes.push_back(new SingleNote(pitch_list[i][0], notevalue_list[i])); ,
-          for (Note * n : notes) { delete n; }
-        )
-      }
-      else if (pitch_list.size() > 1) {
-        HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-          std::string("Failed to create Tuplet, invalid input encountered: CHORD"),
-          notes.push_back(new Chord(pitch_list[i], notevalue_list[i])); ,
-          for (Note * n : notes) { delete n; }
-        )
-      }
+
+  std::vector<Note *> tmp_notes_ptr;
+  tmp_notes_ptr.reserve(12);
+  for (size_t i = 0; i < tmp_duration_list.size(); i++) {
+    std::string& __value = tmp_duration_list[i];
+    std::vector<std::string>& __pitch_list = tmp_pitch_list[i];
+    if (tmp_pitch_list[i].size() == 1) {
+      std::string& __pitch = tmp_pitch_list[i][0];
+      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
+        "Failed to create Tuplet note, invalid note: " + __pitch + "," + __value,
+        tmp_notes_ptr.push_back(new SingleNote(__pitch, __value)); ,
+        for (Note * ptr : tmp_notes_ptr) { delete ptr; } // cleanup in case of error
+      )
     }
-    for (Note * n : notes) {
-      Note::setNote(n, NOTE_SET_METHOD_APPEND_POS);
+    else if (tmp_pitch_list[i].size() > 1) {
+      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
+        std::string("Failed to create Tuplet note: invalid CHORD"),
+        tmp_notes_ptr.push_back(new Chord(__pitch_list, __value)); ,
+        for (Note * ptr : tmp_notes_ptr) { delete ptr; } // cleanup
+      )
     }
+  }
+
+  // Set Tuplet size (e.g. total note count such as <3,5,7,...> / total note value)
+  Note::setDuration(new Duration(__total, __value));
+  // Append notes
+  for (Note * ptr : tmp_notes_ptr) {
+    Note::setNote(ptr, NOTE_SETNOTE_APPEND_POS);
   }
 }
 
@@ -76,96 +82,104 @@ Tuplet::Tuplet(const Tuplet& __other) :
 }
 
 Tuplet::Tuplet(const Tuplet&& __other) : Note(CHAR_NOTETYPE_TUPLET) {
-  if (__other.getDuration(0)) {
-    Note::setDuration(new Duration(__other.getDuration(0)->getNum(), __other.getDuration(0)->getDenom()),
-      NOTE_SET_METHOD_APPEND_POS);
-  }
-  // process notes
   std::vector<Note *> ptr_notes;
-  std::vector<std::string> pitches;
+  ptr_notes.reserve(5);
+  std::string __errmsg("Cannot copy invalid Tuplet!");
+  // Copy notes
   for (int i = 0; i < __other.getSize(); i++) {
-    HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-      std::string("Failed to copy Tuplet.") ,
-
-      if (__other.getNote(i) && __other.getNote(i)->getDuration(0)) {
-        if (__other.getNote(i)->isType(CHAR_NOTETYPE_SINGLE) && __other.getNote(i)->getPitch(0)) {
-          ptr_notes.push_back(new SingleNote(__other.getNote(i)->getPitch(0)->toString(), 
-                                               __other.getNote(i)->getDuration(0)->toString()));
-        }
-        else if (__other.getNote(i)->isType(CHAR_NOTETYPE_REST)) {
-          ptr_notes.push_back(new SingleNote("R", __other.getNote(i)->getDuration(0)->toString()));
-        }
-        else if (__other.getNote(i)->isType(CHAR_NOTETYPE_SILENCE)) {
-          ptr_notes.push_back(new SingleNote("S", __other.getNote(i)->getDuration(0)->toString()));
-        }
-        else if (__other.getNote(i)->isType(CHAR_NOTETYPE_CHORD)) {
-          pitches.clear();
-          for (int j = 0; j < __other.getSize(); j++) {
-            if (__other.getPitch(j)) {
-              pitches.push_back(__other.getPitch(j)->toString());
-            }
-          }
-          ptr_notes.push_back(new Chord(pitches, __other.getNote(i)->getDuration(0)->toString()));
-        }
+    if ( __other.getNote(i) && 
+        (__other.getNote(i)->isType(CHAR_NOTETYPE_SINGLE) ||
+         __other.getNote(i)->isType(CHAR_NOTETYPE_REST))) {
+      const SingleNote * n_ptr = dynamic_cast<const SingleNote *>(__other.getNote(i));
+      if (n_ptr) {
+        ptr_notes.push_back(new SingleNote(*n_ptr));
       }
-      , // Do not delete this comma
-      for (Note * n : ptr_notes) { delete n; }
-    )
-  }
-  for (Note * n : ptr_notes) {
-    Note::setNote(n, NOTE_SET_METHOD_APPEND_POS);
-  }
-
-  // Process tie and property
-  for (int i = 0; i < Tuplet::getSize(); i++) {
-    if (__other.getNote(i) && Note::getNoteModify(i)) {
-      if (__other.getNote(i)->isTied(0)) {
-        Tuplet::getNoteModify(i)->makeTie(0);
-      }
-      if (__other.getNote(i)->getProperty(0)) {
-        Tuplet::addProperty(__other.getNote(i)->getProperty(0)->toString(), i);
+      else {
+        // clean up in case of invalid note type
+        for (Note * ptr : ptr_notes) { delete ptr; }
+        HB_THROW_MSG(std::runtime_error, __errmsg);
       }
     }
+    else if (__other.getNote(i) && __other.getNote(i)->isType(CHAR_NOTETYPE_CHORD)) {
+      const Chord * n_ptr = dynamic_cast<const Chord *>(__other.getNote(i));
+      if (n_ptr) {
+        ptr_notes.push_back(new Chord(*n_ptr));
+      }
+      else {
+        // clean up in case of invalid note type
+        for (Note * ptr : ptr_notes) { delete ptr; }
+        HB_THROW_MSG(std::runtime_error, __errmsg);
+      }
+    }
+    else {
+      // clean up in case of invalid note type
+      for (Note * ptr : ptr_notes) { delete ptr; }
+      HB_THROW_MSG(std::runtime_error, __errmsg);
+    }
+  }
+
+  // Add note ptr to its elements
+  for (Note * ptr : ptr_notes) {
+    Note::setNote(ptr, NOTE_SETNOTE_APPEND_POS);
+  }
+
+  // Copy duration
+  int tuplet_size = __other.getSize();
+  if (__other.getDuration(tuplet_size)) {
+    Note::setDuration(
+      new Duration(
+        __other.getDuration(tuplet_size)->getNum(),
+      __other.getDuration(tuplet_size)->getDenom())
+    );
   }
 }
 
-void Tuplet::addProperty(const std::string& __property, const int __pos) {
-  if (!__property.empty() && Note::getNoteModify(__pos)) {
-    Note::getNoteModify(__pos)->addProperty(__property, 0);
+void Tuplet::makeTie(const size_t __pos) {
+  if (__pos < (size_t) Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->makeTie(0);
   }
 }
 
-int Tuplet::getSize() const {
-  int count = 0;
-  while (Tuplet::getNote(count)) {
-    count++;
+void Tuplet::makeUntie(const size_t __pos) {
+  if (__pos < (size_t) Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->makeUntie(0);
   }
-  return count;
 }
 
 bool Tuplet::isValid() const {
-  int base = 1;
-  int factor = 1;
-  if (Tuplet::getDuration(0)) {
-    factor = Tuplet::getDuration(0)->getNum();
-    base = Tuplet::getDuration(0)->getDenom();
+  /* Validity conditions:
+   *   Size of Note::_notes must be >= 2
+   *   Note::_duration is not nullptr
+   *   Each note in Note::_notes is SINGLENOTE/CHORD type and is valid (has pitch and duration)
+   */
+  if (Tuplet::getSize() < 2) {
+    return false;
   }
-  Duration compare(1, base);
+  if (Tuplet::getDuration(Tuplet::getSize()) == nullptr) {
+    return false;
+  }
 
-  Duration total_value (0,1);
   for (int i = 0; i < Tuplet::getSize(); i++) {
-    if (Tuplet::getNote(i) && Tuplet::getNote(i)->getDuration(0)) {
-      if (!Tuplet::getNote(i)->isValid()) {
+    if (Tuplet::getNote(i) == nullptr) {
+      return false;
+    }
+    else {
+      if (!(Tuplet::getNote(i)->isType(CHAR_NOTETYPE_SINGLE) || 
+            Tuplet::getNote(i)->isType(CHAR_NOTETYPE_REST)   ||
+            Tuplet::getNote(i)->isType(CHAR_NOTETYPE_CHORD)) 
+            || !Tuplet::getNote(i)->isValid()) {
         return false;
-      }
-      else {
-        total_value.plus(Tuplet::getNote(i)->getDuration(0));
       }
     }
   }
-  total_value.divide(factor);
 
-  return compare.equals(&total_value);
+  return true;
+}
+
+void Tuplet::addProperty(const std::string& __property, const int __pos) {
+  if (__pos < Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->addProperty(__property);
+  }
 }
 
 void Tuplet::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
@@ -177,52 +191,70 @@ void Tuplet::transpose(const int __degree, const std::string& __tonality, const 
 }
 
 void Tuplet::enlarge(const int __factor) {
-  int count = 1;
-  int base = 1;
-  if (Tuplet::getDuration(0)) {
-    count = Tuplet::getDuration(0)->getNum();
-    base = Tuplet::getDuration(0)->getDenom();
-    base *= __factor;
+  // enlarge total note value
+  int num = 0;
+  int denom = 1;
+  if (Note::getDurationModify()) {
+    num   = Note::getDurationModify()->getNum();
+    denom = Note::getDurationModify()->getDenom();
+    denom /= __factor;
+    if (denom == 0) {
+      denom = 1; // cannot be zero
+    }
   }
-  if (base) {
-    Note::setDuration(new Duration(count, base), 0);
+  Note::setDuration(new Duration(num, denom));
+
+  // enlarge each note
+  for (int i = 0; i < Tuplet::getSize(); i++) {
+    if (Note::getNoteModify(i)) {
+      Note::getNoteModify(i)->reduce(__factor);
+    }
   }
 }
 
 void Tuplet::reduce(const int __factor) {
-  int count = 1;
-  int base = 1;
-  if (Tuplet::getDuration(0)) {
-    count = Tuplet::getDuration(0)->getNum();
-    base = Tuplet::getDuration(0)->getDenom();
-    base /= __factor;
+  // reduce total note value
+  int num = 0;
+  int denom = 1;
+  if (Note::getDurationModify()) {
+    num   = Note::getDurationModify()->getNum();
+    denom = Note::getDurationModify()->getDenom();
   }
-  if (base) {
-    Note::setDuration(new Duration(count, base), 0);
+  Note::setDuration(new Duration(num, denom * __factor));
+
+  // reduce each note
+  for (int i = 0; i < Tuplet::getSize(); i++) {
+    if (Note::getNoteModify(i)) {
+      Note::getNoteModify(i)->enlarge(__factor);
+    }
   }
 }
 
 std::string Tuplet::toString() const {
   std::string out;
-  if (Tuplet::getDuration(0)) {
-    out.append(std::to_string(Tuplet::getDuration(0)->getNum()));
-    out.push_back('/');
-    out.append(std::to_string(Tuplet::getDuration(0)->getDenom()));
+  const int tuplet_size = Tuplet::getSize();
+  // Write tuplet size
+  if (Tuplet::getDuration(tuplet_size)) {
+    out.append(Tuplet::getDuration(tuplet_size)->toString());
     out.push_back(',');
   }
   else {
-    out.append("?/?");
+    out.append("?/?,");
   }
-  
-  out.push_back('{');
-  out.push_back(' ');
-  for (int i = 0; i < Tuplet::getSize(); i++) {
+
+  // Write each note
+  for (int i = 0; i < tuplet_size; i++) {
     if (Tuplet::getNote(i)) {
       out.append(Tuplet::getNote(i)->toString());
-      out.push_back(' ');
+      out.push_back(',');
+    }
+    else {
+      out.append("?,");
     }
   }
-  out.push_back('}');
+  if (!out.empty() && out.back() == ',') {
+    out.pop_back();
+  }
 
   return out;
 }

@@ -2,6 +2,7 @@
 #include "../hbtype/hbdefs.hpp"
 #include "../utility/hbexcept.hpp"
 #include "note.hpp"
+#include "single_note.hpp"
 #include <stdexcept>
 #include <utility>
 
@@ -11,62 +12,46 @@ GraceNote::GraceNote(
   const std::vector<std::string>& __grace_notes, const std::string& __pitch,
   const std::string& __value) : Note(CHAR_NOTETYPE_GRACE) {
 
-  // Process main pitch and duration
-  Pitch * ptr1 = nullptr;
-  Duration * ptr2 = nullptr;
-  HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-    "Cannot create grace note, bad pitch str: " + __pitch,
-    ptr1 = new Pitch(__pitch); ,
-    // clean up already allocated memory
-    delete ptr1; delete ptr2;
-  )
-  HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-    "Cannot create grace note, bad note value: " + __value,
-    ptr2 = new Duration(__value); ,
-    // clean up already allocated memory
-    delete ptr1; delete ptr2;
-  )
-
-  // Process grace note pitch and duration
-  std::vector<Pitch *> ptr_pitch;
-  std::vector<Duration *> ptr_duration;
+  // Process grace notes pitch and duration
+  std::vector<std::string> tmp_pitch;
+  std::vector<std::string> tmp_duration;
   bool __switch = true;
   for (const auto& str : __grace_notes) {
     if (__switch) {
-      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-        "Cannot create grace note, bad pitch str: " + str,
-        ptr_pitch.push_back(new Pitch(str)); ,
-        // clean up already allocated memory
-        for (Pitch * p : ptr_pitch) { delete p; }
-        for (Duration * d : ptr_duration) { delete d; }
-        delete ptr1; delete ptr2;
-      )
+      tmp_pitch.push_back(str);
       __switch = false;
     }
     else {
-      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-        "Cannot create grace note, bad note value: " + str,
-        ptr_duration.push_back(new Duration(str)); ,
-        // clean up already allocated memory
-        for (Pitch * p : ptr_pitch) { delete p; }
-        for (Duration * d : ptr_duration) { delete d; }
-        delete ptr1; delete ptr2;
-      )
+      tmp_duration.push_back(str);
       __switch = true;
     }
   }
+  // Process main note
+  tmp_pitch.push_back(__pitch);
+  tmp_duration.push_back(__value);
 
-  // call set method add ptr to the object
-  for (Pitch * p : ptr_pitch) {
-    Note::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
-    Note::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
+  // Make sure pitch and duration list is the same length
+  if (tmp_pitch.size() != tmp_duration.size()) {
+    HB_THROW_MSG(std::invalid_argument,
+      std::string("Failed to create grace note, invalid <pitch,value> list!"));
   }
-  for (Duration * d : ptr_duration) {
-    Note::setDuration(d, NOTE_SET_METHOD_APPEND_POS);
+
+  // Create appended notes
+  std::vector<Note *> ptr_notes;
+  ptr_notes.reserve(5);
+  for (size_t i = 0; i < tmp_pitch.size(); i++) {
+    HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
+      "Failed to create grace note with <pitch,value>: " + tmp_pitch[i] + "," + tmp_duration[i],
+      ptr_notes.push_back(new SingleNote(tmp_pitch[i], tmp_duration[i])); ,
+      // clean up previously allocated memory
+      for (Note * ptr : ptr_notes) { delete ptr; }
+    )
   }
-  Note::setPitch(ptr1, NOTE_SET_METHOD_APPEND_POS);
-  Note::setDuration(ptr2, NOTE_SET_METHOD_APPEND_POS);
-  Note::setProperty(nullptr, NOTE_SET_METHOD_APPEND_POS);
+
+  // Add note ptr to its elements
+  for (Note * ptr : ptr_notes) {
+    Note::setNote(ptr, NOTE_SETNOTE_APPEND_POS);
+  }
 }
 
 GraceNote::GraceNote(const GraceNote& __other) : 
@@ -74,84 +59,66 @@ GraceNote::GraceNote(const GraceNote& __other) :
 }
 
 GraceNote::GraceNote(const GraceNote&& __other) : Note(__other.getType()) {
-
-  // Process pitch and duration
-  std::vector<Pitch *> ptr_pitch;
-  std::vector<Duration *> ptr_duration;
-  std::vector<Property *> ptr_property;
+  std::vector<Note *> ptr_notes;
+  ptr_notes.reserve(5);
+  // Copy notes
   for (int i = 0; i < __other.getSize(); i++) {
-    if (__other.getPitch(i)) {
-      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-        "Failed to copy grace note: " + __other.getPitch(i)->toString(),
-        ptr_pitch.push_back(new Pitch(__other.getPitch(i)->toString())); ,
-        // clean up already allocated memory
-        for (Pitch * p : ptr_pitch) { delete p; }
-        for (Duration * d : ptr_duration) { delete d; }
-      )
-    }
-    if (__other.getDuration(i)) {
-      HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-        "Failed to copy grace note: " + __other.getDuration(i)->toString(),
-        ptr_duration.push_back(new Duration(__other.getDuration(i)->toString())); ,
-        // clean up already allocated memory
-        for (Pitch * p : ptr_pitch) { delete p; }
-        for (Duration * d : ptr_duration) { delete d; }
-      )
-    }
-    // process property
-    if (__other.getProperty(i) && !__other.getProperty(i)->toString().empty()) {
-      ptr_property.push_back(new Property(__other.getProperty(i)->toString()));
+    // Make sure this is SingleNote type, only SingleNote type is allowed from other GraceNote
+    const SingleNote * n_ptr = dynamic_cast<const SingleNote *>(__other.getNote(i));
+    if (__other.getNote(i) && __other.getNote(i)->isType(CHAR_NOTETYPE_SINGLE) && n_ptr) {
+      ptr_notes.push_back(new SingleNote(* n_ptr));
     }
     else {
-      ptr_property.push_back(nullptr);
+      // clean up in case of invalid note type
+      for (Note * ptr : ptr_notes) { delete ptr; }
+      HB_THROW_MSG(std::runtime_error, std::string("Cannot copy invalid Chord!"));
     }
   }
 
-  // call set method add ptr to the object
-  for (Pitch * p : ptr_pitch) {
-    Note::setPitch(p, NOTE_SET_METHOD_APPEND_POS);
-  }
-  for (Duration * d : ptr_duration) {
-    Note::setDuration(d, NOTE_SET_METHOD_APPEND_POS);
-  }
-  for (Property * p : ptr_property) {
-    Note::setProperty(p, NOTE_SET_METHOD_APPEND_POS);
-  }
-  
-  for (int i = 0; i < __other.getSize(); i++) {
-    if (__other.isTied(i)) {
-      GraceNote::makeTie(i);
-    }
+  // Add note ptr to its elements
+  for (Note * ptr : ptr_notes) {
+    Note::setNote(ptr, NOTE_SETNOTE_APPEND_POS);
   }
 }
 
-void GraceNote::addProperty(const std::string& __property, const int __pos) {
-  if (__property == "appoggiatura" || __property == "APPOGGIATURA") {
-    Note::setNoteType(CHAR_NOTETYPE_APPOGGIATURA);
-  }
-  else if (__property == "acciaccatura" || __property == "ACCIACCATURA") {
-    Note::setNoteType(CHAR_NOTETYPE_ACCIACCATURA);
-  }
-  else {
-    Property * ptr = new Property(__property);
-    Note::setProperty(ptr, __pos);
+void GraceNote::makeTie(const size_t __pos) {
+  if (__pos < (size_t) Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->makeTie(0);
   }
 }
 
-int GraceNote::getSize() const {
-  int count = 0;
-  while(GraceNote::getPitch(count)) {
-    count++;
+void GraceNote::makeUntie(const size_t __pos) {
+  if (__pos < (size_t) Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->makeUntie(0);
   }
-  return count;
 }
 
 bool GraceNote::isValid() const {
-  int count = 0;
-  while(GraceNote::getDuration(count)) {
-    count++;
+  /* Validity conditions:
+   *   Size of Note::_notes must be >= 2
+   *   Each note in Note::_notes is SINGLENOTE type and is valid (has pitch and duration)
+   */
+  if (GraceNote::getSize() < 2) {
+    return false;
   }
-  return count == GraceNote::getSize();
+  for (int i = 0; i < GraceNote::getSize(); i++) {
+    if (GraceNote::getNote(i) == nullptr) {
+      return false;
+    }
+    else {
+      if (!GraceNote::getNote(i)->isType(CHAR_NOTETYPE_SINGLE) ||
+          !GraceNote::getNote(i)->isValid()) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+void GraceNote::addProperty(const std::string& __property, const int __pos) {
+  if (__pos < Note::getSize() && Note::getNoteModify(__pos)) {
+    Note::getNoteModify(__pos)->addProperty(__property);
+  }
 }
 
 void GraceNote::transpose(const int __degree, const std::string& __tonality, const std::string& __mode) {
@@ -163,61 +130,34 @@ void GraceNote::transpose(const int __degree, const std::string& __tonality, con
 }
 
 void GraceNote::enlarge(const int __factor) {
-  int i = GraceNote::getSize() - 1;
-  if (Note::getDurationModify(i)) {
-    Note::getDurationModify(i)->multiply(__factor);
+  for (int i = 0; i < GraceNote::getSize(); i++) {
+    if (Note::getNoteModify(i)) {
+      Note::getNoteModify(i)->enlarge(__factor);
+    }
   }
 }
 
 void GraceNote::reduce(const int __factor) {
-  int i = GraceNote::getSize() - 1;
-  if (Note::getDurationModify(i)) {
-    Note::getDurationModify(i)->divide(__factor);
+  for (int i = 0; i < GraceNote::getSize(); i++) {
+    if (Note::getNoteModify(i)) {
+      Note::getNoteModify(i)->reduce(__factor);
+    }
   }
 }
 
 std::string GraceNote::toString() const {
   std::string out;
-  std::string propertyStr;
-  bool hasProperty = false;
   for (int i = 0; i < GraceNote::getSize(); i++) {
-    if (GraceNote::getPitch(i)) {
-      out.append(Note::getPitch(i)->toString());
-      if (GraceNote::isTied(i)) {
-        out.push_back('~');
-      }
+    if (GraceNote::getNote(i)) {
+      out.append(GraceNote::getNote(i)->toString());
+      out.push_back(',');
     }
     else {
-      out.push_back('?');
+      out.append("?,");
     }
-    out.push_back(',');
-    // __
-    if (GraceNote::getDuration(i)) {
-      out.append(Note::getDuration(i)->toString());
-    }
-    else {
-      out.push_back('?');
-    }
-    out.push_back(',');
-    // _
-    if (GraceNote::getProperty(i)) {
-      hasProperty = true;
-      propertyStr.append(GraceNote::getProperty(i)->toString());
-    }
-    propertyStr.push_back(',');
   }
-
   if (!out.empty() && out.back() == ',') {
     out.pop_back();
-  }
-  if (!propertyStr.empty() && propertyStr.back() == ',') {
-    propertyStr.pop_back();
-  }
-
-  if (hasProperty) {
-    out.append(",[");
-    out.append(propertyStr);
-    out.push_back(']');
   }
 
   return out;
@@ -231,6 +171,5 @@ void * GraceNote::serialize(const int __version, void * __param) const {
   // TODO
   return nullptr;
 }
-
 
 } // namespace hautbois
