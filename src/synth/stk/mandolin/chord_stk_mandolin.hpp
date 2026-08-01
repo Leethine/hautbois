@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef CHORD_STK_MANDOLIN_HPP
 #define CHORD_STK_MANDOLIN_HPP
 

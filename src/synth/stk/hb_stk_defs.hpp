@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef HB_STK_DEFS_HPP
 #define HB_STK_DEFS_HPP
 

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SINGLE_NOTE_STK_MANDOLIN_HPP
 #define SINGLE_NOTE_STK_MANDOLIN_HPP
 
