@@ -1,14 +1,18 @@
+#pragma once
+
 #ifndef BASIC_VOICE_HPP
 #define BASIC_VOICE_HPP
 
 #include "../note/note.hpp"
+#include "../note/duration.hpp"
 #include "../utility/hbexcept.hpp"
+#include "../hbtype/hbdefs.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>
 
-#define DEFAULT_NUMBER_OF_NOTES 300
+#define DEFAULT_NUMBER_OF_BARS 50
 
 namespace hautbois {
 
@@ -48,15 +52,52 @@ protected:
     _tempoList.clear();
   }
 
+  inline void insertNote(Note * __ptr, const int __pos) {
+    if (__ptr) {
+      if (__pos < 0 || __pos >= _noteList.size()) {
+        _noteList.push_back(__ptr);
+      }
+      else if (__pos >= 0 && __pos < _noteList.size()) {
+        _noteList.insert(_noteList.begin() + __pos, __ptr);
+      }
+    }
+  }
+
+  inline void accumulateDuration(Duration& __d_out, const Note * __note) {
+    if (__note && __note->getDuration(0)) {
+      if (__note->isType(CHAR_NOTETYPE_SINGLE)  ||
+          __note->isType(CHAR_NOTETYPE_REST)    ||
+          __note->isType(CHAR_NOTETYPE_SILENCE) ||
+          __note->isType(CHAR_NOTETYPE_CHORD)) {
+        __d_out.plus(__note->getDuration(0));
+      }
+      else if (__note->isType(CHAR_NOTETYPE_TUPLET)) {
+        Duration tuplet_value (1, __note->getDuration(0)->getDenom());
+        __d_out.plus(&tuplet_value);
+      }
+      else if (__note->isType(CHAR_NOTETYPE_GRACE)        ||
+               __note->isType(CHAR_NOTETYPE_ACCIACCATURA) ||
+               __note->isType(CHAR_NOTETYPE_APPOGGIATURA)) {
+        // only need the value of the main note
+        size_t main_note_pos = (size_t) __note->getSize() - 1;
+        __d_out.plus(__note->getDuration(main_note_pos));
+      }
+    }
+  }
+
 public:
 
   inline BasicVoice(const int __num, const int __denom, const int __tempo = 120) {
     _meter = new Duration(__num, __denom);
     _tempo = __tempo;
-    _tempoList.reserve(DEFAULT_NUMBER_OF_NOTES);
-    _newbarPos.reserve(DEFAULT_NUMBER_OF_NOTES);
-    _meterList.reserve(DEFAULT_NUMBER_OF_NOTES);
-    _noteList.reserve(DEFAULT_NUMBER_OF_NOTES);
+    size_t reserve_amt = DEFAULT_NUMBER_OF_BARS;
+    if (_meter) {
+      reserve_amt *= _meter->getDenom();
+    }
+    _tempoList.reserve(reserve_amt);
+    _newbarPos.reserve(reserve_amt);
+    _meterList.reserve(reserve_amt);
+    _noteList.reserve(reserve_amt);
   }
 
   inline ~BasicVoice() {
@@ -131,68 +172,149 @@ public:
     _newbarPos.push_back(_noteList.size());
   }
 
-  inline void addNote(const std::vector<std::string>& __pitches, const std::string& __value) {
+  inline void addNote(const std::vector<std::string>& __pitches, const std::string& __value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
       ptr = new ChordType(__pitches, __value) ; 
-      _noteList.push_back(ptr); 
       ,
       cleanUp();
     )
+    insertNote(ptr, __pos);
   }
 
-  inline void addNote(const std::vector<std::string>& __notes, const std::string& __main_pitch, const std::string& __main_value) {
+  inline void addNote(const std::vector<std::string>& __notes, const std::string& __main_pitch, const std::string& __main_value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
       ptr = new GraceNoteType(__notes, __main_pitch, __main_value) ; 
-      _noteList.push_back(ptr); 
       ,
       cleanUp();
     )
+    insertNote(ptr, __pos);
   }
 
-  inline void addNote(const std::string& __pitch, const std::string& __value) {
+  inline void addNote(const std::string& __pitch, const std::string& __value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
       ptr = new SingleNoteType(__pitch, __value) ; 
-      _noteList.push_back(ptr); 
       ,
       cleanUp();
     )
+    insertNote(ptr, __pos);
   }
 
-  inline void addNote(const size_t __total, const size_t __value, const std::vector<std::string>& __notes) {
+  inline void addNote(const size_t __total, const size_t __value, const std::vector<std::string>& __notes, const int __pos = NOTE_SETNOTE_APPEND_POS) {
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
       ptr = new TupletType(__total, __value, __notes) ; 
-      _noteList.push_back(ptr); 
       ,
       cleanUp();
     )
+    insertNote(ptr, __pos);
   }
 
-  inline size_t getCounterPoint(const BasicVoice& __other, const size_t __pos) {
-    //TODO
+  /* Find the position of the first counterpoint note in this voice related to the note at __pos in __other voice.
+   * __other : the voice to look for counterpoint
+   * __pos   : the position of the note in __other voice
+   * return  : the position of the first counterpoint note in this voice, return negative if not found or invalid
+   */
+  inline int findCounterPoint(const BasicVoice& __other, const size_t __pos) {
+    Duration d_other(0,1);
+    Duration d_this (0,1);
+    if (__pos >= __other.size()) {
+      return -2; // overflow
+    }
+    // calculate total duration
+    for (size_t i = 0; i <= __pos; i++) {
+      accumulateDuration(d_other, __other.getNote(i));
+    }
+    // find the counterpoint
+    int targetPos = 0;
+    while (targetPos < size()) {
+      accumulateDuration(d_this, getNote(targetPos));
+      if (d_this.equals(&d_other)) {
+        return targetPos;
+      }
+      targetPos++;
+    }
+  
+    return -1; // not found
   }
 
-  inline void patchBars(const BasicVoice& __voice) {
-    //TODO
+  /* Patch this voice with silent notes according to __other voice by
+   * creating silent notes according to each note value from __other voice.
+   */
+  inline void patchBarsLeft(const BasicVoice& __other) {
+    // calculate total value
+    Duration d_other (0, 1);
+    for (int i = 0; i <= __other.size(); i++) {
+      accumulateDuration(d_other, __other.getNote(i));
+    }
+
+    // reshape the note so that the value becomes d_other
+    Note * ptr = new SingleNoteType("S", "1");
+    ptr->enlarge(d_other.getNum());
+    ptr->reduce(d_other.getDenom());
+    // append or insert the newly created note
+    if (_noteList.empty()) {
+      insertNote(ptr, NOTE_SETNOTE_APPEND_POS);
+    }
+    else {
+      insertNote(ptr, 0);
+    }
   }
 
-  inline bool barCheck(const size_t __barPos) const {
-    //TODO
+  inline bool barCheck(const size_t __barpos) const {
+    Duration d_actual (0, 1);
+    if (__barpos < _newbarPos.size() && _newbarPos[__barpos] < _noteList.size()) {
+      size_t notepos = _newbarPos[__barpos];
+      size_t nextbarnotepos = _noteList.size();
+      if (__barpos != _newbarPos.size() - 1) { // not the last bar
+        nextbarnotepos = _newbarPos[__barpos+1];
+      }
+      // accumulate duration value
+      for (size_t i = notepos; i < nextbarnotepos; i++) {
+        if (_noteList[i]) {
+          d_actual.plus(_noteList[i]->getDuration());
+        }
+      }
+      return d_actual.equals(getMeter(__barpos));
+    }
+
+    return false;
   }
 
   inline bool barCheckAll() const {
-    //TODO
+    for (size_t barpos = 0; barpos < _newbarPos.size(); barpos++) {
+      if (! barCheck(barpos)) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  inline std::string getBarCheckActual(const size_t __barPos) const {
-    //TODO
+  inline std::string getBarCheckActual(const size_t __barpos) const {
+    Duration d_actual (0, 1);
+    if (__barpos < _newbarPos.size() && _newbarPos[__barpos] < _noteList.size()) {
+      size_t notepos = _newbarPos[__barpos];
+      size_t nextbarnotepos = _noteList.size();
+      if (__barpos != _newbarPos.size() - 1) { // not the last bar
+        nextbarnotepos = _newbarPos[__barpos+1];
+      }
+      // accumulate duration value
+      for (size_t i = notepos; i < nextbarnotepos; i++) {
+        if (_noteList[i]) {
+          d_actual.plus(_noteList[i]->getDuration());
+        }
+      }
+    }
+    return d_actual.toString();
   }
 
-  inline std::string getBarCheckExpected(const size_t __barPos) const {
-    //TODO
+  inline std::string getBarCheckExpected(const size_t __barpos) const {
+    if (getMeter(__barpos)) {
+      return getMeter(__barpos)->toString();
+    }
+    return "";
   }
 
 };
