@@ -63,7 +63,7 @@ protected:
     }
   }
 
-  inline void accumulateDuration(Duration& __d_out, const Note * __note) {
+  inline void accumulateDuration(Duration& __d_out, const Note * __note) const {
     if (__note && __note->getDuration(0)) {
       if (__note->isType(CHAR_NOTETYPE_SINGLE)  ||
           __note->isType(CHAR_NOTETYPE_REST)    ||
@@ -72,8 +72,10 @@ protected:
         __d_out.plus(__note->getDuration(0));
       }
       else if (__note->isType(CHAR_NOTETYPE_TUPLET)) {
-        Duration tuplet_value (1, __note->getDuration(0)->getDenom());
-        __d_out.plus(&tuplet_value);
+        if (__note->getDuration(__note->getSize())) {
+          Duration tuplet_value (1, __note->getDuration(__note->getSize())->getDenom());
+          __d_out.plus(&tuplet_value);
+        }
       }
       else if (__note->isType(CHAR_NOTETYPE_GRACE)        ||
                __note->isType(CHAR_NOTETYPE_ACCIACCATURA) ||
@@ -98,6 +100,9 @@ public:
     _newbarPos.reserve(reserve_amt);
     _meterList.reserve(reserve_amt);
     _noteList.reserve(reserve_amt);
+  }
+
+  inline BasicVoice() : BasicVoice(4, 4, 120) {
   }
 
   inline ~BasicVoice() {
@@ -172,6 +177,16 @@ public:
     _newbarPos.push_back(_noteList.size());
   }
 
+  inline void addNote(const std::string& __pitch, const std::string& __value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
+    Note * ptr = nullptr;
+    HB_NESTED_THROW_ACTION(std::invalid_argument ,
+      ptr = new SingleNoteType(__pitch, __value) ; 
+      ,
+      cleanUp();
+    )
+    insertNote(ptr, __pos);
+  }
+
   inline void addNote(const std::vector<std::string>& __pitches, const std::string& __value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
@@ -186,16 +201,6 @@ public:
     Note * ptr = nullptr;
     HB_NESTED_THROW_ACTION(std::invalid_argument ,
       ptr = new GraceNoteType(__notes, __main_pitch, __main_value) ; 
-      ,
-      cleanUp();
-    )
-    insertNote(ptr, __pos);
-  }
-
-  inline void addNote(const std::string& __pitch, const std::string& __value, const int __pos = NOTE_SETNOTE_APPEND_POS) {
-    Note * ptr = nullptr;
-    HB_NESTED_THROW_ACTION(std::invalid_argument ,
-      ptr = new SingleNoteType(__pitch, __value) ; 
       ,
       cleanUp();
     )
@@ -267,29 +272,32 @@ public:
     Duration d_actual (0, 1);
     if (__barpos < _newbarPos.size() && _newbarPos[__barpos] < _noteList.size()) {
       size_t notepos = _newbarPos[__barpos];
-      size_t nextbarnotepos = _noteList.size();
+      size_t nextbarnotepos = _noteList.size(); // last bar pos
       if (__barpos != _newbarPos.size() - 1) { // not the last bar
         nextbarnotepos = _newbarPos[__barpos+1];
       }
       // accumulate duration value
       for (size_t i = notepos; i < nextbarnotepos; i++) {
-        if (_noteList[i]) {
-          d_actual.plus(_noteList[i]->getDuration());
-        }
+        accumulateDuration(d_actual, _noteList[i]);
       }
       return d_actual.equals(getMeter(__barpos));
     }
-
     return false;
   }
 
-  inline bool barCheckAll() const {
+  /* Return the bar where bar check failed */
+  inline std::string barCheckReturnErr() const {
+    std::string err;
     for (size_t barpos = 0; barpos < _newbarPos.size(); barpos++) {
       if (! barCheck(barpos)) {
-        return false;
+        err.append("Bar check failed at:\n ==>" + std::to_string(barpos) +
+                   ": " + toString(barpos)     + "\nExpected: " +
+                   getBarCheckExpected(barpos) + " != Actual: " +
+                   getBarCheckActual(barpos));
+        return err;
       }
     }
-    return true;
+    return "";
   }
 
   inline std::string getBarCheckActual(const size_t __barpos) const {
@@ -302,9 +310,7 @@ public:
       }
       // accumulate duration value
       for (size_t i = notepos; i < nextbarnotepos; i++) {
-        if (_noteList[i]) {
-          d_actual.plus(_noteList[i]->getDuration());
-        }
+        accumulateDuration(d_actual, _noteList[i]);
       }
     }
     return d_actual.toString();
@@ -317,10 +323,69 @@ public:
     return "";
   }
 
+  inline std::string toString(const size_t __barpos) const {
+    std::string out;
+    if (__barpos < _newbarPos.size() - 1) {
+      for (size_t j = _newbarPos[__barpos]; j < _newbarPos[__barpos+1]; j++) {
+        out.push_back(' ');
+        if (_noteList[j]) {
+          out.append(_noteList[j]->toString());
+        }
+        else {
+          out.append("???");
+        }
+        out.push_back(' ');      
+      }
+    }
+    else if (__barpos == _newbarPos.size() - 1) {
+      for (size_t j = _newbarPos.back(); j < _noteList.size(); j++) {
+        out.push_back(' ');
+        if (_noteList[j]) {
+          out.append(_noteList[j]->toString());
+        }
+        else {
+          out.append("???");
+        }
+        out.push_back(' ');
+      }
+    }
+    return out;
+  }
+
+  inline std::string toString() const {
+    std::string out;
+    if (!_newbarPos.empty()) {
+      for (size_t i = 0; i < _newbarPos.size() - 1; i++) {
+        out.append(std::to_string(i) + ": ");
+        for (size_t j = _newbarPos[i]; j < _newbarPos[i+1]; j++) {
+          out.push_back(' ');
+          if (_noteList[j]) {
+            out.append(_noteList[j]->toString());
+          }
+          else {
+            out.append("???");
+          }
+          out.push_back(' ');      
+        }
+        out.append("|\n");
+      }
+      // last bar
+      out.append(std::to_string(_newbarPos.size() - 1) + ": ");
+      for (size_t j = _newbarPos.back(); j < _noteList.size(); j++) {
+        out.push_back(' ');
+        if (_noteList[j]) {
+          out.append(_noteList[j]->toString());
+        }
+        else {
+          out.append("???");
+        }
+        out.push_back(' ');
+      }
+    }
+    return out;
+  }
+
 };
 
-
-
 } // namespace hautbois
-
 #endif
