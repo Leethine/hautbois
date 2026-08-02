@@ -84,8 +84,10 @@ void TupletStkMandolin::toStream(void * __output, void * __param1, void * __para
   
   // get the note count (divider)
   int divider = 1;
+  int total_value = 2;
   if (Tuplet::getDuration(Tuplet::getSize())) {
     divider = Tuplet::getDuration(Tuplet::getSize())->getNum();
+    total_value = Tuplet::getDuration(Tuplet::getSize())->getDenom();
   }
 
   for (int n = 0; n < Tuplet::getSize(); n++) {
@@ -93,9 +95,14 @@ void TupletStkMandolin::toStream(void * __output, void * __param1, void * __para
     if (note_ptr && note_ptr->getDuration(0)) {
       // calculate note length in seconds
       seconds = (double) note_ptr->getDuration(0)->getNum() / (double) note_ptr->getDuration(0)->getDenom();
+
       seconds *= tempo / 60.;
       seconds *= 4.;
-      seconds /= divider; // tuplet is divided
+      seconds /= divider; // tuplet is divided then multiplied (or vice versa)
+      // calculate multiplier (multiplier = total_value / note_value)
+      seconds *= (1. / (double) total_value) /
+        ((double) note_ptr->getDuration(0)->getNum() / (double) note_ptr->getDuration(0)->getDenom());
+
       if (note_ptr->isType(CHAR_NOTETYPE_SINGLE) && note_ptr->getPitch(0)) {
         // write frequency data to output
         freq = note_ptr->getPitch(0)->toFrequency();
