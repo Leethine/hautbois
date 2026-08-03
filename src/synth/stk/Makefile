@@ -1,13 +1,20 @@
-SUBDIRS := mandolin
+CC = g++
+CPPSTD = c++17
+CCFLAGS = -std=$(CPPSTD) -g -Wall -Wextra -Wno-unused-parameter -O2
+DEPFLAGS = 
 
-.PHONY: all clean $(SUBDIRS)
+SRCS := $(wildcard *.cpp)
+OBJS := $(SRCS:%.cpp=%.o)
+DEPS := $(OBJS:.o=.d)
 
-all : $(SUBDIRS)
+TARGET := $(OBJS)
 
-$(SUBDIRS) :
-	$(MAKE) -C $@
+.PHONY: all clean
+
+all : $(OBJS)
+
+%.o: %.cpp
+	$(CC) $(CCFLAGS) $(DEPFLAGS) -c $< -o $@
 
 clean :
-	for dir in $(SUBDIRS); do \
-		$(MAKE) -C $$dir clean; \
-	done
+	rm -f *.o
