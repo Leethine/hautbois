@@ -1,8 +1,7 @@
 #include "mandolin_note.hpp"
-#include "stk_note_stream.hpp"
+#include "stk_buffer_writer.hpp"
 #include "../../utility/hbexcept.hpp"
 
-#include <cstddef>
 #include <stk/FileWvOut.h>
 #include <stk/Instrmnt.h>
 #include <stk/Mandolin.h>
@@ -55,18 +54,14 @@ void SingleNoteStkMandolin::toStream(void * __output, void * __param1, void * __
     HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
   }
 
-  size_t bufferSize = 0;
-  double * buffer = nullptr;
   if (SingleNote::isMute()) {
-    buffer = StkBufferCreatorMutedNote(bufferSize, *tempo_ptr, SingleNote::getDuration(0), 1, 1);
+    stk_wav_writer::writeMutedNote(__out, *tempo_ptr, SingleNote::getDuration(0), 1, 1);
   }
   else if (SingleNote::getPitch(0)) {
-    buffer = StkBufferCreatorSingleNote(bufferSize, *tempo_ptr, SingleNote::getDuration(0), 1, 1,
-                                        stk_mandolin::selectInstrument(SingleNote::getPitch(0)->toFrequency()),
-                                        SingleNote::getPitch(0), DEFAULT_AMPLITUDE);
+    stk_wav_writer::writeSingleNote(__out, *tempo_ptr, SingleNote::getDuration(0), 1, 1,
+    stk_mandolin::selectInstrument(SingleNote::getPitch(0)->toFrequency()),
+    SingleNote::getPitch(0), DEFAULT_AMPLITUDE);
   }
-  StkSaveBufferToWav(__out, buffer, bufferSize);
-  delete[] buffer;
 }
 
 
@@ -76,9 +71,6 @@ void ChordStkMandolin::toStream(void * __output, void * __param1, void * __param
   if (!(__out && tempo_ptr)) {
     HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
   }
-
-  size_t bufferSize = 0;
-  double * buffer = nullptr;
 
   std::vector<const Pitch *> pitch_list;
   std::vector<double> amplitude_list;
@@ -92,11 +84,10 @@ void ChordStkMandolin::toStream(void * __output, void * __param1, void * __param
     }
   }
 
-  buffer = StkBufferCreatorChord(bufferSize, *tempo_ptr, Chord::getDuration(0), 1, 1,
-                                 pitch_list, instrument_list, amplitude_list);
+  stk_wav_writer::writeChord(__out,
+    *tempo_ptr, Chord::getDuration(0), 1, 1,
+    pitch_list, instrument_list, amplitude_list);
 
-  StkSaveBufferToWav(__out, buffer, bufferSize);
-  delete[] buffer;
 }
 
 
