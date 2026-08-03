@@ -1,6 +1,7 @@
 #include "mandolin_note.hpp"
 #include "stk_buffer_writer.hpp"
 #include "../../utility/hbexcept.hpp"
+#include "../../hbtype/hbdefs.hpp"
 
 #include <stk/FileWvOut.h>
 #include <stk/Instrmnt.h>
@@ -87,15 +88,98 @@ void ChordStkMandolin::toStream(void * __output, void * __param1, void * __param
   stk_wav_writer::writeChord(__out,
     *tempo_ptr, Chord::getDuration(0), 1, 1,
     pitch_list, instrument_list, amplitude_list);
-
 }
 
 
 void GraceNoteStkMandolin::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
+  int * tempo_ptr = (int *) __param1;
+  if (!(__out && tempo_ptr)) {
+    HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
+  }
+
+  Duration d_total (0,1);
+  for (int n = 0; n < GraceNote::getSize() - 1; n++) {
+    if (GraceNote::getNote(n) && GraceNote::getNote(n)->getDuration(0) && GraceNote::getNote(n)->getPitch(0)) {
+      Duration duration_mod (0,1);
+      duration_mod.plus(GraceNote::getNote(n)->getDuration(0));
+      duration_mod.multiply(2);
+      duration_mod.divide(3);
+      d_total.plus(&duration_mod);
+      stk_wav_writer::writeSingleNote(__out, *tempo_ptr, &duration_mod,
+        1, 1,
+        stk_mandolin::selectInstrument(GraceNote::getNote(n)->getPitch(0)->toFrequency()),
+        GraceNote::getNote(n)->getPitch(0), DEFAULT_AMPLITUDE);
+    }
+  }
+  if (GraceNote::getNote(GraceNote::getSize()-1) && GraceNote::getNote(GraceNote::getSize()-1)->getPitch(0) &&
+      GraceNote::getNote(GraceNote::getSize()-1)->getDuration(0)) {
+    Duration duration_main (0,1);
+    duration_main.plus(GraceNote::getNote(GraceNote::getSize()-1)->getDuration(0));
+    duration_main.minus(&d_total);
+    stk_wav_writer::writeSingleNote(__out, *tempo_ptr, &duration_main,
+    1, 1,
+    stk_mandolin::selectInstrument(GraceNote::getNote(GraceNote::getSize()-1)->getPitch(0)->toFrequency()),
+    GraceNote::getNote(GraceNote::getSize()-1)->getPitch(0), DEFAULT_AMPLITUDE);
+  }
 }
 
 
 void TupletStkMandolin::toStream(void * __output, void * __param1, void * __param2, void * __param3) const {
+  stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
+  int * tempo_ptr = (int *) __param1;
+  if (!(__out && tempo_ptr)) {
+    HB_THROW_MSG(std::runtime_error, std::string("Runtime error, please check the params."));
+  }
+
+  if (Tuplet::getDuration(Tuplet::getSize())) {
+    int total_value = Tuplet::getDuration(Tuplet::getSize())->getDenom();
+    int note_count  = Tuplet::getDuration(Tuplet::getSize())->getNum();
+
+    for (int n = 0; n < Tuplet::getSize(); n++) {
+      if (Tuplet::getNote(n) && Tuplet::getNote(n)->getDuration(0)) {
+        // calculate reshaped note value
+        int denom = Tuplet::getNote(n)->getDuration(0)->getDenom();
+        int num = Tuplet::getNote(n)->getDuration(0)->getNum();
+        Duration duration_mod (num, denom);
+        double factor_d = (1. / total_value) / ((double) num / denom);
+        int factor = int(std::round(factor_d));
+
+        // Tuplet single note
+        if (Tuplet::getNote(n)->isType(CHAR_NOTETYPE_SINGLE) && Tuplet::getNote(n)->getPitch(0)) {
+          stk_wav_writer::writeSingleNote(__out, *tempo_ptr, &duration_mod,
+            note_count, factor,
+            stk_mandolin::selectInstrument(Tuplet::getNote(n)->getPitch(0)->toFrequency()),
+            Tuplet::getNote(n)->getPitch(0), DEFAULT_AMPLITUDE);
+        }
+        else if (Tuplet::getNote(n)->isMute()) {
+          stk_wav_writer::writeMutedNote(__out, *tempo_ptr,
+            &duration_mod, note_count, factor);
+        }
+        // Tuplet chord
+        else if (Tuplet::getNote(n)->isType(CHAR_NOTETYPE_CHORD)) {
+          const Note * note_ptr = Tuplet::getNote(n);
+
+          std::vector<const Pitch *> pitch_list;
+          std::vector<double> amplitude_list;
+          std::vector<stk::Instrmnt *> instrument_list;
+          
+          // get listed data for each pitch in the chord
+          for (int i = 0; i < note_ptr->getSize(); i++) {
+            if (note_ptr->getPitch(i)) {
+              pitch_list.push_back(note_ptr->getPitch(i));
+              instrument_list.push_back(stk_mandolin::selectInstrument(note_ptr->getPitch(i)->toFrequency()));
+              amplitude_list.push_back(DEFAULT_AMPLITUDE);
+            }
+          }
+          // write to output
+          stk_wav_writer::writeChord(__out,
+          *tempo_ptr, &duration_mod, note_count, factor,
+            pitch_list, instrument_list, amplitude_list);
+        }
+      }
+    }
+  }
 }
 
 } // namespace synth
