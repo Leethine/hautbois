@@ -1,0 +1,5 @@
+!! Finish LyConverter and preprosessor, create a working pipeline
+Complete test cases (such as exception handling...)
+Implement note transposition algorithm and integrate in to base classes (Pitch, Notes)
+Find the sources of possible memory leaks due to STK
+Optimize algorithms, improve speed and performance

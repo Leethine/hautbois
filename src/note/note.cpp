@@ -1,110 +1,65 @@
 #include "note.hpp"
-#include <cstddef>
+#include "../hbtype/hbdefs.hpp"
 
 namespace hautbois {
 
 void Note::setNote(Note * __ptr, const int __pos) {
-  auto& elems = _tuplet_notes;
-  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
-    delete elems[__pos];
-    elems[__pos] = __ptr;
+  if (__pos >= 0 && size_t(__pos) < _notes.size() && __ptr && dynamic_cast<Note *>(__ptr)) {
+    delete _notes[__pos];
+    _notes[__pos] = __ptr;
   }
-  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
-    delete elems[__pos];
-    elems.erase(elems.begin() + __pos);
+  else if (__pos >= 0 && size_t(__pos) < _notes.size() && __ptr == nullptr) {
+    delete _notes[__pos];
+    _notes.erase(_notes.begin() + __pos);
   }
-  else if (__pos < 0 && __ptr) {
-    elems.push_back(__ptr);
-  }
-}
-
-void Note::setPitch(Pitch * __ptr, const int __pos) {
-  auto& elems = _pitch;
-  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
-    delete elems[__pos];
-    elems[__pos] = __ptr;
-  }
-  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
-    delete elems[__pos];
-    elems.erase(elems.begin() + __pos);
-    _tied.erase(_tied.begin() + __pos);
-  }
-  else if (__pos < 0 && __ptr) {
-    elems.push_back(__ptr);
-    _tied.push_back(false);
+  else if (__pos < 0 && __ptr && dynamic_cast<Note *>(__ptr)) {
+    _notes.push_back(__ptr);
   }
 }
 
-void Note::setDuration(Duration * __ptr, const int __pos) {
-  auto& elems = _duration;
-  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
-    delete elems[__pos];
-    elems[__pos] = __ptr;
-  }
-  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
-    delete elems[__pos];
-    elems.erase(elems.begin() + __pos);
-  }
-  else if (__pos < 0 && __ptr) {
-    elems.push_back(__ptr);
+void Note::setPitch(Pitch * __ptr) {
+  delete _pitch;
+  _pitch = nullptr;
+  if (__ptr && dynamic_cast<Pitch *>(__ptr)) {
+    _pitch = __ptr;
   }
 }
 
-void Note::setProperty(Property * __ptr, const int __pos) {
-  auto& elems = _property;
-  if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr) {
-    delete elems[__pos];
-    if (__ptr->toList().empty()) {
-      elems[__pos] = nullptr;
-      delete __ptr;
-    }
-    else {
-      elems[__pos] = __ptr;
-    }
-  }
-  else if (__pos >= 0 && size_t(__pos) < elems.size() && __ptr == nullptr) {
-    delete elems[__pos];
-    elems.erase(elems.begin() + __pos);
-  }
-  else if (__pos < 0) {
-    if (__ptr && __ptr->toList().empty()) {
-      elems.push_back(nullptr);
-      delete __ptr;
-    }
-    else {
-      elems.push_back(__ptr);
-    }
+void Note::setDuration(Duration * __ptr) {
+  delete _duration;
+  _duration = nullptr;
+  if (__ptr && dynamic_cast<Duration *>(__ptr)) {
+    _duration = __ptr;
   }
 }
 
-Pitch * Note::getPitchModify(const size_t __pos) {
-  auto& elems = _pitch;
-  if (__pos < elems.size()) {
-    return elems[__pos];
+void Note::setProperty(Property * __ptr) {
+  delete _property;
+  _property = nullptr;
+  if (__ptr && dynamic_cast<Property *>(__ptr)) {
+    _property = __ptr;
   }
-  return nullptr;
 }
 
-Duration * Note::getDurationModify(const size_t __pos) {
-  auto& elems = _duration;
-  if (__pos < elems.size()) {
-    return elems[__pos];
-  }
-  return nullptr;
+void Note::setTie(bool __tie) {
+  _tied = __tie;
 }
 
-Property * Note::getPropertyModify(const size_t __pos) {
-  auto& elems = _property;
-  if (__pos < elems.size()) {
-    return elems[__pos];
-  }
-  return nullptr;
+Pitch * Note::getPitchModify() {
+  return _pitch;
+}
+
+Duration * Note::getDurationModify() {
+  return _duration;
+}
+
+Property * Note::getPropertyModify() {
+  return _property;
 }
 
 Note * Note::getNoteModify(const size_t __pos) {
-  auto& elems = _tuplet_notes;
-  if (__pos < elems.size()) {
-    return elems[__pos];
+  if (__pos < _notes.size()) {
+    return _notes[__pos];
   }
   return nullptr;
 }
@@ -114,77 +69,60 @@ void Note::setNoteType(const char __note_type) {
 }
 
 Note::Note(const char __note_type) :
-  _type (__note_type), _duration (), _pitch (), _property (), _tuplet_notes (), _tied() {
+  _type (__note_type), _tied(false),
+  _duration (nullptr), _pitch (nullptr), _property (nullptr),
+  _notes ( ) {
+  if (__note_type == CHAR_NOTETYPE_CHORD || __note_type == CHAR_NOTETYPE_GRACE || __note_type == CHAR_NOTETYPE_TUPLET) {
+    _notes.reserve(3);
+  }
 }
 
 Note::~Note() {
-  for (auto it = _duration.begin(); it != _duration.end(); it++) {
+  delete _duration;
+  delete _pitch;
+  delete _property;
+  for (auto it = _notes.begin(); it != _notes.end(); it++) {
     delete (*it);
   }
-  for (auto it = _pitch.begin(); it != _pitch.end(); it++) {
-    delete (*it);
-  }
-  for (auto it = _property.begin(); it != _property.end(); it++) {
-    delete (*it);
-  }
-  for (auto it = _tuplet_notes.begin(); it != _tuplet_notes.end(); it++) {
-    delete (*it);
-  }
-}
-
-bool Note::isType(const char __note_type) const {
-  return (_type == __note_type);
 }
 
 char Note::getType() const {
   return _type;
 }
 
-void Note::makeTie(const size_t __pos) {
-  if (__pos < _tied.size()) {
-    _tied[__pos] = true;
-  }
+bool Note::isType(const char __note_type) const {
+  return (_type == __note_type);
 }
 
-void Note::makeUntie(const size_t __pos) {
-  if (__pos < _tied.size()) {
-    _tied[__pos] = false;
-  }
+bool Note::isMute() const {
+  return (_type == CHAR_NOTETYPE_REST || _type == CHAR_NOTETYPE_SILENCE);
 }
 
 bool Note::isTied(const size_t __pos) const {
-  if (__pos < _tied.size()) {
-    return _tied[__pos];
-  }
-  return false;
+  return _tied;
 }
 
 const Pitch * Note::getPitch(const size_t __pos) const {
-  if (__pos < _pitch.size()) {
-    return _pitch[__pos];
-  }
-  return nullptr;
+  return _pitch;
 }
 
 const Duration * Note::getDuration(const size_t __pos) const {
-  if (__pos < _duration.size()) {
-    return _duration[__pos];
-  }
-  return nullptr;
+  return _duration;
 }
 
 const Property * Note::getProperty(const size_t __pos) const {
-  if (__pos < _property.size()) {
-    return _property[__pos];
+  return _property;
+}
+
+const Note * Note::getNote(const size_t __pos) const {
+  if (__pos < _notes.size()) {
+    return _notes[__pos];
   }
   return nullptr;
 }
 
-const Note * Note::getNote(const size_t __pos) const {
-  if (__pos < _tuplet_notes.size()) {
-    return _tuplet_notes[__pos];
-  }
-  return nullptr;
+int Note::getSize() const {
+  return _notes.size();
 }
 
 } // namespace hautbois

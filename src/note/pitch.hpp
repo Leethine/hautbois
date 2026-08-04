@@ -72,7 +72,7 @@ public:
 
   virtual void transpose(const int __degree, const std::string& __tonality, const std::string& __mode);
 
-  virtual double toFrequency(const uint32_t __base, const int __temperament) const;
+  virtual double toFrequency(const uint32_t __base_freq = 440, const int __temperament = 0) const;
 
 };
 
