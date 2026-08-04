@@ -1,4 +1,4 @@
-SUBDIRS := note
+SUBDIRS := note voice
 
 .PHONY: all clean test $(SUBDIRS)
 

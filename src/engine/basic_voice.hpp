@@ -54,10 +54,10 @@ protected:
 
   inline void insertNote(Note * __ptr, const int __pos) {
     if (__ptr) {
-      if (__pos < 0 || __pos >= _noteList.size()) {
+      if (__pos < 0 || __pos >= (int) _noteList.size()) {
         _noteList.push_back(__ptr);
       }
-      else if (__pos >= 0 && __pos < _noteList.size()) {
+      else if (__pos >= 0 && __pos < (int) _noteList.size()) {
         _noteList.insert(_noteList.begin() + __pos, __ptr);
       }
     }
