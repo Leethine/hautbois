@@ -48,6 +48,10 @@ inline std::string jointstring(const std::vector<std::string>& __in, const char 
   return out;
 }
 
+inline std::string quote_str(const std::string& __in) {
+  return "\"" + __in + "\"";
+}
+
 } // namespace hautbois
 } // namespace tools
 
