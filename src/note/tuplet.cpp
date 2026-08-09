@@ -6,6 +6,7 @@
 #include "../utility/hbexcept.hpp"
 #include "../utility/tools.hpp"
 #include "note.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <stdexcept>
 #include <string>
@@ -16,7 +17,7 @@ namespace hautbois {
 Tuplet::Tuplet(const size_t __total, const size_t __value,
   const std::vector<std::string>& __notes) : Note(CHAR_NOTETYPE_TUPLET) {
 
-  // process notes
+  // process notes, put the args in temporary lists
   bool __switch = true;
   std::vector<std::string> tmp_pitch;
   std::vector<std::vector<std::string>> tmp_pitch_list;
@@ -40,30 +41,31 @@ Tuplet::Tuplet(const size_t __total, const size_t __value,
     }
   }
 
-  // call set method
+  // check input format corectness
   if (tmp_duration_list.size() != tmp_pitch_list.size()) {
     HB_THROW_MSG(
       std::invalid_argument,
       std::string("Failed to create Tuplet, input must follow this pattern: {PITCH,VALUE,PITCH,VALUE,...}"));
   }
 
+  // create notes and put them in temporary list
   std::vector<Note *> tmp_notes_ptr;
   tmp_notes_ptr.reserve(12);
   for (size_t i = 0; i < tmp_duration_list.size(); i++) {
-    std::string& __value = tmp_duration_list[i];
+    std::string& tmp_duration = tmp_duration_list[i];
     std::vector<std::string>& __pitch_list = tmp_pitch_list[i];
     if (tmp_pitch_list[i].size() == 1) {
       std::string& __pitch = tmp_pitch_list[i][0];
       HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
-        "Failed to create Tuplet note, invalid note: " + __pitch + "," + __value,
-        tmp_notes_ptr.push_back(new SingleNote(__pitch, __value)); ,
+        "Failed to create Tuplet note, invalid note: " + __pitch + "," + tmp_duration,
+        tmp_notes_ptr.push_back(new SingleNote(__pitch, tmp_duration)); ,
         for (Note * ptr : tmp_notes_ptr) { delete ptr; } // cleanup in case of error
       )
     }
     else if (tmp_pitch_list[i].size() > 1) {
       HB_NESTED_THROW_MSG_ACTION(std::invalid_argument,
         std::string("Failed to create Tuplet note: invalid CHORD"),
-        tmp_notes_ptr.push_back(new Chord(__pitch_list, __value)); ,
+        tmp_notes_ptr.push_back(new Chord(__pitch_list, tmp_duration)); ,
         for (Note * ptr : tmp_notes_ptr) { delete ptr; } // cleanup
       )
     }
@@ -71,7 +73,7 @@ Tuplet::Tuplet(const size_t __total, const size_t __value,
 
   // Set Tuplet size (e.g. total note count such as <3,5,7,...> / total note value)
   Note::setDuration(new Duration(__total, __value));
-  // Append notes
+  // call set method to append already-created note ptr
   for (Note * ptr : tmp_notes_ptr) {
     Note::setNote(ptr, NOTE_SETNOTE_APPEND_POS);
   }
@@ -158,6 +160,16 @@ bool Tuplet::isValid() const {
   if (Tuplet::getDuration(Tuplet::getSize()) == nullptr) {
     return false;
   }
+  else { // validate if the tuplet total value is valid
+    std::string tuplet_value = std::to_string(Tuplet::getDuration(Tuplet::getSize())->getDenom());
+    std::replace(tuplet_value.begin(), tuplet_value.end(), '0','.');
+    try {
+      Duration d_test (tuplet_value);
+    }
+    catch (std::invalid_argument&) {
+      return false;
+    }
+  }
 
   for (int i = 0; i < Tuplet::getSize(); i++) {
     if (Tuplet::getNote(i) == nullptr) {
@@ -235,7 +247,11 @@ std::string Tuplet::toString() const {
   const int tuplet_size = Tuplet::getSize();
   // Write tuplet size
   if (Tuplet::getDuration(tuplet_size)) {
-    out.append(Tuplet::getDuration(tuplet_size)->toString());
+    out.append(std::to_string(Tuplet::getDuration(tuplet_size)->getNum()));
+    out.push_back('/');
+    std::string tuplet_value = std::to_string(Tuplet::getDuration(tuplet_size)->getDenom());
+    std::replace(tuplet_value.begin(), tuplet_value.end(), '0', '.');
+    out.append(tuplet_value);
     out.push_back(',');
   }
   else {

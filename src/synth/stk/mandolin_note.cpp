@@ -3,9 +3,13 @@
 #include "../../utility/hbexcept.hpp"
 #include "../../hbtype/hbdefs.hpp"
 
+#include <algorithm>
+#include <stdexcept>
 #include <stk/FileWvOut.h>
 #include <stk/Instrmnt.h>
 #include <stk/Mandolin.h>
+#include <string>
+#include <sys/types.h>
 
 #define DEFAULT_AMPLITUDE 0.8
 
@@ -133,8 +137,19 @@ void TupletStkMandolin::toStream(void * __output, void * __param1, void * __para
   }
 
   if (Tuplet::getDuration(Tuplet::getSize())) {
-    int total_value = Tuplet::getDuration(Tuplet::getSize())->getDenom();
-    int note_count  = Tuplet::getDuration(Tuplet::getSize())->getNum();
+    std::string tuplet_notevalue = std::to_string(Tuplet::getDuration(Tuplet::getSize())->getDenom());
+    std::replace(tuplet_notevalue.begin(), tuplet_notevalue.end(), '0', '.');
+
+    // exit on error
+    try {
+      Duration d_test (tuplet_notevalue);
+    }
+    catch(std::invalid_argument&) {
+      return ;
+    }
+
+    Duration note_duration(tuplet_notevalue);
+    int note_count = Tuplet::getDuration(Tuplet::getSize())->getNum();
 
     for (int n = 0; n < Tuplet::getSize(); n++) {
       if (Tuplet::getNote(n) && Tuplet::getNote(n)->getDuration(0)) {
@@ -142,7 +157,7 @@ void TupletStkMandolin::toStream(void * __output, void * __param1, void * __para
         int denom = Tuplet::getNote(n)->getDuration(0)->getDenom();
         int num = Tuplet::getNote(n)->getDuration(0)->getNum();
         Duration duration_mod (num, denom);
-        double factor_d = (1. / total_value) / ((double) num / denom);
+        double factor_d = ((double) note_duration.getNum() / note_duration.getDenom()) / ((double) num / denom);
         int factor = int(std::round(factor_d));
 
         // Tuplet single note

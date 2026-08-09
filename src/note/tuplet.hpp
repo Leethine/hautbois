@@ -75,6 +75,12 @@ public:
   }
 
   // Implemented in tuplet.cpp
+
+  /* Tuplet constructor 
+   * @param __total : total number of notes to divide the duration
+   * @param __value : note value (aka duration) of the entire tuplet, 
+   *  add zero to the value to represent dots (e.g. 40 ==> "4.", 400 ==> "4..") 
+   */  
   Tuplet(const size_t __total, const size_t __value, const std::vector<std::string>& __notes);
   Tuplet(const Tuplet&  __other);
   Tuplet(const Tuplet&& __other);

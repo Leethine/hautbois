@@ -7,7 +7,6 @@ using namespace hautbois;
 int main() {
 
   Tuplet n1 (3, 4, {"An4","8","Bb4","8", "Bn4","8"});
-
   assert(n1.toString() == "3/4,An4,8,Bb4,8,Bn4,8");
   // std::cout << n1.getNote(0)->getPitch()->toIndex() << "\n";
 
@@ -18,6 +17,8 @@ int main() {
   assert(n2.toString() == "3/4,An4,8,[pp],Bb4,8,Bn4~,8");
   assert(n2.getSize() == 3);
 
+  Tuplet n3 (4, 40, {"An4","8","Bb4","8", "Bn4","8", "A#4","8"});
+  assert(n3.toString() == "4/4.,An4,8,Bb4,8,Bn4,8,A#4,8");
   // TODO test exception
   // test reduce() enlarge() isValid()
 
