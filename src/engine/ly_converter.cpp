@@ -12,6 +12,10 @@
 #include <cmath>
 #include <string>
 
+#ifndef STD_VECTOR_STR
+#define STD_VECTOR_STR std::string("_VECSTR_")
+#endif
+
 namespace hautbois {
 
 bool LyConverter::validateSingleNote(const std::string& __pitchname,
@@ -28,6 +32,7 @@ bool LyConverter::validateSingleNote(const std::string& __pitchname,
 bool LyConverter::validateOctave(const int __octave) const {
   return __octave >= 0 && __octave < 9;
 }
+
 
 int LyConverter::findAbsOctaveFromLast(const std::string& __pitch_prev, const int __abs_oct_prev,
                                        const std::string& __pitch_next, const int __rel_oct_next) const {
@@ -46,78 +51,74 @@ int LyConverter::findAbsOctaveFromLast(const std::string& __pitch_prev, const in
   }
 }
 
-std::string LyConverter::convertSingle(const std::string& __input) {
+
+void LyConverter::parseSingleNote(const std::string& __input, std::string& __o_pitch,
+                                  int& __o_octave, std::string& __o_value) const {
   if (__input.empty()) {
     HB_THROW(std::invalid_argument);
   }
-  std::string pitchname;
-  std::string notevalue;
-  int oct = _relative_mode ? 0 : 4;
+  __o_pitch.clear();
+  __o_value.clear();
+  __o_octave = _relative_mode ? 0 : 4;
   for (const char c: __input) {
     if (c == ',') {
-      oct--;
+      __o_octave--;
     }
     else if (c == '\'') {
-      oct++;
+      __o_octave++;
     }
   }
   std::copy_if(__input.begin(), __input.end(),
-               std::back_inserter(pitchname),
+               std::back_inserter(__o_pitch),
                [](char c) { return std::isalpha(c); });
 
   std::copy_if(__input.begin(), __input.end(),
-               std::back_inserter(notevalue),
+               std::back_inserter(__o_value),
                [](char c) { return std::isdigit(c) || c == '.'; });
-  if (notevalue.empty()) {
-    notevalue = _last_notevalue;
+  if (__o_value.empty()) {
+    __o_value = _last_notevalue;
   }
 
   // validate
-  if (!validateSingleNote(pitchname, notevalue)) {
+  if (!validateSingleNote(__o_pitch, __o_value)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid note: " + __input);
   }
   if (_relative_mode) {
     int abs_oct = findAbsOctaveFromLast(
-        _last_pitch, _last_oct_abs,
-              pitchname, oct);
-    oct = abs_oct;
+        _last_pitch, _last_oct_abs, __o_pitch, __o_octave);
+    __o_octave = abs_oct;
   }
-  if (!validateOctave(oct)) {
+  if (!validateOctave(__o_octave)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid octave: " + __input);
   }
-  
-  // update previous
-  _last_pitch = pitchname;
-  _last_oct_abs = oct;
-  _last_notevalue = notevalue;
-
-  return tools::quote_str(_ly_pitch_chart.at(pitchname) +
-    std::to_string(oct))  + "," + tools::quote_str(notevalue);
 }
 
 
-std::string LyConverter::convertChord(const std::string& __input) {
+void LyConverter::parseChord(const std::string& __input, std::vector<std::string>& __o_pitch_list,
+                             std::vector<int>& __o_abs_octave_list, std::string& __o_note_value) const {
   if (__input.empty()) {
     HB_THROW(std::invalid_argument);
   }
-  std::vector<std::string> out_pitch;
-  out_pitch.reserve(3);
-
+  __o_pitch_list.clear();
+  __o_pitch_list.reserve(3);
+  __o_abs_octave_list.clear();
+  __o_abs_octave_list.reserve(3);
+  __o_note_value.clear();
+  
   size_t pos1 = __input.find_first_of('<');
   size_t pos2 = __input.find_first_of('>');
   if (pos1 == std::string::npos || pos2 == std::string::npos) {
     HB_THROW_MSG(std::invalid_argument, "Invalid Chord: " + __input);
   }
   std::string chordstr = __input.substr(pos1+1, pos2-pos1-1);
-  std::string notevalue = __input.substr(pos2+1);
-  auto ret_ = std::remove(notevalue.begin(), notevalue.end(), ' ');
-  if (notevalue.empty()) {
-    notevalue = _last_notevalue;
+  __o_note_value = __input.substr(pos2+1);
+  tools::clean_string(__o_note_value);
+  if (__o_note_value.empty()) {
+    __o_note_value = _last_notevalue;
   }
 
   // process pitches in the chord
   std::vector<std::string> pitch_list;
-  pitch_list.reserve(3);
   tools::splitstring(pitch_list, chordstr, ' ');
   if (pitch_list.size() < 2) {
     HB_THROW_MSG(std::invalid_argument, "Invalid Chord, too few notes: " + __input);
@@ -133,7 +134,7 @@ std::string LyConverter::convertChord(const std::string& __input) {
     oct++;
     pitch.pop_back();
   }
-  if (!validateSingleNote(pitch, notevalue)) {
+  if (!validateSingleNote(pitch, __o_note_value)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid Chord: " + __input);
   }
   if (_relative_mode) {
@@ -144,12 +145,9 @@ std::string LyConverter::convertChord(const std::string& __input) {
   if (!validateOctave(oct)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid Chord octave: " + __input + " At: " + pitch_list[0]);
   }
-  // record the first pitch in chord as previous pitch
-  _last_pitch = pitch;
-  _last_oct_abs = oct;
-  _last_notevalue = notevalue;
-  
-  out_pitch.push_back("\"" + _ly_pitch_chart.at(pitch) + std::to_string(oct) + "\"");
+  // add to out list
+  __o_pitch_list.push_back(pitch);
+  __o_abs_octave_list.push_back(oct);
 
   // process the rest of the chord
   std::string lastpitch_local = pitch;
@@ -177,23 +175,212 @@ std::string LyConverter::convertChord(const std::string& __input) {
     if (!validateOctave(oct)) {
       HB_THROW_MSG(std::invalid_argument, "Invalid Chord octave: " + __input + " At: " + pitch_list[i]);
     }
-    out_pitch.push_back(tools::quote_str(_ly_pitch_chart.at(pitch) + std::to_string(oct)));
+    // add to output list
+    __o_pitch_list.push_back(pitch);
+    __o_abs_octave_list.push_back(oct);
     
     // update local relative pitch
     lastpitch_local = pitch;
     lastoct_local = oct;
   }
+}
+
+std::string LyConverter::convertSingle(const std::string& __input) {
+  std::string pitchname;
+  int octave;
+  std::string notevalue;
   
-  return tools::jointstring(out_pitch, ',') + "," + tools::quote_str(notevalue);
+  HB_NESTED_THROW(std::invalid_argument,
+    parseSingleNote(__input, pitchname, octave, notevalue);
+  )
+  // update previous note
+  _last_pitch = pitchname;
+  _last_oct_abs = octave;
+  _last_notevalue = notevalue;
+
+  return tools::quote_str(_ly_pitch_chart.at(pitchname) + 
+    std::to_string(octave))  + "," + tools::quote_str(notevalue);
+}
+
+
+std::string LyConverter::convertChord(const std::string& __input) {
+  std::vector<std::string> pitch_list;
+  std::vector<int> octave_list;
+  std::string note_value;
+
+  HB_NESTED_THROW(std::invalid_argument,
+    parseChord(__input, pitch_list, octave_list, note_value);
+  )
+
+  if (!(pitch_list.size() == octave_list.size() && octave_list.size() > 1)) {
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid chord: " + __input);
+  }
+  
+  // update previous note
+  _last_pitch = pitch_list[0];
+  _last_oct_abs = octave_list[0];
+  _last_notevalue = note_value;
+
+  // write to output
+  std::vector<std::string> out_pitch_list;
+  out_pitch_list.reserve(octave_list.size());
+  for (size_t i = 0; i < octave_list.size(); i++) {
+    out_pitch_list.push_back(tools::quote_str(
+      _ly_pitch_chart.at(pitch_list[i])+std::to_string(octave_list[i])    
+    ));
+  }
+
+  return STD_VECTOR_STR + "({" + tools::jointstring(out_pitch_list, ',') + "})," + tools::quote_str(note_value);
 }
 
 
 std::string LyConverter::convertTuplet(const std::string& __input) {
-}
+  if (__input.empty()) {
+    HB_THROW(std::invalid_argument);
+  }
 
+  size_t pos1 = __input.find_first_of('{');
+  size_t pos2 = __input.find_first_of('}');
+
+  // parse tuplet size
+  std::string tuplet_rat = __input.substr(0,pos1);
+  size_t pos_div = tuplet_rat.find_first_of('/');
+  std::string tuplet_count = tuplet_rat.substr(0, pos_div);
+  std::string tuplet_duration = tuplet_rat.substr(pos_div+1);
+  size_t count = 0;
+
+  try {
+    // clean
+    tools::clean_string(tuplet_count);
+    tools::clean_string(tuplet_duration);
+    // convert
+    count = std::stoul(tuplet_count);
+    Duration d_test (tuplet_duration);
+  }
+  catch(std::invalid_argument&) {
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet: " + __input + "  At: " + tuplet_rat);
+  }
+  catch(std::out_of_range&) {
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet: " + __input + "  At: " + tuplet_rat);
+  }
+
+  // parse notes
+  std::vector<std::string> note_list;
+  tools::splitstring(note_list, __input.substr(pos1+1, pos2 - pos1 - 1), ' ');
+
+  std::vector<std::string> note_list_processed;
+  note_list_processed.reserve(6);
+
+  for (size_t i = 0; i < note_list.size(); i++) {
+    std::string& current_note = note_list[i];
+    if (current_note.find('<') != std::string::npos) { // chord
+      std::string chord_str;
+      while(i < note_list.size() && current_note.find('>') == std::string::npos) {
+        chord_str.append(note_list[i]);
+        chord_str.push_back(' ');
+        i++;
+      }
+      std::vector<std::string> pitch_list;
+      std::vector<int>         octave_list;
+      std::string              note_value;
+      HB_NESTED_THROW(std::invalid_argument, 
+        parseChord(chord_str, pitch_list, octave_list, note_value);
+      )
+      if (!(pitch_list.size() == octave_list.size() && octave_list.size() > 1)) {
+        HB_THROW_MSG(std::invalid_argument, "Invalid chord within Tuplet: " + __input + " At: " + chord_str);
+      }
+      // update previous note
+      _last_pitch     = pitch_list[0];
+      _last_oct_abs   = octave_list[0];
+      _last_notevalue = note_value;
+
+      // construct chord string for tuplet
+      std::vector<std::string> pitchoctave_list;
+      pitchoctave_list.reserve(3);
+      for (size_t j = 0 ; j < octave_list.size(); j++) {
+        pitchoctave_list.push_back(_ly_pitch_chart.at(pitch_list[j]) + std::to_string(octave_list[j]));
+      }
+      // add to processed note list
+      note_list_processed.push_back(tools::quote_str(tools::jointstring(pitchoctave_list, '+')));
+      note_list_processed.push_back(tools::quote_str(note_value));
+    }
+    else { // process single note
+      std::string pitchname;
+      int octave;
+      std::string notevalue;
+      HB_NESTED_THROW(std::invalid_argument, 
+        parseSingleNote(current_note, pitchname, octave, notevalue);
+      )
+      // update previous note
+      _last_pitch     = pitchname;
+      _last_oct_abs   = octave;
+      _last_notevalue = notevalue;
+
+      // add to processed note list
+      note_list_processed.push_back(tools::quote_str(
+        _ly_pitch_chart.at(pitchname) + std::to_string(octave)
+      ));
+      note_list_processed.push_back(tools::quote_str(notevalue));
+    }
+  }
+
+  // convert dots to 0 (as required by hautbois::Tuplet constructor)
+  std::replace(tuplet_duration.begin(), tuplet_duration.end(), '.', '0');
+  return tuplet_count + "," + tuplet_duration + "," + STD_VECTOR_STR +
+    "(" + tools::jointstring(note_list_processed, ',') + ")";
+}
 
 std::string LyConverter::convertGrace(const std::string& __input) {
+ if (__input.empty()) {
+    HB_THROW(std::invalid_argument);
+  }
+
+  size_t pos1 = __input.find_first_of('{');
+  size_t pos2 = __input.find_first_of('}');
+
+  // parse notes
+  std::vector<std::string> note_list;
+  tools::splitstring(note_list, __input.substr(pos1+1, pos2 - pos1 - 1), ' ');
+
+  std::vector<std::string> note_list_processed;
+  note_list_processed.reserve(4);
+
+  for (size_t i = 0; i < note_list.size(); i++) {
+    std::string& current_note = note_list[i];
+    
+    // process single note
+    std::string pitchname;
+    int octave;
+    std::string notevalue;
+    HB_NESTED_THROW(std::invalid_argument, 
+      parseSingleNote(current_note, pitchname, octave, notevalue);
+    )
+    // update previous note
+    _last_pitch     = pitchname;
+    _last_oct_abs   = octave;
+    _last_notevalue = notevalue;
+
+    // add to processed note list
+    note_list_processed.push_back(tools::quote_str(
+      _ly_pitch_chart.at(pitchname) + std::to_string(octave)
+    ));
+    note_list_processed.push_back(tools::quote_str(notevalue));
+  }
+
+  // must have more then 2 notes in grace note (aka 4 pitch,value pair as list elem) 
+  if (note_list_processed.size() < 4) {
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert grace notes, too few: " + __input);
+  }
+
+  std::string main_value = note_list_processed.back();
+  note_list_processed.pop_back();
+  std::string main_pitch = note_list_processed.back();
+  note_list_processed.pop_back();
+
+  return STD_VECTOR_STR + "(" + tools::jointstring(note_list_processed, ',') + ")," +
+    main_pitch + "," + main_value;
 }
+
 
 LyConverter::LyConverter(const std::string& __lang, const std::string& __init_note, bool __relative_mode) :
   _ly_pitch_chart (), _ly_abs_octave_chart (), _ly_rel_octave_chart (), _ly_pitch_index (),

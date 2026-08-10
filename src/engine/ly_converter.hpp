@@ -1,6 +1,7 @@
 #pragma once
 
 #include <istream>
+#include <tuple>
 #ifndef LY_CONVERTER_HPP
 #define LY_CONVERTER_HPP
 
@@ -8,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <iostream>
+
+#define _VECSTR_(STR) std::vector<std::string>(STR)
 
 namespace hautbois {
 
@@ -29,8 +32,13 @@ private:
 public:
   bool validateSingleNote(const std::string& __pitchname, const std::string& __duration) const;
   bool validateOctave(const int __octave) const;
+  char guessNoteType(const std::string& __input) const;
   int findAbsOctaveFromLast(const std::string& __pitch_prev, const int __abs_oct_prev,
                             const std::string& __pitch_next, const int __rel_oct_next) const;
+  void parseSingleNote(const std::string& __input, std::string& __o_pitch, int& __o_octave,
+                       std::string& __o_value) const;
+  void parseChord(const std::string& __input, std::vector<std::string>& __o_pitch_list,
+                  std::vector<int>& __o_abs_octave_list, std::string& __o_note_value) const;
   std::string convertSingle(const std::string& __input);
   std::string convertChord(const std::string& __input);
   std::string convertTuplet(const std::string& __input);
@@ -42,7 +50,6 @@ public:
   LyConverter(LyConverter&&) = delete;
   inline ~LyConverter() {}
 
-  //char guessNoteType(const std::string& __input) const;
   //void operator<<(const std::string& __iput);
   //void readFromStream(const std::istream& __stream);
   //void readFromFile(const std::string& __fpath);
