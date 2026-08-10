@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 namespace hautbois {
 namespace tools {
@@ -46,6 +47,11 @@ inline std::string jointstring(const std::vector<std::string>& __in, const char 
   }
   out.pop_back();
   return out;
+}
+
+inline void clean_string(std::string& __out, const char __target = ' ') {
+  auto rmTarget = std::remove(__out.begin(), __out.end(), __target);
+  __out.erase(rmTarget, __out.end());
 }
 
 inline std::string quote_str(const std::string& __in) {
