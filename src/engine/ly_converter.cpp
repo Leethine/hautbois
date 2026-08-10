@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <unordered_map>
 #include <stdexcept>
-#include <fstream>
 #include <algorithm>
 #include <string>
 
@@ -535,11 +534,6 @@ void LyConverter::readFromStream(std::istream& __stream) {
   }
 
   )
-}
-
-
-void LyConverter::writeToFile(const std::string& __fpath) const {
-
 }
 
 } // namespace hautbois

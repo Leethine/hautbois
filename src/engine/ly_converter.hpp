@@ -48,6 +48,7 @@ public:
   inline ~LyConverter() {}
 
   void readFromStream(std::istream& __stream);
+  void readFromFile(const std::string& __fpath);
   void writeToFile(const std::string& __fpath) const;
 
   /* Return the argument passed to the addNote method in BaseVoice class */
