@@ -2,6 +2,7 @@
 #include "../utility/hbexcept.hpp"
 #include "../utility/tools.hpp"
 #include "../note/duration.hpp"
+#include "../hbtype/hbdefs.hpp"
 
 #include <cctype>
 #include <cstddef>
@@ -9,7 +10,6 @@
 #include <stdexcept>
 #include <fstream>
 #include <algorithm>
-#include <cmath>
 #include <string>
 
 #ifndef STD_VECTOR_STR
@@ -32,7 +32,6 @@ bool LyConverter::validateSingleNote(const std::string& __pitchname,
 bool LyConverter::validateOctave(const int __octave) const {
   return __octave >= 0 && __octave < 9;
 }
-
 
 int LyConverter::findAbsOctaveFromLast(const std::string& __pitch_prev, const int __abs_oct_prev,
                                        const std::string& __pitch_next, const int __rel_oct_next) const {
@@ -487,5 +486,60 @@ LyConverter::LyConverter(const std::string& __lang, const std::string& __init_no
 }
 
 
+void LyConverter::readFromStream(std::istream& __stream) {
+  std::string input_str;
+  std::string additional_str;
+
+  HB_NESTED_THROW(std::invalid_argument, 
+
+  // TODO 
+  // this is only a temporary solution, need to be improved (for example use regex, flex/bison)
+  while (!__stream.eof()) {
+    __stream >> input_str;
+    if (input_str.find('<') != std::string::npos) {
+      while (!__stream.eof() && input_str.find('>') == std::string::npos) {
+        input_str.push_back(' ');
+        __stream >> additional_str;
+        input_str.append(additional_str);
+      }
+      _converted_args.push_back(convertChord(input_str));
+      _note_types.push_back(CHAR_NOTETYPE_CHORD);
+      input_str.clear();
+    }
+    else if (input_str.find('/') != std::string::npos) {
+      while (!__stream.eof() && input_str.find('}') == std::string::npos) {
+        input_str.push_back(' ');
+        __stream >> additional_str;
+        input_str.append(additional_str);
+      }
+      _converted_args.push_back(convertTuplet(input_str));
+      _note_types.push_back(CHAR_NOTETYPE_TUPLET);
+      input_str.clear();
+    }
+    else if (input_str.find('{') != std::string::npos) {
+      while (!__stream.eof() && input_str.find('}') == std::string::npos) {
+        input_str.push_back(' ');
+        __stream >> additional_str;
+        input_str.append(additional_str);
+      }
+      _converted_args.push_back(convertGrace(input_str));
+      _note_types.push_back(CHAR_NOTETYPE_GRACE);
+      input_str.clear();
+    }
+    else {
+      // defaulted as single note
+      _converted_args.push_back(convertSingle(input_str));
+      _note_types.push_back(CHAR_NOTETYPE_SINGLE);
+      input_str.clear();
+    }
+  }
+
+  )
+}
+
+
+void LyConverter::writeToFile(const std::string& __fpath) const {
+
+}
 
 } // namespace hautbois
