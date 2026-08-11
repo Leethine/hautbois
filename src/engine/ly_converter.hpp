@@ -9,7 +9,7 @@
 #include <istream>
 #include <iostream>
 
-#define _VECSTR_(STR) std::vector<std::string>(STR)
+#define _VECSTR_(LST) std::vector<std::string>(LST)
 
 namespace hautbois {
 
@@ -49,7 +49,6 @@ public:
 
   void readFromStream(std::istream& __stream);
   void readFromFile(const std::string& __fpath);
-  void writeToFile(const std::string& __fpath) const;
 
   /* Return the argument passed to the addNote method in BaseVoice class */
   inline std::string getArgs(const size_t __pos) const {
