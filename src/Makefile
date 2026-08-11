@@ -1,4 +1,4 @@
-SUBDIRS := note synth
+SUBDIRS := note synth engine
 
 .PHONY: all clean $(SUBDIRS)
 
