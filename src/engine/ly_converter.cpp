@@ -405,7 +405,7 @@ LyConverter::LyConverter(const std::string& __lang, const std::string& __init_no
     tmp_acc_chart = {{"", "n"},{"s","#"},{"f","b"},{"ss","x"}, {"x","x"},{"ff","B"}};
   }
   else {
-    HB_THROW_MSG(std::invalid_argument, std::string("Invalid language opion."));
+    HB_THROW_MSG(std::invalid_argument, std::string("Invalid language option: " + __lang));
   }
 
   // construct full pitchname map
