@@ -1,7 +1,6 @@
 #include "ly_converter.hpp"
 #include "../utility/hbexcept.hpp"
 #include "../utility/tools.hpp"
-#include "../note/duration.hpp"
 #include "../hbtype/hbdefs.hpp"
 
 #include <cctype>
@@ -10,6 +9,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include <string>
+#include <cmath>
 
 #ifndef STD_VECTOR_STR
 #define STD_VECTOR_STR std::string("_VECSTR_")
@@ -17,15 +17,32 @@
 
 namespace hautbois {
 
-bool LyConverter::validateSingleNote(const std::string& __pitchname,
-                                     const std::string& __duration) const {
-  try {
-    Duration d_test (__duration);
+bool LyConverter::validateNoteValue(const std::string& __value) const {
+  int sqrt_v;
+  int orig_v; 
+  std::string val (__value);
+  std::string dots;
+  while (!val.empty() && val.back() == '.') {
+    dots.push_back('.');
+    val.pop_back();
   }
-  catch (const std::invalid_argument&) {
+  try {
+    orig_v = std::stoi(val);
+    sqrt_v = std::sqrt(orig_v);
+    return orig_v > 0 && orig_v < 129 && sqrt_v * sqrt_v == orig_v && dots.size() < 3;
+  }
+  catch(std::invalid_argument&) {
     return false;
   }
-  return _ly_pitch_chart.find(__pitchname) != _ly_pitch_chart.end();
+  catch(std::out_of_range&) {
+    return false;
+  }
+  return false;
+}
+
+bool LyConverter::validateSingleNote(const std::string& __pitchname,
+                                     const std::string& __duration) const {
+  return validateNoteValue(__duration) && _ly_pitch_chart.find(__pitchname) != _ly_pitch_chart.end();
 }
 
 bool LyConverter::validateOctave(const int __octave) const {
@@ -245,21 +262,23 @@ std::string LyConverter::convertTuplet(const std::string& __input) {
   size_t pos_div = tuplet_rat.find_first_of('/');
   std::string tuplet_count = tuplet_rat.substr(0, pos_div);
   std::string tuplet_duration = tuplet_rat.substr(pos_div+1);
-  size_t count = 0;
-
+  
+  // check tuplet note count
   try {
     // clean
     tools::clean_string(tuplet_count);
     tools::clean_string(tuplet_duration);
-    // convert
-    count = std::stoul(tuplet_count);
-    Duration d_test (tuplet_duration);
+    std::stoul(tuplet_count);
   }
   catch(std::invalid_argument&) {
-    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet: " + __input + "  At: " + tuplet_rat);
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet (count): " + __input + "  At: " + tuplet_rat);
   }
   catch(std::out_of_range&) {
-    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet: " + __input + "  At: " + tuplet_rat);
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet (count): " + __input + "  At: " + tuplet_rat);
+  }
+  // check tuplet note value
+  if (!validateNoteValue(tuplet_duration)) {
+    HB_THROW_MSG(std::invalid_argument, "Failed to convert invalid Tuplet (value): " + __input + "  At: " + tuplet_rat);
   }
 
   // parse notes
@@ -476,10 +495,7 @@ LyConverter::LyConverter(const std::string& __lang, const std::string& __init_no
     HB_THROW_MSG(std::invalid_argument, "Invalid initialization note (pitch octave) format: " + __init_note);
   }
   // validate initial duration
-  try {
-    Duration d_test (_last_notevalue);
-  }
-  catch (const std::invalid_argument&) {
+  if (!validateNoteValue(_last_notevalue)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid initialization note (value) format: " + __init_note);
   }
 }

@@ -1,5 +1,5 @@
-#include <algorithm>
 #include <cctype>
+#include <cstddef>
 #include <cstring>
 #include <fstream>
 #include <filesystem>
@@ -29,13 +29,13 @@ struct InfoFile {
 void readVoiceFile(const std::string& __fpath, LyConverter& __cvt) {
   std::filesystem::path filepath (__fpath);
   if (!(std::filesystem::exists(filepath) && std::filesystem::is_regular_file(filepath))) {
-    throw std::runtime_error("File \'" + __fpath + "\' does not exist or is a directory.");
+    throw std::runtime_error("Voice file \'" + __fpath + "\' does not exist or is a directory.");
     return;
   }
 
   std::ifstream fs (__fpath);
   if (!fs.is_open()) {
-    throw std::runtime_error("Failed to open file \'" + __fpath + "\'");
+    throw std::runtime_error("Failed to open voice file \'" + __fpath + "\'");
     return;
   }
 
@@ -96,7 +96,7 @@ void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned i
 void writeToFile(const InfoFile& __info) {
     std::filesystem::path filepath ("__PREPROCESSED__.cpp");
     if (std::filesystem::exists(filepath) && !std::filesystem::is_regular_file(filepath)) {
-      throw std::runtime_error("File \'PREPROCESSED.cpp\' already exist and cannot be overriden.");
+      throw std::runtime_error("File \'__PREPROCESSED__.cpp\' already exist and cannot be overriden.");
       return;
     }
     else if (std::filesystem::exists(filepath) && std::filesystem::is_regular_file(filepath)) {
@@ -118,13 +118,13 @@ void writeToFile(const InfoFile& __info) {
 void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
   std::filesystem::path filepath (__fpath);
   if (!(std::filesystem::exists(filepath) && std::filesystem::is_regular_file(filepath))) {
-    throw std::runtime_error("File \'" + __fpath + "\' does not exist or is a directory.");
+    throw std::runtime_error("Info file \'" + __fpath + "\' does not exist or is invalid.");
     return;
   }
 
   std::ifstream fs (__fpath);
   if (!fs.is_open()) {
-    throw std::runtime_error("Failed to open file \'" + __fpath + "\'");
+    throw std::runtime_error("Failed to open info definition file \'" + __fpath + "\'");
     return;
   }
 
@@ -143,10 +143,13 @@ void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
   std::string meter_str;
   std::string tempo_str;
   std::vector<std::string> pair_;
+  size_t line_count = 0;
   while (!fs.eof()) {
     fs.getline(line, 100);
+    line_count++;
     if (std::strcmp("BEGIN", line) == 0) {
       fs.getline(line, 100);
+      line_count++;
       while (std::strcmp("END", line)) {
         tools::splitstring(pair_, std::string(line), ':');
         if (pair_.size() == 2) {
@@ -172,9 +175,11 @@ void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
           }
         }
         else {
-          throw std::invalid_argument("Invalid line: " + std::string(line));
+          throw std::invalid_argument("Invalid line: \n At line " + 
+            std::to_string(line_count) + " ==> " + std::string(line));
         }
         fs.getline(line, 100);
+        line_count++;
       }
     }
   }
@@ -206,29 +211,28 @@ void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
   __info._voices = __info._note_types.size();
 }
 
-void parse_args(int, char **) {
-}
-
-
 
 int main() {
-try {
-  InfoFile info;
-  readGlobalFile("__info", info);
-  writeToFile(info);
-}
-catch(std::invalid_argument& e) {
-  std::cerr << e.what() << std::endl;
-  return 1;
-}
-catch(std::runtime_error& e) {
-  std::cerr << e.what() << std::endl;
-  return 1;
-}
-catch(std::out_of_range& e) {
-  std::cerr << e.what() << std::endl;
-  return 1;
-}
+  try {
+    InfoFile info;
+    readGlobalFile("__info", info);
+    writeToFile(info);
+  }
+  catch(std::invalid_argument& e) {
+    std::cerr << "Invalid argument error occurred: \n" << e.what() << "\n"
+              << "(!) Please check your info definition file and voice files." << std::endl;
+    return 1;
+  }
+  catch(std::runtime_error& e) {
+    std::cerr << "Runtime error occurred: \n" << e.what() << "\n"
+              << "(!) Make sure you are running this program in a valid directory." << std::endl;
+    return 1;
+  }
+  catch(std::out_of_range& e) {
+    std::cerr << "Out of range error occurred: \n" << e.what() << "\n"
+              << "(!) Please check your info definition file." << std::endl;
+    return 1;
+  }
 
 return 0;
 

@@ -28,6 +28,7 @@ private:
   bool _relative_mode;
 
 protected:
+  bool validateNoteValue(const std::string& __value) const;
   bool validateSingleNote(const std::string& __pitchname, const std::string& __duration) const;
   bool validateOctave(const int __octave) const;
   int findAbsOctaveFromLast(const std::string& __pitch_prev, const int __abs_oct_prev,
