@@ -1,5 +1,8 @@
-!! Finish LyConverter and preprosessor, create a working pipeline
 Complete test cases (such as exception handling...)
 Implement note transposition algorithm and integrate in to base classes (Pitch, Notes)
+Fix security issues related to "getNoteModify" method in "BasicVoice"
+
 Find the sources of possible memory leaks due to STK
-Optimize algorithms, improve speed and performance
+Create "validator" component
+Optimize the algorithms, branch reduction, improve speed and performance
+Use Unix-style toolchain (make, autoconf, m4 ...)
