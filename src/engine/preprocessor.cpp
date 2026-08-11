@@ -4,27 +4,16 @@
 #include <fstream>
 #include <filesystem>
 #include <stdexcept>
-#include <string>
-#include <sys/types.h>
-#include "ly_converter.hpp"
+#include "preprocessor.hpp"
 #include "../utility/tools.hpp"
 
 #ifndef _VECSTR_
 #define _VECSTR_(LST) std::vector<std::string>(LST)
 #endif
 
-using namespace hautbois;
+namespace hautbois {
+namespace preprocessor {
 
-struct InfoFile {
-  unsigned int _voices;
-  std::vector<std::string> _filenames;
-  std::vector<std::string> _note_types;
-  std::vector<std::string> _init_notes;
-  unsigned int _tempo;
-  unsigned int _meter_num;
-  unsigned int _meter_denom;
-  std::string _lang;
-};
 
 void readVoiceFile(const std::string& __fpath, LyConverter& __cvt) {
   std::filesystem::path filepath (__fpath);
@@ -211,12 +200,16 @@ void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
   __info._voices = __info._note_types.size();
 }
 
+} // namespace preprocessor
+} // namespace hautbois
+
+#ifdef __HB_PREPROCESSOR_MAIN__
 
 int main() {
   try {
-    InfoFile info;
-    readGlobalFile("__info", info);
-    writeToFile(info);
+    hautbois::preprocessor::InfoFile info;
+    hautbois::preprocessor::readGlobalFile("__info", info);
+    hautbois::preprocessor::writeToFile(info);
   }
   catch(std::invalid_argument& e) {
     std::cerr << "Invalid argument error occurred: \n" << e.what() << "\n"
@@ -235,5 +228,6 @@ int main() {
   }
 
 return 0;
-
 }
+
+#endif
