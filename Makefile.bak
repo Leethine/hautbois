@@ -1,7 +1,9 @@
-###__REPLACE_TEXT_TAG__###
+###__TEXT_REPLACE_TAG1__###
+###__TEXT_REPLACE_TAG2__###
 
 ifndef INSTALLATION_PATH
 INSTALLATION_PATH := /usr/local
+INSTALLATION_PATH_ESCAPE := \/usr\/local
 endif
 
 .PHONY: all test clean install uninstall
@@ -21,6 +23,8 @@ install : all
 	mkdir -p $(INSTALLATION_PATH)/bin
 	cp src/libHb.a $(INSTALLATION_PATH)/lib
 	cp src/engine/hb-preprocessor.bin $(INSTALLATION_PATH)/bin/hb-preprocessor
+	cp script/hb-build.sh $(INSTALLATION_PATH)/bin/hb-build
+	sed -i 's/###__TEXT_REPLACE_TAG__###/linked_lib_path=-L$(INSTALLATION_PATH_ESCAPE)/g' $(INSTALLATION_PATH)/bin/hb-build
 
 uninstall :
 	rm -f $(INSTALLATION_PATH)/lib/libHb.a
