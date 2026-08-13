@@ -15,28 +15,63 @@ class Duration;
 class Pitch;
 
 namespace synth {
-namespace stk_wav_writer {
+namespace stk_wv {
 
-/* Write empty buffer to WAV output */
-void writeMutedNote(stk::FileWvOut * __output,
-                    const unsigned int __tempo, const Duration * __duration,
-                    const unsigned int __divider, const unsigned  int __multiplier);
-
-/* Write single note buffer to WAV output */
+/* Write single note buffer to WAV output.
+ * If either __instr or __pitch is NULL, write empty buffer
+ */
 void writeSingleNote(stk::FileWvOut * __output,
                      const unsigned int __tempo, const Duration * __duration,
-                     const unsigned int __divider, const unsigned  int __multiplier,
-                     stk::Instrmnt * __instr, const Pitch * __pitch, const double __amplitude);
+                     stk::Instrmnt * __instr, const Pitch * __pitch, const double __amplitude,
+                     const unsigned int __divide_ratio, const unsigned  int __multiply_ratio,
+                     const Duration * __left_shift, const Duration * __right_shift);
 
 /* Write chord buffer to WAV output. */
 void writeChord(stk::FileWvOut * __output,
                 const unsigned int __tempo, const Duration * __duration,
-                const unsigned int __divider, const unsigned int __multiplier,
                 const std::vector<const Pitch *>&   __pitch_list,
                 const std::vector<stk::Instrmnt *>& __instr_list,
-                const std::vector<double>&          __amplitude_list);
+                const std::vector<double>&          __amplitude_list,
+                const unsigned int __divide_ratio, const unsigned int __multiply_ratio,
+                const Duration * __left_shift, const Duration * __right_shift);
 
-} // namespace stk_wav_writer
+void writeChordMonoInstrument(stk::FileWvOut * __output,
+                              const unsigned int __tempo, const Duration * __duration,
+                              const std::vector<const Pitch *>&  __pitch_list,
+                              stk::Instrmnt * __instr, double __amplitude,
+                              const unsigned int __divide_ratio, const unsigned int __multiply_ratio,
+                              const Duration * __left_shift, const Duration * __right_shift);
+
+
+/* Write chord buffer to WAV output, but each note has a left shift.
+ * Useful when creating arpeggio. */
+// Todo implement
+/*
+void writeChordDiff(stk::FileWvOut * __output,
+                    const unsigned int __tempo, const Duration * __duration,
+                    const std::vector<const Pitch *>&   __pitch_list,
+                    const std::vector<stk::Instrmnt *>& __instr_list,
+                    const std::vector<double>&          __amplitude_list,
+                    const unsigned int __divide_ratio, const unsigned int __multiply_ratio,
+                    std::vector<const Duration *> __left_shift_list);
+*/
+
+
+/* Dummy note wrappers */
+void writeMuteNoteDummy(stk::FileWvOut * __output,
+                        const unsigned int __tempo, const Duration * __duration);
+
+void writeSingleNoteDummy(stk::FileWvOut * __output,
+                          const unsigned int __tempo, const Duration * __duration,
+                          stk::Instrmnt * __instr, const Pitch * __pitch, const double __amplitude);
+
+/* Write chord buffer to WAV output. */
+void writeChordDummy(stk::FileWvOut * __output,
+                     const unsigned int __tempo, const Duration * __duration,
+                     const std::vector<const Pitch *>&  __pitch_list,
+                     stk::Instrmnt * __instr, const double __amplitude);
+
+} // namespace stk_wv
 } // namespace synth
 } // namespace hautbois
 
