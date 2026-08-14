@@ -13,6 +13,21 @@
 namespace hautbois {
 namespace synth {
 
+SingleNoteStkDummy::SingleNoteStkDummy(const std::string& __pitch, const std::string& __value) :
+  SingleNote(__pitch, __value) {
+  _instr = nullptr;
+}
+
+SingleNoteStkDummy::SingleNoteStkDummy(const SingleNote& __other) :
+  SingleNote(__other) {
+  _instr = nullptr;
+}
+
+SingleNoteStkDummy::SingleNoteStkDummy(const SingleNote&& __other) :
+  SingleNote(__other) {
+  _instr = nullptr;
+}
+
 void SingleNoteStkDummy::toStream(void * __output, void * __tempo, void * __amplitude, void * __freeTxtCtrl) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
   int * tempo_ptr = (int *) __tempo;
@@ -27,10 +42,23 @@ void SingleNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampl
   }
   else {
     stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, SingleNote::getDuration(0),
-      __instr, SingleNote::getPitch(0), *amp_ptr);
+      _instr, SingleNote::getPitch(0), *amp_ptr);
   }
 }
 
+
+ChordStkDummy::ChordStkDummy(const std::vector<std::string>& __pitch,
+                             const std::string& __value) : Chord(__pitch, __value) {
+  _instr = nullptr;
+}
+
+ChordStkDummy::ChordStkDummy(const Chord&  __other) : Chord(__other) {
+  _instr = nullptr;
+}
+
+ChordStkDummy::ChordStkDummy(const Chord&& __other) : Chord(__other) {
+  _instr = nullptr;
+}
 
 void ChordStkDummy::toStream(void * __output, void * __tempo, void * __amplitude, void * __freeTxtCtrl) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
@@ -48,9 +76,24 @@ void ChordStkDummy::toStream(void * __output, void * __tempo, void * __amplitude
   }
 
   stk_wv::writeChordDummy(__out, *tempo_ptr, Chord::getDuration(0),
-    pitch_list, __instr, *amp_ptr);
+    pitch_list, _instr, *amp_ptr);
 }
 
+
+GraceNoteStkDummy::GraceNoteStkDummy(
+  const std::vector<std::string>& __grace_notes,
+  const std::string& __pitch, const std::string& __value) : 
+  GraceNote(__grace_notes, __pitch, __value) {
+  _instr = nullptr;
+}
+
+GraceNoteStkDummy::GraceNoteStkDummy(const GraceNote&  __other) : GraceNote(__other) {
+  _instr = nullptr;
+}
+
+GraceNoteStkDummy::GraceNoteStkDummy(const GraceNote&& __other) : GraceNote(__other) {
+  _instr = nullptr;
+}
 
 void GraceNoteStkDummy::toStream(void * __output, void * __tempo, void * __amplitude, void * __freeTxtCtrl) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
@@ -72,7 +115,7 @@ void GraceNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampli
       d_total.plus(&duration_mod);
 
       stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, &duration_mod,
-        __instr, GraceNote::getNote(n)->getPitch(0), *amp_ptr);
+        _instr, GraceNote::getNote(n)->getPitch(0), *amp_ptr);
     }
   }
 
@@ -81,11 +124,25 @@ void GraceNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampli
     Duration duration_main (0,1);
     duration_main.plus(GraceNote::getNote(GraceNote::getSize()-1)->getDuration(0));
     duration_main.minus(&d_total);
-    stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, &duration_main, __instr,
+    stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, &duration_main, _instr,
       GraceNote::getNote(GraceNote::getSize()-1)->getPitch(0), *amp_ptr);
   }
 }
 
+
+TupletStkDummy::TupletStkDummy(const size_t __total, const size_t __value,
+                               const std::vector<std::string>& __notes) :
+  Tuplet(__total, __value, __notes) {
+  _instr = nullptr;
+}
+
+TupletStkDummy::TupletStkDummy(const Tuplet&  __other) : Tuplet(__other) {
+  _instr = nullptr;
+}
+
+TupletStkDummy::TupletStkDummy(const Tuplet&& __other) : Tuplet(__other) {
+  _instr = nullptr;
+}
 
 void TupletStkDummy::toStream(void * __output, void * __tempo, void * __amplitude, void * __freeTxtCtrl) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
@@ -126,7 +183,7 @@ void TupletStkDummy::toStream(void * __output, void * __tempo, void * __amplitud
         // Tuplet single note
         if (Tuplet::getNote(n)->isType(CHAR_NOTETYPE_SINGLE)) {
           stk_wv::writeSingleNote(__out, *tempo_ptr, &duration_mod,
-            __instr, Tuplet::getNote(n)->getPitch(0), *amp_ptr,
+            _instr, Tuplet::getNote(n)->getPitch(0), *amp_ptr,
             note_count, factor, nullptr, nullptr);
         }
         // Tuplet chord
@@ -141,7 +198,7 @@ void TupletStkDummy::toStream(void * __output, void * __tempo, void * __amplitud
           // write to output
           stk_wv::writeChordMonoInstrument(
           __out, *tempo_ptr, &duration_mod, pitch_list,
-            __instr, *amp_ptr,
+            _instr, *amp_ptr,
             note_count, factor, nullptr, nullptr);
         }
       }
