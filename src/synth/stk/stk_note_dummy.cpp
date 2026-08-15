@@ -4,10 +4,10 @@
 #include "../../hbtype/hbdefs.hpp"
 
 #include <algorithm>
-#include <cmath>
+#include <cstddef>
 #include <stdexcept>
-#include <stk/FileWvOut.h>
 #include <stk/Instrmnt.h>
+#include <stk/FileWvOut.h>
 #include <stk/WvOut.h>
 
 namespace hautbois {
@@ -30,19 +30,20 @@ SingleNoteStkDummy::SingleNoteStkDummy(const SingleNote&& __other) :
 
 void SingleNoteStkDummy::toStream(void * __output, void * __tempo, void * __amplitude, void * __freeTxtCtrl) const {
   stk::FileWvOut * __out = reinterpret_cast<stk::FileWvOut *>(__output);
-  int * tempo_ptr = (int *) __tempo;
+  
+  int * tempo_ptr = (int *)(__tempo);
   double * amp_ptr = (double *) __amplitude;
-  if (!(__out && tempo_ptr) && ((amp_ptr && !SingleNote::isMute()) || SingleNote::isMute())) {
+  if (!__out || ! tempo_ptr || ! amp_ptr) {
     HB_THROW_MSG(std::runtime_error, 
       "Runtime error, one of the argument is NULL, please check the args.");
   }
+  size_t bufferSize;
+  stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, SingleNote::getDuration());
+  double buffer[bufferSize + 1];
+  stk_buffer::writeToBuffer(buffer, bufferSize, _instr, SingleNote::getPitch(), *amp_ptr);
 
-  if (SingleNote::isMute()) {
-    stk_wv::writeMuteNoteDummy(__out, *tempo_ptr, SingleNote::getDuration(0));
-  }
-  else {
-    stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, SingleNote::getDuration(0),
-      _instr, SingleNote::getPitch(0), *amp_ptr);
+  for (size_t i = 0; i < bufferSize; i++) {
+    __out->tick(buffer[i]);
   }
 }
 
@@ -70,13 +71,17 @@ void ChordStkDummy::toStream(void * __output, void * __tempo, void * __amplitude
       "Runtime error, one of the argument is NULL, please check the params.");
   }
 
-  std::vector<const Pitch *> pitch_list;
+  size_t bufferSize;
+  stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, Chord::getDuration());
+  double buffer[bufferSize+1];
+  stk_buffer::clearBuffer(buffer, bufferSize);
   for (int i = 0; i < Chord::getSize(); i++) {
-    pitch_list.push_back(Chord::getPitch(i));
+    stk_buffer::writeToBuffer(buffer, bufferSize, _instr, Chord::getPitch(i), *amp_ptr);
   }
 
-  stk_wv::writeChordDummy(__out, *tempo_ptr, Chord::getDuration(0),
-    pitch_list, _instr, *amp_ptr);
+  for (size_t i = 0; i < bufferSize; i++) {
+    __out->tick(buffer[i]);
+  }
 }
 
 
@@ -105,6 +110,7 @@ void GraceNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampli
       "Runtime error, one of the argument is NULL, please check the params.");
   }
 
+  // process grace notes
   Duration d_total (0,1);
   for (int n = 0; n < GraceNote::getSize() - 1; n++) {
     if (GraceNote::getNote(n) && GraceNote::getNote(n)->getDuration(0)) {
@@ -114,18 +120,32 @@ void GraceNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampli
       duration_mod.divide(3);
       d_total.plus(&duration_mod);
 
-      stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, &duration_mod,
-        _instr, GraceNote::getNote(n)->getPitch(0), *amp_ptr);
+      size_t bufferSize;
+      stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, &duration_mod);
+      double buffer[bufferSize+1];
+      stk_buffer::clearBuffer(buffer, bufferSize);
+      stk_buffer::writeToBuffer(buffer, bufferSize, _instr, GraceNote::getNote(n)->getPitch(0), *amp_ptr);
+      for (size_t i = 0; i < bufferSize; i++) {
+        __out->tick(buffer[i]);
+      }
     }
   }
 
-  if (GraceNote::getNote(GraceNote::getSize()-1) &&
-      GraceNote::getNote(GraceNote::getSize()-1)->getDuration(0)) {
+  // process main note
+  const Note * main_note = GraceNote::getNote(GraceNote::getSize()-1);
+  if (main_note && main_note->getDuration(0)) {
     Duration duration_main (0,1);
     duration_main.plus(GraceNote::getNote(GraceNote::getSize()-1)->getDuration(0));
     duration_main.minus(&d_total);
-    stk_wv::writeSingleNoteDummy(__out, *tempo_ptr, &duration_main, _instr,
-      GraceNote::getNote(GraceNote::getSize()-1)->getPitch(0), *amp_ptr);
+    size_t bufferSize;
+    stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, &duration_main);
+    double buffer[bufferSize+1];
+    stk_buffer::clearBuffer(buffer, bufferSize);
+    stk_buffer::writeToBuffer(buffer, bufferSize, _instr,
+                              main_note->getPitch(0), *amp_ptr);
+    for (size_t i = 0; i < bufferSize; i++) {
+      __out->tick(buffer[i]);
+    }
   }
 }
 
@@ -168,39 +188,38 @@ void TupletStkDummy::toStream(void * __output, void * __tempo, void * __amplitud
       HB_THROW_MSG(std::runtime_error, "Invalid Tuplet format encountered: " + tuplet_notevalue);
     }
 
-    Duration note_duration(tuplet_notevalue);
-    int note_count = Tuplet::getDuration(Tuplet::getSize())->getNum();
+    // Fetch duration reshaping info
+    Duration tuplet_duration(tuplet_notevalue);
+    int tuplet_count = Tuplet::getDuration(Tuplet::getSize())->getNum();
+    int mul = 2;
+    int div = tuplet_count;
+    if (tuplet_notevalue.find('.') != std::string::npos) {
+      mul = 3;
+    }
 
-    for (int n = 0; n < Tuplet::getSize(); n++) {
-      if (Tuplet::getNote(n) && Tuplet::getNote(n)->getDuration(0)) {
-        // calculate reshaped note value
-        int denom = Tuplet::getNote(n)->getDuration(0)->getDenom();
-        int num = Tuplet::getNote(n)->getDuration(0)->getNum();
-        Duration duration_mod (num, denom);
-        double factor_d = ((double) note_duration.getNum() / note_duration.getDenom()) / ((double) num / denom);
-        int factor = int(std::round(factor_d));
+    // for each note, write to out buffer
+    for (int n = 0; n < Tuplet::getSize(); n++) { 
+      const Note * note_ptr = Tuplet::getNote(n);
+      // calculate buffer size first, does not matter single note or chord
+      size_t bufferSize;
+      stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, note_ptr->getDuration(0), div, mul);
+      double buffer[bufferSize + 1];
+      stk_buffer::clearBuffer(buffer, bufferSize);
 
-        // Tuplet single note
-        if (Tuplet::getNote(n)->isType(CHAR_NOTETYPE_SINGLE)) {
-          stk_wv::writeSingleNote(__out, *tempo_ptr, &duration_mod,
-            _instr, Tuplet::getNote(n)->getPitch(0), *amp_ptr,
-            note_count, factor, nullptr, nullptr);
+      // Write pitch if single note
+      if (note_ptr && note_ptr->isType(CHAR_NOTETYPE_SINGLE)) {
+        stk_buffer::writeToBuffer(buffer, bufferSize, _instr, note_ptr->getPitch(0), *amp_ptr);
+      }
+      // Write pitch if chord note
+      else if (note_ptr && note_ptr->isType(CHAR_NOTETYPE_CHORD)) {
+        for (int i = 0; i < note_ptr->getSize(); i++) {
+          stk_buffer::writeToBuffer(buffer, bufferSize, _instr, note_ptr->getPitch(i), *amp_ptr);
         }
-        // Tuplet chord
-        else if (Tuplet::getNote(n)->isType(CHAR_NOTETYPE_CHORD)) {
-          const Note * note_ptr = Tuplet::getNote(n);
+      }
 
-          // save all pitches to a list
-          std::vector<const Pitch *> pitch_list;
-          for (int i = 0; i < note_ptr->getSize(); i++) {
-            pitch_list.push_back(note_ptr->getPitch(i));
-          }
-          // write to output
-          stk_wv::writeChordMonoInstrument(
-          __out, *tempo_ptr, &duration_mod, pitch_list,
-            _instr, *amp_ptr,
-            note_count, factor, nullptr, nullptr);
-        }
+      // write to wav output file
+      for (size_t i = 0; i < bufferSize; i++) {
+        __out->tick(buffer[i]);
       }
     }
   }
