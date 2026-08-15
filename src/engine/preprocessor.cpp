@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstring>
 #include <fstream>
+#include <iostream>
 #include <filesystem>
 #include <stdexcept>
 #include "preprocessor.hpp"
@@ -97,6 +98,7 @@ void writeToFile(const InfoFile& __info) {
     writeHeader(fs);
 
     for (unsigned int i = 0; i < __info._voices; i++) {
+      std::cout << "Reading voice file: '" << __info._filenames[i] << "' ..." << std::endl;
       writeBody(fs, __info, i);
     }
 
@@ -105,6 +107,8 @@ void writeToFile(const InfoFile& __info) {
 }
 
 void readGlobalFile(const std::string& __fpath, InfoFile& __info) {
+  std::cout << "Reading __info file..." << std::endl; 
+
   std::filesystem::path filepath (__fpath);
   if (!(std::filesystem::exists(filepath) && std::filesystem::is_regular_file(filepath))) {
     throw std::runtime_error("Info file \'" + __fpath + "\' does not exist or is invalid.");

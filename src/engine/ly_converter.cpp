@@ -3,13 +3,13 @@
 #include "../utility/tools.hpp"
 #include "../hbtype/hbdefs.hpp"
 
+#include <array>
 #include <cctype>
 #include <cstddef>
 #include <unordered_map>
 #include <stdexcept>
 #include <algorithm>
 #include <string>
-#include <cmath>
 
 #ifndef STD_VECTOR_STR
 #define STD_VECTOR_STR std::string("_VECSTR_")
@@ -18,8 +18,6 @@
 namespace hautbois {
 
 bool LyConverter::validateNoteValue(const std::string& __value) const {
-  int sqrt_v;
-  int orig_v; 
   std::string val (__value);
   std::string dots;
   while (!val.empty() && val.back() == '.') {
@@ -27,9 +25,11 @@ bool LyConverter::validateNoteValue(const std::string& __value) const {
     val.pop_back();
   }
   try {
-    orig_v = std::stoi(val);
-    sqrt_v = std::sqrt(orig_v);
-    return orig_v > 0 && orig_v < 129 && sqrt_v * sqrt_v == orig_v && dots.size() < 3;
+    int converted_value = std::stoi(val);
+    return
+      std::find(_valid_duration.begin(), _valid_duration.end(),
+        converted_value) != _valid_duration.end()
+      && dots.size() < 3;
   }
   catch(std::invalid_argument&) {
     return false;
@@ -400,9 +400,16 @@ std::string LyConverter::convertGrace(const std::string& __input) {
 
 
 LyConverter::LyConverter(const std::string& __lang, const std::string& __init_note, bool __relative_mode) :
-  _ly_pitch_chart (), _ly_abs_octave_chart (), _ly_rel_octave_chart (), _ly_pitch_index (),
+  _ly_pitch_chart (), _ly_abs_octave_chart (), _ly_rel_octave_chart (), _ly_pitch_index (), _valid_duration (),
   _last_pitch (), _last_oct_abs (4), _last_notevalue (), _note_types (), _converted_args (),
   _relative_mode (__relative_mode) {
+
+  // set valid note values
+  std::array<int, 8> valid_values_arr { 1, 2, 4, 8, 16, 32, 64, 128 };
+  _valid_duration.reserve(8);
+  for (int val : valid_values_arr) {
+    _valid_duration.push_back(val);
+  }
 
   std::unordered_map<std::string, std::string> tmp_name_chart;
   std::unordered_map<std::string, int>         tmp_name_index;

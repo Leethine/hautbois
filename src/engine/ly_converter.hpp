@@ -19,6 +19,7 @@ private:
   std::map<std::string, int> _ly_abs_octave_chart;
   std::map<std::string, int> _ly_rel_octave_chart;
   std::map<std::string, int> _ly_pitch_index;
+  std::vector<int> _valid_duration;
 
   std::string _last_pitch;
   int _last_oct_abs;
