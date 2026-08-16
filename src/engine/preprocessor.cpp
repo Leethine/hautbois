@@ -60,7 +60,7 @@ void writeFooter(std::ostream& __ostream) {
 
 void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned int __voice) {
   auto& fs = __ostream;
-    
+
   // voice declaration
   std::string voicename ("voice" + std::to_string(__voice));
   std::string voicename_upper (voicename);
@@ -77,7 +77,7 @@ void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned i
   LyConverter cvt(__info._lang, __info._init_notes[__voice]);
   readVoiceFile(__info._filenames[__voice], cvt);
   for (size_t i = 0; i < cvt.size(); i++) {
-    fs << voicename << ".addnote(" << cvt.getArgs(i) << ");\n";
+    fs << voicename << ".addNote(" << cvt.getArgs(i) << ");\n";
   }
   fs << "//////// END " << voicename_upper << "////////\n";
 }

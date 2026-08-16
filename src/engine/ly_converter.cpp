@@ -98,7 +98,7 @@ void LyConverter::parseSingleNote(const std::string& __input, std::string& __o_p
   if (!validateSingleNote(__o_pitch, __o_value)) {
     HB_THROW_MSG(std::invalid_argument, "Invalid note: " + __input);
   }
-  if (_relative_mode) {
+  if (_relative_mode && __o_pitch != "r" && __o_pitch != "s") { // no need to convert rest or silence note
     int abs_oct = findAbsOctaveFromLast(
         _last_pitch, _last_oct_abs, __o_pitch, __o_octave);
     __o_octave = abs_oct;
@@ -201,6 +201,10 @@ void LyConverter::parseChord(const std::string& __input, std::vector<std::string
 }
 
 std::string LyConverter::convertSingle(const std::string& __input) {
+  if (__input.empty()) {
+    HB_THROW(std::invalid_argument);
+  }
+
   std::string pitchname;
   int octave;
   std::string notevalue;
@@ -208,17 +212,29 @@ std::string LyConverter::convertSingle(const std::string& __input) {
   HB_NESTED_THROW(std::invalid_argument,
     parseSingleNote(__input, pitchname, octave, notevalue);
   )
-  // update previous note
-  _last_pitch = pitchname;
-  _last_oct_abs = octave;
+  // update previous note in case of non-rest non-silence
+  if (pitchname != "r" && pitchname != "s") {
+    _last_pitch = pitchname;
+    _last_oct_abs = octave;
+  }
   _last_notevalue = notevalue;
 
-  return tools::quote_str(_ly_pitch_chart.at(pitchname) + 
-    std::to_string(octave))  + "," + tools::quote_str(notevalue);
+  if (pitchname == "r" || pitchname == "s") {
+    return tools::quote_str(_ly_pitch_chart.at(pitchname)) +
+      "," + tools::quote_str(notevalue);
+  }
+  else {
+    return tools::quote_str(_ly_pitch_chart.at(pitchname) + 
+      std::to_string(octave))  + "," + tools::quote_str(notevalue);
+  }
 }
 
 
 std::string LyConverter::convertChord(const std::string& __input) {
+  if (__input.empty()) {
+    HB_THROW(std::invalid_argument);
+  }
+
   std::vector<std::string> pitch_list;
   std::vector<int> octave_list;
   std::string note_value;
@@ -328,15 +344,22 @@ std::string LyConverter::convertTuplet(const std::string& __input) {
       HB_NESTED_THROW(std::invalid_argument, 
         parseSingleNote(current_note, pitchname, octave, notevalue);
       )
-      // update previous note
-      _last_pitch     = pitchname;
-      _last_oct_abs   = octave;
+      // update previous note but do not save "r" and "s"
+      if (pitchname != "r" && pitchname != "s") {
+        _last_pitch = pitchname;
+        _last_oct_abs = octave;
+      }
       _last_notevalue = notevalue;
 
       // add to processed note list
-      note_list_processed.push_back(tools::quote_str(
-        _ly_pitch_chart.at(pitchname) + std::to_string(octave)
-      ));
+      if (pitchname == "r" || pitchname == "s") {
+        note_list_processed.push_back(tools::quote_str(_ly_pitch_chart.at(pitchname)));
+      }
+      else {
+        note_list_processed.push_back(tools::quote_str(
+          _ly_pitch_chart.at(pitchname) + std::to_string(octave)
+        ));
+      }
       note_list_processed.push_back(tools::quote_str(notevalue));
     }
   }
@@ -348,7 +371,7 @@ std::string LyConverter::convertTuplet(const std::string& __input) {
 }
 
 std::string LyConverter::convertGrace(const std::string& __input) {
- if (__input.empty()) {
+  if (__input.empty()) {
     HB_THROW(std::invalid_argument);
   }
 
@@ -548,7 +571,9 @@ void LyConverter::readFromStream(std::istream& __stream) {
       _note_types.push_back(CHAR_NOTETYPE_GRACE);
       input_str.clear();
     }
-    else {
+    else if (std::find_if(input_str.begin(), input_str.end(), 
+                          [](char c) { return std::isalnum(c); })
+             == input_str.end()) {
       // defaulted as single note
       _converted_args.push_back(convertSingle(input_str));
       _note_types.push_back(CHAR_NOTETYPE_SINGLE);
