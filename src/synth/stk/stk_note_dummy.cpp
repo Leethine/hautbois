@@ -40,6 +40,7 @@ void SingleNoteStkDummy::toStream(void * __output, void * __tempo, void * __ampl
   size_t bufferSize;
   stk_buffer::calculateBufferSize(bufferSize, *tempo_ptr, SingleNote::getDuration());
   double buffer[bufferSize + 1];
+  stk_buffer::clearBuffer(buffer, bufferSize);
   stk_buffer::writeToBuffer(buffer, bufferSize, _instr, SingleNote::getPitch(), *amp_ptr);
 
   for (size_t i = 0; i < bufferSize; i++) {
