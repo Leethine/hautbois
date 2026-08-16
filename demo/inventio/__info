@@ -1,0 +1,17 @@
+BEGIN
+lang: it
+meter: 4/4
+tempo: 60
+END
+
+BEGIN
+score: voice1.hb
+notetype: MANDOLIN_NOTE_TYPES
+initnote: do16
+END
+
+BEGIN
+score: voice2.hb
+notetype: MANDOLIN_NOTE_TYPES
+initnote: do,16
+END
