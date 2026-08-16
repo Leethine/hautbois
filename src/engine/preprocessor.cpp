@@ -9,7 +9,7 @@
 #include "../utility/tools.hpp"
 
 #ifndef _VECSTR_
-#define _VECSTR_(LST) std::vector<std::string>(LST)
+#define _VECSTR_ std::vector<std::string>
 #endif
 
 namespace hautbois {
@@ -39,7 +39,7 @@ void writeHeader(std::ostream& __ostream) {
      << "#include \"hautbois/stk_note.hpp\"\n"
      << "#include \"hautbois/basic_voice.hpp\"\n"
      << "#include <stk/FileWvOut.h>\n"
-     << "#define _VECSTR_(LST) std::vector<std::string>(LST)\n\n";
+     << "#define _VECSTR_ std::vector<std::string>\n\n";
 
   os << "using namespace hautbois;\n"
      << "using namespace synth;\n\n"

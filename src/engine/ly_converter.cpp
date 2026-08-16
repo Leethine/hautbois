@@ -367,7 +367,7 @@ std::string LyConverter::convertTuplet(const std::string& __input) {
   // convert dots to 0 (as required by hautbois::Tuplet constructor)
   std::replace(tuplet_duration.begin(), tuplet_duration.end(), '.', '0');
   return tuplet_count + "," + tuplet_duration + "," + STD_VECTOR_STR +
-    "(" + tools::jointstring(note_list_processed, ',') + ")";
+    "({" + tools::jointstring(note_list_processed, ',') + "})";
 }
 
 std::string LyConverter::convertGrace(const std::string& __input) {
@@ -417,7 +417,7 @@ std::string LyConverter::convertGrace(const std::string& __input) {
   std::string main_pitch = note_list_processed.back();
   note_list_processed.pop_back();
 
-  return STD_VECTOR_STR + "(" + tools::jointstring(note_list_processed, ',') + ")," +
+  return STD_VECTOR_STR + "({" + tools::jointstring(note_list_processed, ',') + "})," +
     main_pitch + "," + main_value;
 }
 
