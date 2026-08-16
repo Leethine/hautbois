@@ -25,7 +25,7 @@ void readVoiceFile(const std::string& __fpath, LyConverter& __cvt);
 
 void writeHeader(std::ostream& __ostream);
 
-void writeFooter(std::ostream& __ostream);
+void writeFooter(std::ostream& __ostream, const InfoFile& __info);
 
 void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned int __voice);
 

@@ -34,28 +34,40 @@ void readVoiceFile(const std::string& __fpath, LyConverter& __cvt) {
 
 void writeHeader(std::ostream& __ostream) {
   auto& os = __ostream;
-  os << "#include <string> \n"
-     << "#include <vector> \n"
-     << "#include <iostream> \n"
-     << "#include \"hautbois/hb_note.hpp\" \n"
-     << "#include \"hautbois/basic_voice.hpp\" \n"
-     << "#include \"hautbois/hb_defs.hpp\" \n";
+  os << "#include <iostream>\n"
+     << "#include \"hautbois/note.hpp\"\n"
+     << "#include \"hautbois/stk_note.hpp\"\n"
+     << "#include \"hautbois/basic_voice.hpp\"\n"
+     << "#include <stk/FileWvOut.h>\n"
+     << "#define _VECSTR_(LST) std::vector<std::string>(LST)\n\n";
 
-  os << "using namespace hautbois; \n\n"
+  os << "using namespace hautbois;\n"
+     << "using namespace synth;\n\n"
      << "int main() { \n"
      << "try {\n\n"
      << "//////// BEGIN VOICES ////////\n\n";
 }
 
-void writeFooter(std::ostream& __ostream) {
+void writeFooter(std::ostream& __ostream, const InfoFile& __info) {
   auto& os = __ostream;
-  os << "\n//////// END VOICES ////////\n\n}\n"
-     << "catch(const std::invalid_argument&) { std::cerr << e.what() << std::endl; }\n"
-     << "catch(const std::runtime_error&)    { std::cerr << e.what() << std::endl; }\n"
-     << "catch(const std::out_of_range&)     { std::cerr << e.what() << std::endl; }\n";
+  os << "\n//////// END VOICES ////////\n\n"
+     << "double amp = 0.6;\n"
+     << "int tempo = " << __info._tempo << ";\n"
+     << "stk::FileWvOut output;\n";
 
-  os << "} //try \n\n"
-     << "return 0;\n} //main";
+  for (size_t n = 0; n < __info._voices; n++) {
+    os << "output.openFile(\"" << "voice" << n << ".wav\", 1, stk::FileWrite::FILE_WAV, stk::Stk::STK_SINT16);\n"
+       << "for (size_t i = 0; i < " << "voice" << n << ".size(); i++) {\n"
+       << "voice" << n << ".getNote(i)->toStream(&output, &tempo, &amp, nullptr);"
+       << "\n}\n"
+       << "output.closeFile();\n\n";
+  }
+  os << "} //try\n"
+     << "catch(const std::invalid_argument& e) { std::cerr << e.what() << std::endl; }\n"
+     << "catch(const std::runtime_error& e)    { std::cerr << e.what() << std::endl; }\n"
+     << "catch(const std::out_of_range& e)     { std::cerr << e.what() << std::endl; }\n";
+
+  os << "\n\nreturn 0;\n} //main";
 }
 
 void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned int __voice) {
@@ -72,7 +84,7 @@ void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned i
      << std::to_string(__info._meter_num) << ","
      << std::to_string(__info._meter_num) << ","
      << std::to_string(__info._tempo) + ");\n" ;
-  
+
   // write notes
   LyConverter cvt(__info._lang, __info._init_notes[__voice]);
   readVoiceFile(__info._filenames[__voice], cvt);
@@ -102,7 +114,7 @@ void writeToFile(const InfoFile& __info) {
       writeBody(fs, __info, i);
     }
 
-    writeFooter(fs);
+    writeFooter(fs, __info);
     //////////
 }
 

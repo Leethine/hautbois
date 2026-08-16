@@ -573,7 +573,7 @@ void LyConverter::readFromStream(std::istream& __stream) {
     }
     else if (std::find_if(input_str.begin(), input_str.end(), 
                           [](char c) { return std::isalnum(c); })
-             == input_str.end()) {
+             != input_str.end()) {
       // defaulted as single note
       _converted_args.push_back(convertSingle(input_str));
       _note_types.push_back(CHAR_NOTETYPE_SINGLE);
