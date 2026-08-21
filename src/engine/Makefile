@@ -18,7 +18,7 @@ all : $(TARGET)
 	$(CC) $(CCFLAGS) $(DEPFLAGS) -c $< -o $@
 
 hb-preprocessor.bin : $(SRCS)
-	$(CC) $(CCFLAGS) $(DEPFLAGS) $(CCMACROS) $(SRCS) -o hb-preprocessor.bin
+	$(CC) $(CCFLAGS) $(DEPFLAGS) $(CCMACROS) preprocessor.cpp ly_converter.cpp -o hb-preprocessor.bin
 
 clean :
 	rm -f *.o *.bin
