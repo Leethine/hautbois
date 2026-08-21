@@ -6,12 +6,12 @@ END
 
 BEGIN
 score: voice1.hb
-notetype: MANDOLIN_NOTE_TYPES
+notetype: MandolinDummy
 initnote: do16
 END
 
 BEGIN
 score: voice2.hb
-notetype: MANDOLIN_NOTE_TYPES
+notetype: MandolinDummy
 initnote: do,16
 END
