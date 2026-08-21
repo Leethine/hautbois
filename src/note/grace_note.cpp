@@ -8,6 +8,58 @@
 
 namespace hautbois {
 
+// using base class method
+GraceNote::~GraceNote() {}
+
+char GraceNote::getType() const {
+  return Note::getType();
+}
+
+bool GraceNote::isType(const char __note_type) const {
+  return Note::isType(__note_type);
+}
+
+bool GraceNote::isMute() const {
+  return false;
+}
+
+bool GraceNote::isTied(const size_t __pos) const {
+  if (GraceNote::getNote(__pos)) {
+    return GraceNote::getNote(__pos)->isTied(0);
+  }
+  return false;
+}
+
+const Pitch * GraceNote::getPitch(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getPitch(0);
+  }
+  return nullptr;
+}
+
+const Duration * GraceNote::getDuration(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getDuration(0);
+  }
+  return nullptr;
+}
+
+const Property * GraceNote::getProperty(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getProperty(0);
+  }
+  return nullptr;
+}
+
+const Note * GraceNote::getNote(const size_t __pos) const {
+  return Note::getNote(__pos);
+}
+
+int GraceNote::getSize() const {
+  return Note::getSize();
+}
+
+// constructor
 GraceNote::GraceNote(
   const std::vector<std::string>& __grace_notes, const std::string& __pitch,
   const std::string& __value) : Note(CHAR_NOTETYPE_GRACE) {

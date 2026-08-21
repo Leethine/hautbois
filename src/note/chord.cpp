@@ -11,6 +11,54 @@
 
 namespace hautbois {
 
+Chord::~Chord() {
+}
+
+// Using base class method
+char Chord::getType() const {
+  return Note::getType();
+}
+
+bool Chord::isType(const char __note_type) const {
+  return Note::isType(__note_type);
+}
+
+bool Chord::isMute() const {
+  return false;
+}
+
+bool Chord::isTied(const size_t __pos) const {
+  if (Chord::getNote(__pos)) {
+    return Chord::getNote(__pos)->isTied(0);
+  }
+  return false;
+}
+
+const Pitch * Chord::getPitch(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getPitch(0);
+  }
+  return nullptr;
+}
+
+const Duration * Chord::getDuration(const size_t __pos) const {
+  return Note::getDuration(0);
+}
+
+const Property * Chord::getProperty(const size_t __pos) const {
+  return Note::getProperty(0);
+}
+
+const Note * Chord::getNote(const size_t __pos) const {
+  return Note::getNote(__pos);
+}
+
+int Chord::getSize() const {
+  return Note::getSize();
+}
+
+
+// Concstructor
 Chord::Chord(const std::vector<std::string>& __pitch, const std::string& __value) :
   Note(CHAR_NOTETYPE_CHORD) {
 

@@ -13,68 +13,30 @@ public:
 
 public:
 
-  inline virtual ~Tuplet() {}
+  virtual ~Tuplet();
 
-  inline virtual char getType() const {
-    return Note::getType();
-  }
-
-  inline virtual bool isType(const char __note_type) const {
-    return Note::isType(__note_type);
-  }
-
-  inline virtual bool isMute() const {
-    return false;
-  }
-
-  inline virtual bool isTied(const size_t __pos = 0) const {
-    if (Tuplet::getNote(__pos)) {
-      return Tuplet::getNote(__pos)->isTied(0);
-    }
-    return false;
-  }
+  virtual char getType() const;
+  virtual bool isType(const char __note_type) const;
+  virtual bool isMute() const;
+  virtual bool isTied(const size_t __pos = 0) const;
 
   /* getPitch will return the pitch of the corresponding note in Note::_notes */
-  inline virtual const Pitch * getPitch(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getPitch(0);
-    }
-    return nullptr;
-  }
+  virtual const Pitch * getPitch(const size_t __pos = 0) const;
 
   /* getDuration will return the duration of the corresponding note in Note::_notes
    * However, if getSize() is passed as argument, it will return Note::_duration,
    * i.e. the dividable value of the tuplet (e.g. total note count such as <3,5,7,...> / total note value)
    */
-  inline virtual const Duration * getDuration(const size_t __pos = 0) const {
-    if (__pos == (size_t) Tuplet::getSize()) {
-      return Note::getDuration(0);
-    }
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getDuration(0);
-    }
-    return nullptr;
-  }
+  virtual const Duration * getDuration(const size_t __pos = 0) const;
 
   /* getProperty will return the property of the corresponding note in Note::_notes */
-  inline virtual const Property * getProperty(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getProperty(0);
-    }
-    return nullptr;
-  }
+  virtual const Property * getProperty(const size_t __pos = 0) const;
 
   /* getNote will return the note in Note::_notes */
-  inline virtual const Note * getNote(const size_t __pos = 0) const {
-    return Note::getNote(__pos);
-  }
+  virtual const Note * getNote(const size_t __pos = 0) const;
 
   /* getSize will return the size of Note::_notes */
-  inline virtual int getSize() const {
-    return Note::getSize();
-  }
-
-  // Implemented in tuplet.cpp
+  virtual int getSize() const;
 
   /* Tuplet constructor 
    * @param __total : total number of notes to divide the duration

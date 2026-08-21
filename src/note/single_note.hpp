@@ -11,51 +11,28 @@ class SingleNote : public Note {
 
 public:
 
-  inline virtual ~SingleNote() {}
+  virtual ~SingleNote();
 
-  inline virtual char getType() const {
-    return Note::getType();
-  }
-
-  inline virtual bool isType(const char __note_type) const {
-    return Note::isType(__note_type);
-  }
-
-  inline virtual bool isMute() const {
-    return Note::isMute();
-  }
+  virtual char getType() const;
+  virtual bool isType(const char __note_type) const;
+  virtual bool isMute() const;
 
   /* Simply return class member Note::_tied */
-  inline virtual bool isTied(const size_t __pos = 0) const {
-    return Note::isTied(0);
-  }
+  virtual bool isTied(const size_t __pos = 0) const;
 
   /* Simply return class member Note::_pitch */
-  inline virtual const Pitch * getPitch(const size_t __pos = 0) const {
-    return Note::getPitch(0);
-  }
+  virtual const Pitch * getPitch(const size_t __pos = 0) const;
 
   /* Simply return class member Note::_duration */
-  inline virtual const Duration * getDuration(const size_t __pos = 0) const {
-    return Note::getDuration(0);
-  }
+  virtual const Duration * getDuration(const size_t __pos = 0) const;
 
   /* Simply return class member Note::_property */
-  inline virtual const Property * getProperty(const size_t __pos = 0) const {
-    return Note::getProperty(0);
-  }
+  virtual const Property * getProperty(const size_t __pos = 0) const;
 
   /* SingleNote does not have appended notes as member */
-  inline virtual const Note * getNote(const size_t __pos = 0) const {
-    return nullptr;
-  }
+  virtual const Note * getNote(const size_t __pos = 0) const;
 
-  inline virtual int getSize() const {
-    if (Note::getPitch(0)) {
-      return 1;
-    }
-    return 0;
-  }
+  virtual int getSize() const;
 
 
   // Implemented in single_note.cpp

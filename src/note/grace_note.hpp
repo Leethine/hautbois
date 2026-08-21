@@ -11,60 +11,26 @@ class GraceNote : public Note {
 
 public:
 
-  inline virtual ~GraceNote() {}
-
-  inline virtual char getType() const {
-    return Note::getType();
-  }
-
-  inline virtual bool isType(const char __note_type) const {
-    return Note::isType(__note_type);
-  }
-
-  inline virtual bool isMute() const {
-    return false;
-  }
-
-  inline virtual bool isTied(const size_t __pos = 0) const {
-    if (GraceNote::getNote(__pos)) {
-      return GraceNote::getNote(__pos)->isTied(0);
-    }
-    return false;
-  }
+  virtual ~GraceNote();
+  virtual char getType() const;
+  virtual bool isType(const char __note_type) const;
+  virtual bool isMute() const;
+  virtual bool isTied(const size_t __pos = 0) const;
 
   /* getPitch will return the pitch of the corresponding note in Note::_notes */
-  inline virtual const Pitch * getPitch(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getPitch(0);
-    }
-    return nullptr;
-  }
+  virtual const Pitch * getPitch(const size_t __pos = 0) const;
 
   /* getDuration will return the duration of the corresponding note in Note::_notes */
-  inline virtual const Duration * getDuration(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getDuration(0);
-    }
-    return nullptr;
-  }
+  virtual const Duration * getDuration(const size_t __pos = 0) const;
 
   /* getProperty will return the property of the corresponding note in Note::_notes */
-  inline virtual const Property * getProperty(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getProperty(0);
-    }
-    return nullptr;
-  }
+  virtual const Property * getProperty(const size_t __pos = 0) const;
 
   /* getNote will return the note in Note::_notes */
-  inline virtual const Note * getNote(const size_t __pos = 0) const {
-    return Note::getNote(__pos);
-  }
+  virtual const Note * getNote(const size_t __pos = 0) const;
 
   /* getSize will return the size of Note::_notes */
-  inline virtual int getSize() const {
-    return Note::getSize();
-  }
+  virtual int getSize() const;
 
   // Implemented in grace_note.cpp
   GraceNote(const std::vector<std::string>& __grace_notes,

@@ -11,55 +11,26 @@ class Chord : public Note {
 
 public:
 
-  inline virtual ~Chord() {}
-
-  inline virtual char getType() const {
-    return Note::getType();
-  }
-
-  inline virtual bool isType(const char __note_type) const {
-    return Note::isType(__note_type);
-  }
-
-  inline virtual bool isMute() const {
-    return false;
-  }
-
-  inline virtual bool isTied(const size_t __pos = 0) const {
-    if (Chord::getNote(__pos)) {
-      return Chord::getNote(__pos)->isTied(0);
-    }
-    return false;
-  }
+  virtual ~Chord();
+  virtual char getType() const;
+  virtual bool isType(const char __note_type) const;
+  virtual bool isMute() const;
+  virtual bool isTied(const size_t __pos = 0) const;
 
   /* getPitch will return the pitch of the corresponding note in Note::_notes */
-  inline virtual const Pitch * getPitch(const size_t __pos = 0) const {
-    if (Note::getNote(__pos)) {
-      return Note::getNote(__pos)->getPitch(0);
-    }
-    return nullptr;
-  }
+  virtual const Pitch * getPitch(const size_t __pos = 0) const;
 
   /* getDuration will return Note::_duration */
-  inline virtual const Duration * getDuration(const size_t __pos = 0) const {
-    return Note::getDuration(0);
-  }
+  virtual const Duration * getDuration(const size_t __pos = 0) const;
 
   /* getProperty will return Note::_property */
-  inline virtual const Property * getProperty(const size_t __pos = 0) const {
-    return Note::getProperty(0);
-  }
+  virtual const Property * getProperty(const size_t __pos = 0) const;
 
   /* getNote will return the note in Note::_notes */
-  inline virtual const Note * getNote(const size_t __pos = 0) const {
-    return Note::getNote(__pos);
-  }
-
+  virtual const Note * getNote(const size_t __pos = 0) const;
+  
   /* getSize will return the size of Note::_notes */
-  inline virtual int getSize() const {
-    return Note::getSize();
-  }
-
+  virtual int getSize() const;
 
   // Implemented in chord.cpp
   Chord(const std::vector<std::string>& __pitch, const std::string& __value);

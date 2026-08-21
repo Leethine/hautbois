@@ -14,6 +14,62 @@
 
 namespace hautbois {
 
+// Using base class method
+Tuplet::~Tuplet() {
+}
+
+char Tuplet::getType() const {
+  return Note::getType();
+}
+
+bool Tuplet::isType(const char __note_type) const {
+  return Note::isType(__note_type);
+}
+
+bool Tuplet::isMute() const {
+  return false;
+}
+
+bool Tuplet::isTied(const size_t __pos) const {
+  if (Tuplet::getNote(__pos)) {
+    return Tuplet::getNote(__pos)->isTied(0);
+  }
+  return false;
+}
+
+const Pitch * Tuplet::getPitch(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getPitch(0);
+  }
+  return nullptr;
+}
+
+const Duration * Tuplet::getDuration(const size_t __pos) const {
+  if (__pos == (size_t) Tuplet::getSize()) {
+    return Note::getDuration(0);
+  }
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getDuration(0);
+  }
+  return nullptr;
+}
+
+const Property * Tuplet::getProperty(const size_t __pos) const {
+  if (Note::getNote(__pos)) {
+    return Note::getNote(__pos)->getProperty(0);
+  }
+  return nullptr;
+}
+
+const Note * Tuplet::getNote(const size_t __pos) const {
+  return Note::getNote(__pos);
+}
+
+int Tuplet::getSize() const {
+  return Note::getSize();
+}
+
+// constructor
 Tuplet::Tuplet(const size_t __total, const size_t __value,
   const std::vector<std::string>& __notes) : Note(CHAR_NOTETYPE_TUPLET) {
 

@@ -5,7 +5,50 @@
 #include <utility>
 
 namespace hautbois {
-SingleNote::
+
+// Using base class method
+SingleNote::~SingleNote() {}
+
+char SingleNote::getType() const {
+  return Note::getType();
+}
+
+bool SingleNote::isType(const char __note_type) const {
+  return Note::isType(__note_type);
+}
+
+bool SingleNote::isMute() const {
+  return Note::isMute();
+}
+
+bool SingleNote::isTied(const size_t __pos) const {
+  return Note::isTied(0);
+}
+
+const Pitch * SingleNote::getPitch(const size_t __pos) const {
+  return Note::getPitch(0);
+}
+
+const Duration * SingleNote::getDuration(const size_t __pos) const {
+  return Note::getDuration(0);
+}
+
+const Property * SingleNote::getProperty(const size_t __pos) const {
+  return Note::getProperty(0);
+}
+
+const Note * SingleNote::getNote(const size_t __pos) const {
+  return nullptr;
+}
+
+int SingleNote::getSize() const {
+  if (Note::getPitch(0)) {
+    return 1;
+  }
+  return 0;
+}
+
+// Constructor
 SingleNote::SingleNote(const std::string& __pitch, const std::string& __value) :
   Note(CHAR_NOTETYPE_SINGLE) {
 
