@@ -31,9 +31,12 @@ install : all
 	cp src/libHb.a $(INSTALLATION_PATH)/lib
 	cp src/engine/hb-preprocessor.bin $(INSTALLATION_PATH)/bin/hb-preprocessor
 	cp script/hb-build.sh $(INSTALLATION_PATH)/bin/hb-build
+	cp script/hb-clean.sh $(INSTALLATION_PATH)/bin/hb-clean
 	sed -i 's/###__TEXT_REPLACE_TAG__###/linked_lib_path=-L$(INSTALLATION_PATH_ESCAPE)\/lib/g' $(INSTALLATION_PATH)/bin/hb-build
 
 uninstall :
 	rm -f  $(INSTALLATION_PATH)/lib/libHb.a
 	rm -f  $(INSTALLATION_PATH)/bin/hb-preprocessor
+	rm -f  $(INSTALLATION_PATH)/bin/hb-build
+	rm -f  $(INSTALLATION_PATH)/bin/hb-clean
 	rm -rf $(INSTALLATION_PATH)/include/hautbois
