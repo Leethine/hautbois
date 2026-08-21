@@ -1,0 +1,29 @@
+BEGIN
+lang: it
+meter: 4/4
+tempo: 90
+END
+
+BEGIN
+score: soprano.hb
+notetype: FluteDummy
+initnote: do''4
+END
+
+BEGIN
+score: alto.hb
+notetype: FluteDummy
+initnote: do'4
+END
+
+BEGIN
+score: tenore.hb
+notetype: FluteDummy
+initnote: do'4
+END
+
+BEGIN
+score: basso.hb
+notetype: FluteDummy
+initnote: do4
+END
