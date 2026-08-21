@@ -10,3 +10,5 @@ INSTALL_PATH_ESC="$(echo ${2} | tr '/' ' ' | sed 's/ /\\\\\\\//g')"
 sed -i 's/###__TEXT_REPLACE_TAG1__###/INSTALLATION_PATH := '"${INSTALL_PATH}"'/g' Makefile
 sed -i 's/###__TEXT_REPLACE_TAG2__###/INSTALLATION_PATH_ESCAPE := '"${INSTALL_PATH_ESC}"'/g' Makefile
 fi
+
+echo "Created Makefile. Installation path: ${2}"
