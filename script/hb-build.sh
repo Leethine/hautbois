@@ -30,4 +30,7 @@ if [[ -d "${target_file}" ]]; then
   exit 1
 fi
 
-g++ ${linked_lib_path} -std=c++17 "${src_file}" -lm -lasound -lstk -lHb -o "${target_file}" && ./${target_file}
+g++ ${linked_lib_path} -std=c++17 "${src_file}" \
+  -lm -lasound -lstk -lHb -o "${target_file}" && \
+./${target_file} && \
+sox -m *.wav OUT.WAV && echo "Creating OUT.WAV" 
