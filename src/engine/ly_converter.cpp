@@ -11,10 +11,6 @@
 #include <algorithm>
 #include <string>
 
-#ifndef STD_VECTOR_STR
-#define STD_VECTOR_STR std::string("_VECSTR_")
-#endif
-
 namespace hautbois {
 
 bool LyConverter::validateNoteValue(const std::string& __value) const {
@@ -261,7 +257,7 @@ std::string LyConverter::convertChord(const std::string& __input) {
     ));
   }
 
-  return STD_VECTOR_STR + "({" + tools::jointstring(out_pitch_list, ',') + "})," + tools::quote_str(note_value);
+  return "{" + tools::jointstring(out_pitch_list, ',') + "}," + tools::quote_str(note_value);
 }
 
 
@@ -366,8 +362,8 @@ std::string LyConverter::convertTuplet(const std::string& __input) {
 
   // convert dots to 0 (as required by hautbois::Tuplet constructor)
   std::replace(tuplet_duration.begin(), tuplet_duration.end(), '.', '0');
-  return tuplet_count + "," + tuplet_duration + "," + STD_VECTOR_STR +
-    "({" + tools::jointstring(note_list_processed, ',') + "})";
+  return tuplet_count + "," + tuplet_duration + "," +
+    "{" + tools::jointstring(note_list_processed, ',') + "}";
 }
 
 std::string LyConverter::convertGrace(const std::string& __input) {
@@ -417,7 +413,7 @@ std::string LyConverter::convertGrace(const std::string& __input) {
   std::string main_pitch = note_list_processed.back();
   note_list_processed.pop_back();
 
-  return STD_VECTOR_STR + "({" + tools::jointstring(note_list_processed, ',') + "})," +
+  return "{" + tools::jointstring(note_list_processed, ',') + "}," +
     main_pitch + "," + main_value;
 }
 

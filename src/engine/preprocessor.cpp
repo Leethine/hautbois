@@ -7,10 +7,7 @@
 #include <stdexcept>
 #include "preprocessor.hpp"
 #include "../utility/tools.hpp"
-
-#ifndef _VECSTR_
-#define _VECSTR_ std::vector<std::string>
-#endif
+#include "../hbtype/hbdefs.hpp"
 
 namespace hautbois {
 namespace preprocessor {
@@ -37,9 +34,8 @@ void writeHeader(std::ostream& __ostream) {
   os << "#include <iostream>\n"
      << "#include \"hautbois/note.hpp\"\n"
      << "#include \"hautbois/stk_note.hpp\"\n"
-     << "#include \"hautbois/basic_voice.hpp\"\n"
-     << "#include <stk/FileWvOut.h>\n"
-     << "#define _VECSTR_ std::vector<std::string>\n\n";
+     << "#include \"hautbois/voice.hpp\"\n"
+     << "#include <stk/FileWvOut.h>\n\n";
 
   os << "using namespace hautbois;\n"
      << "using namespace synth;\n\n"
@@ -79,17 +75,27 @@ void writeBody(std::ostream& __ostream, const InfoFile& __info, const unsigned i
   for (char& c : voicename_upper) { c = std::toupper(c); }
   
   fs << "\n//////// BEGIN " << voicename_upper << "////////\n"
-     << "BasicVoice<" << __info._note_types[__voice]
-     << "> " << voicename << "("
+     << "BasicVoice " << voicename << "("
      << std::to_string(__info._meter_num) << ","
      << std::to_string(__info._meter_num) << ","
      << std::to_string(__info._tempo) + ");\n" ;
 
   // write notes
+  std::map<char, std::string> NOTETYPES {
+    {CHAR_NOTETYPE_SILENCE, "SingleNote"},
+    {CHAR_NOTETYPE_SINGLE,  "SingleNote"},
+    {CHAR_NOTETYPE_REST,    "SingleNote"},
+    {CHAR_NOTETYPE_CHORD,   "Chord"},
+    {CHAR_NOTETYPE_GRACE,   "GraceNote"},
+    {CHAR_NOTETYPE_ACCIACCATURA, "GraceNote"},
+    {CHAR_NOTETYPE_APPOGGIATURA, "GraceNote"},
+    {CHAR_NOTETYPE_TUPLET,       "Tuplet"}
+  };
   LyConverter cvt(__info._lang, __info._init_notes[__voice]);
   readVoiceFile(__info._filenames[__voice], cvt);
   for (size_t i = 0; i < cvt.size(); i++) {
-    fs << voicename << ".addNote(" << cvt.getArgs(i) << ");\n";
+    fs << voicename << ".addNote(new " << NOTETYPES.at(cvt.getType(i))
+       << __info._note_types[__voice] << "(" << cvt.getArgs(i) << "));\n";
   }
   fs << "//////// END " << voicename_upper << "////////\n";
 }

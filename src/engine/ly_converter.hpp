@@ -9,8 +9,6 @@
 #include <istream>
 #include <iostream>
 
-#define _VECSTR_(LST) std::vector<std::string>(LST)
-
 namespace hautbois {
 
 class LyConverter final {
@@ -52,7 +50,15 @@ public:
   void readFromStream(std::istream& __stream);
   void readFromFile(const std::string& __fpath);
 
-  /* Return the argument passed to the addNote method in BaseVoice class */
+  /* Return the note type to be created and added with addNote method in BaseVoice class */
+  inline char getType(const size_t __pos) const {
+    if (__pos < _note_types.size()) {
+      return _note_types[__pos];
+    }
+    return 'S';
+  }
+
+  /* Return the argument passed to addNote method in BaseVoice class */
   inline std::string getArgs(const size_t __pos) const {
     if (__pos < _converted_args.size()) {
       return _converted_args[__pos];
